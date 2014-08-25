@@ -21,8 +21,8 @@ import com.alee.managers.language.LanguageManager;
 
 
 import com.alee.utils.FileUtils;
-import compiler.AnalizadorLexico;
 
+import compiler.AnalizadorLexico;
 import filtro.FiltroCvr;
 
 import javax.swing.JMenuBar;
@@ -45,6 +45,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 
 import javax.swing.JEditorPane;
 import javax.swing.border.BevelBorder;
@@ -346,6 +349,9 @@ public class mainWindow {
 			File aux = fileChooser.getSelectedFile ();
 			if (aux.isFile()){
 				file = aux;
+				try {
+					editor.setPage(file.toURI().toURL());
+				} catch (IOException e) {}
 				
 			}
 		}
