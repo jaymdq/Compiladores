@@ -12,10 +12,17 @@ import java.awt.Insets;
 import javax.swing.JFrame;
 
 import com.alee.laf.WebLookAndFeel;
+import com.alee.laf.filechooser.WebFileChooser;
 import com.alee.managers.language.LanguageConstants;
 import com.alee.managers.language.LanguageManager;
 
 
+
+
+
+import com.alee.utils.FileUtils;
+
+import filtro.FiltroCvr;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -36,6 +43,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 import javax.swing.JEditorPane;
 import javax.swing.border.BevelBorder;
@@ -48,6 +56,7 @@ public class mainWindow {
 	private JFrame frame;
 	private JScrollPane scrollConsola;
 	private JTextPane Consola;
+	private File file = null;
 
 	/**
 	 * Launch the application.
@@ -104,6 +113,12 @@ public class mainWindow {
 		toolBar.add(botonNuevo);
 		
 		JButton botonCargar = new JButton("");
+		botonCargar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cargarArchivo();				
+			}
+		});
 		botonCargar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/open.png")));
 		toolBar.add(botonCargar);
 		
@@ -278,7 +293,7 @@ public class mainWindow {
 		TextLineNumber tln = new TextLineNumber(editor);
 		
 		//Esta linea descomentarla a la hora de ejecutar. Problemas en el desing de eclipse..
-		scrollPaneEditor.setRowHeaderView( tln );
+		//scrollPaneEditor.setRowHeaderView( tln );
 		
 		//Agregamos el tab del editor.
 		tabbedPane.addTab("Sin Título",scrollPaneEditor );
@@ -307,6 +322,23 @@ public class mainWindow {
 		ConsolaManager.getInstance().escribirWarning("Warning");
 		ConsolaManager.getInstance().escribirError("Error");
 		
+	}
+
+	private void cargarArchivo() {
+
+		WebFileChooser fileChooser = new WebFileChooser();
+		fileChooser.setFileFilter(new FiltroCvr());
+		fileChooser.setMultiSelectionEnabled ( false );
+		fileChooser.setDialogTitle("Abrir archivo CVR");
+		if ( fileChooser.showOpenDialog ( frame ) == WebFileChooser.APPROVE_OPTION )
+		{
+			
+			file = fileChooser.getSelectedFile ();
+			if (file.isFile()){
+				
+			}
+		}
+
 	}
 
 }
