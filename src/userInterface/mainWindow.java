@@ -60,6 +60,7 @@ public class mainWindow {
 	private JScrollPane scrollConsola;
 	private JTextPane Consola;
 	private File file = null;
+	private JEditorPane editor;
 
 	/**
 	 * Launch the application.
@@ -296,7 +297,7 @@ public class mainWindow {
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
 		//Editor con su scroll y contador de lineas.
-		JEditorPane editor = new JEditorPane();
+		editor = new JEditorPane();
 		editor.setFont(new Font("Consolas", 0, 16));
 		JScrollPane scrollPaneEditor = new JScrollPane(editor);
 		TextLineNumber tln = new TextLineNumber(editor);
@@ -339,11 +340,12 @@ public class mainWindow {
 		fileChooser.setFileFilter(new FiltroCvr());
 		fileChooser.setMultiSelectionEnabled ( false );
 		fileChooser.setDialogTitle("Abrir archivo CVR");
+		fileChooser.setApproveButtonText("Abrir");
 		if ( fileChooser.showOpenDialog ( frame ) == WebFileChooser.APPROVE_OPTION )
 		{
-			
-			file = fileChooser.getSelectedFile ();
-			if (file.isFile()){
+			File aux = fileChooser.getSelectedFile ();
+			if (aux.isFile()){
+				file = aux;
 				
 			}
 		}
