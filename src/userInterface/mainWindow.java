@@ -40,6 +40,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JEditorPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.JTabbedPane;
 
 
 public class mainWindow {
@@ -263,15 +264,39 @@ public class mainWindow {
 		gbc_Max.gridy = 0;
 		PanelConsola.add(Max, gbc_Max);
 		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+		
 		//Editor con su scroll y contador de lineas.
 		JEditorPane editor = new JEditorPane();
 		editor.setFont(new Font("Consolas", 0, 16));
-		JScrollPane scrollPane = new JScrollPane(editor);
+		JScrollPane scrollPaneEditor = new JScrollPane(editor);
 		TextLineNumber tln = new TextLineNumber(editor);
-		scrollPane.setRowHeaderView( tln );
-		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
+		//Esta linea descomentarla a la hora de ejecutar. Problemas en el desing de eclipse..
+		scrollPaneEditor.setRowHeaderView( tln );
 		
+		//Agregamos el tab del editor.
+		tabbedPane.addTab("Sin Título",scrollPaneEditor );
+		
+		//Editor léxico
+		JEditorPane editorLexico = new JEditorPane();
+		editorLexico.setEditable(false);
+		editorLexico.setFont(new Font("Consolas", 0, 16));
+		JScrollPane scrollPaneLexico = new JScrollPane(editorLexico);
+		
+		//Agregamos el tab del analizador léxico
+		tabbedPane.addTab("Analizador Léxico", scrollPaneLexico);
+
+		//Editor léxico
+		JEditorPane editorTabla = new JEditorPane();
+		editorTabla.setEditable(false);
+		editorTabla.setFont(new Font("Consolas", 0, 16));
+		JScrollPane scrollPaneTabla = new JScrollPane(editorTabla);
+
+		//Agregamos el tab de la tabla de simbolos
+		tabbedPane.addTab("Tabla de Símbolos", scrollPaneTabla);
+
 		//Ejemplos
 		ConsolaManager.getInstance().escribir("Texto Normal");
 		ConsolaManager.getInstance().escribirInfo("Información");
