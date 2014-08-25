@@ -60,6 +60,7 @@ public class mainWindow {
 	private static File file = null;
 	private JEditorPane editor;
 	private String titulo = " CVR - ";
+	private JTabbedPane tabbedPane;
 
 	/**
 	 * Launch the application.
@@ -339,7 +340,7 @@ public class mainWindow {
 		gbc_Max.gridy = 0;
 		PanelConsola.add(Max, gbc_Max);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
 		//Editor con su scroll y contador de lineas.
@@ -394,6 +395,8 @@ public class mainWindow {
 				try {
 					editor.setPage(file.toURI().toURL());
 					frame.setTitle(titulo + file.getAbsolutePath());
+					tabbedPane.setSelectedIndex(0);
+					tabbedPane.setTitleAt(0, file.getName());
 				} catch (IOException e) {}
 			}
 		}
