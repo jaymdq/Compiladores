@@ -9,6 +9,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
@@ -106,8 +107,9 @@ public class mainWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame(titulo );
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(mainWindow.class.getResource("/images/icono.png")));
 		//Icono
-		//frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/imagenes/icon.png")));
+		//frame.setIconImage(Toolkit.getDefaultToolkit().getImage(mainWindow.class.getResource("/imagenes/icono.png")));
 		frame.setBounds(0,0,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
 		frame.setLocationRelativeTo(null);
 		frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
@@ -306,7 +308,7 @@ public class mainWindow {
 		editor.setFont(new Font("Consolas", 0, 16));
 		JScrollPane scrollPaneEditor = new JScrollPane(editor);
 		TextLineNumber tln = new TextLineNumber(editor);
-		
+		tln.setDigitAlignment(TextLineNumber.CENTER);
 		//Esta linea descomentarla a la hora de ejecutar. Problemas en el desing de eclipse..
 		//scrollPaneEditor.setRowHeaderView( tln );
 		
@@ -352,6 +354,7 @@ public class mainWindow {
 				file = aux;
 				try {
 					editor.setPage(file.toURI().toURL());
+					frame.setTitle(titulo + file.getAbsolutePath());
 				} catch (IOException e) {}
 				
 			}
