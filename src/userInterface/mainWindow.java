@@ -113,22 +113,43 @@ public class mainWindow {
 		menuBar.add(mnArchivo);
 		
 		JMenuItem mntmNuevo = new JMenuItem("Nuevo");
+		mntmNuevo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/nuevo.gif")));
 		mnArchivo.add(mntmNuevo);
 		
 		JMenuItem mntmAbrir = new JMenuItem("Abrir");
+		mntmAbrir.setIcon(new ImageIcon(mainWindow.class.getResource("/images/open.png")));
+		mntmAbrir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cargarArchivo();
+			}
+		});
 		mnArchivo.add(mntmAbrir);
 		
 		JMenuItem mntmGuardar = new JMenuItem("Guardar");
+		mntmGuardar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/save.png")));
 		mnArchivo.add(mntmGuardar);
 		
 		JMenuItem mntmGuardarComo = new JMenuItem("Guardar Como..");
+		mntmGuardarComo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/saveall.png")));
 		mnArchivo.add(mntmGuardarComo);
 		
 		JSeparator separator = new JSeparator();
 		mnArchivo.add(separator);
 		
 		JMenuItem mntmSalir = new JMenuItem("Salir");
+		mntmSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+			}
+		});
 		mnArchivo.add(mntmSalir);
+		
+		JMenu mnEjecutar = new JMenu("Ejecutar");
+		menuBar.add(mnEjecutar);
+		
+		JMenuItem mntmEjecutar = new JMenuItem("Ejecutar");
+		mntmEjecutar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/run.gif")));
+		mnEjecutar.add(mntmEjecutar);
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
