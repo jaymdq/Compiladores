@@ -52,12 +52,13 @@ public class MatrizTransicion {
 		System.out.println(estado);
 		
 		// Realizar accion semantica
+		transicion.ejecutarAccionSemantica();
 		
 		return transicion;
 	}
 	
 	private void initMatriz(){
-		setTransicion(Estado.INICIAL, TipoSimbolo.LETRA, new Transicion(Estado.UNO));
+		setTransicion(Estado.INICIAL, TipoSimbolo.LETRA, new Transicion(Estado.UNO, new AS1()));
 		setTransicion(Estado.INICIAL, TipoSimbolo.DIGITO, new Transicion(Estado.INICIAL));
 		
 		setTransicion(Estado.UNO, TipoSimbolo.LETRA, new Transicion(Estado.UNO));

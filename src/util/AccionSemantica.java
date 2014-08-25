@@ -1,5 +1,7 @@
 package util;
 
-public class AccionSemantica {
+public abstract class AccionSemantica {
 
+	public abstract void ejecutar();
+	
 }

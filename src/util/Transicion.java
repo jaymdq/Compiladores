@@ -17,14 +17,13 @@ public class Transicion {
 		this.nuevoEstado = nuevoEstado;
 	}
 
-
-
 	public Estado getNuevoEstado() {
 		return nuevoEstado;
 	}
 
-	public AccionSemantica getAccionSemantica() {
-		return accionSemantica;
+	public void ejecutarAccionSemantica() {
+		if(accionSemantica != null)
+			accionSemantica.ejecutar();
 	}
 
 }
