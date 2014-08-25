@@ -5,6 +5,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GraphicsConfiguration;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -64,6 +65,7 @@ public class mainWindow {
 	private JTextPane Consola;
 	private File file = null;
 	private JEditorPane editor;
+	private String titulo = " CVR - ";
 
 	/**
 	 * Launch the application.
@@ -103,7 +105,7 @@ public class mainWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame("Titulo");
+		frame = new JFrame(titulo );
 		//Icono
 		//frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/imagenes/icon.png")));
 		frame.setBounds(0,0,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
@@ -338,7 +340,6 @@ public class mainWindow {
 	}
 
 	private void cargarArchivo() {
-
 		WebFileChooser fileChooser = new WebFileChooser();
 		fileChooser.setFileFilter(new FiltroCvr());
 		fileChooser.setMultiSelectionEnabled ( false );
