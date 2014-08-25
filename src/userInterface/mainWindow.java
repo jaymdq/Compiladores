@@ -21,6 +21,7 @@ import com.alee.managers.language.LanguageManager;
 
 
 import com.alee.utils.FileUtils;
+import compiler.AnalizadorLexico;
 
 import filtro.FiltroCvr;
 
@@ -50,6 +51,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JTabbedPane;
 
+import util.Archivo;
+
 
 public class mainWindow {
 
@@ -62,6 +65,12 @@ public class mainWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Archivo arch = new Archivo();
+		arch.reset();
+		
+		AnalizadorLexico lexico = new AnalizadorLexico(arch);
+		lexico.getToken();
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
