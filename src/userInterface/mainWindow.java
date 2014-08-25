@@ -48,6 +48,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.JTabbedPane;
 
 import util.Archivo;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 
 
 public class mainWindow {
@@ -109,6 +111,24 @@ public class mainWindow {
 		
 		JMenu mnArchivo = new JMenu("Archivo");
 		menuBar.add(mnArchivo);
+		
+		JMenuItem mntmNuevo = new JMenuItem("Nuevo");
+		mnArchivo.add(mntmNuevo);
+		
+		JMenuItem mntmAbrir = new JMenuItem("Abrir");
+		mnArchivo.add(mntmAbrir);
+		
+		JMenuItem mntmGuardar = new JMenuItem("Guardar");
+		mnArchivo.add(mntmGuardar);
+		
+		JMenuItem mntmGuardarComo = new JMenuItem("Guardar Como..");
+		mnArchivo.add(mntmGuardarComo);
+		
+		JSeparator separator = new JSeparator();
+		mnArchivo.add(separator);
+		
+		JMenuItem mntmSalir = new JMenuItem("Salir");
+		mnArchivo.add(mntmSalir);
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
