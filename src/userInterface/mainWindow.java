@@ -103,6 +103,10 @@ public class mainWindow {
 		botonNuevo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/nuevo.gif")));
 		toolBar.add(botonNuevo);
 		
+		JButton botonCargar = new JButton("");
+		botonCargar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/open.png")));
+		toolBar.add(botonCargar);
+		
 		JButton botonGuardar = new JButton("");
 		botonGuardar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/save.png")));
 		toolBar.add(botonGuardar);
