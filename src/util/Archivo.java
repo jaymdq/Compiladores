@@ -8,6 +8,10 @@ public class Archivo {
 	private char [] source;
 	private int pointer;
 	
+	public Archivo (File file){
+		this.file = file;
+	}
+	
 	public void reset(){
 		source = HARDCODED_SOURCE.toCharArray();
 		pointer = 0;
@@ -16,7 +20,6 @@ public class Archivo {
 	public char getChar(){
 		if (pointer >= source.length)
 			return 0;
-		
 		return source[pointer++];
 	}
 	

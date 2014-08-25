@@ -5,7 +5,6 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.GraphicsConfiguration;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -17,12 +16,6 @@ import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.filechooser.WebFileChooser;
 import com.alee.managers.language.LanguageConstants;
 import com.alee.managers.language.LanguageManager;
-
-
-
-
-
-import com.alee.utils.FileUtils;
 
 import compiler.AnalizadorLexico;
 import filtro.FiltroCvr;
@@ -48,8 +41,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 
 import javax.swing.JEditorPane;
 import javax.swing.border.BevelBorder;
@@ -64,7 +55,7 @@ public class mainWindow {
 	private JFrame frame;
 	private JScrollPane scrollConsola;
 	private JTextPane Consola;
-	private File file = null;
+	private static File file = null;
 	private JEditorPane editor;
 	private String titulo = " CVR - ";
 
@@ -72,7 +63,7 @@ public class mainWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		Archivo arch = new Archivo();
+		Archivo arch = new Archivo(file);
 		arch.reset();
 		
 		AnalizadorLexico lexico = new AnalizadorLexico(arch);
@@ -108,8 +99,6 @@ public class mainWindow {
 	private void initialize() {
 		frame = new JFrame(titulo );
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(mainWindow.class.getResource("/images/icono.png")));
-		//Icono
-		//frame.setIconImage(Toolkit.getDefaultToolkit().getImage(mainWindow.class.getResource("/imagenes/icono.png")));
 		frame.setBounds(0,0,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
 		frame.setLocationRelativeTo(null);
 		frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
@@ -127,6 +116,7 @@ public class mainWindow {
 		
 		JButton botonNuevo = new JButton("");
 		botonNuevo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/nuevo.gif")));
+		botonNuevo.setToolTipText("Nuevo archivo .cvr");
 		toolBar.add(botonNuevo);
 		
 		JButton botonCargar = new JButton("");
@@ -137,16 +127,24 @@ public class mainWindow {
 			}
 		});
 		botonCargar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/open.png")));
+		botonCargar.setToolTipText("Abrir archivo .cvr");
 		toolBar.add(botonCargar);
 		
 		JButton botonGuardar = new JButton("");
 		botonGuardar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/save.png")));
+		botonGuardar.setToolTipText("Guardar");
 		toolBar.add(botonGuardar);
+		
+		JButton botonGuardarComo = new JButton("");
+		botonGuardarComo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/saveall.png")));
+		botonGuardarComo.setToolTipText("Guardar como..");
+		toolBar.add(botonGuardarComo);
 	
 		toolBar.addSeparator();
 		
 		JButton botonEjecutar = new JButton("");
 		botonEjecutar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/run.gif")));
+		botonEjecutar.setToolTipText("Ejecutar");
 		toolBar.add(botonEjecutar);
 
 		//Consola
@@ -342,7 +340,7 @@ public class mainWindow {
 	}
 
 	private void cargarArchivo() {
-		WebFileChooser fileChooser = new WebFileChooser();
+		WebFileChooser fileChooser = new WebFileChooser("sample");
 		fileChooser.setFileFilter(new FiltroCvr());
 		fileChooser.setMultiSelectionEnabled ( false );
 		fileChooser.setDialogTitle("Abrir archivo CVR");
@@ -356,10 +354,8 @@ public class mainWindow {
 					editor.setPage(file.toURI().toURL());
 					frame.setTitle(titulo + file.getAbsolutePath());
 				} catch (IOException e) {}
-				
 			}
 		}
-
 	}
 
 }
