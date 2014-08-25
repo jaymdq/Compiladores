@@ -1,6 +1,5 @@
 package compiler;
 
-import util.Archivo;
 import util.MatrizTransicion;
 import util.Simbolo;
 import util.Token;
@@ -8,16 +7,17 @@ import util.MatrizTransicion.Estado;
 
 public class AnalizadorLexico {
 
-	private Archivo fuente;
+	private Compilador comp;
 	private MatrizTransicion matriz;
 
-	public AnalizadorLexico(Archivo fuente) {
+	public AnalizadorLexico(Compilador compilador) {
 		super();
-		this.fuente = fuente;
+		this.comp = compilador;
 		this.matriz = new MatrizTransicion();
 	}
 	
 	public Token getToken(){
+		ArchivoFuente fuente = comp.getArchivoFuente();
 		while (!matriz.getEstado().equals(Estado.FINAL)){
 			Simbolo s = new Simbolo(fuente.getChar());
 			matriz.doTransicion(s.getTipo());

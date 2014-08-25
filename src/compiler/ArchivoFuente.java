@@ -1,15 +1,17 @@
-package util;
+package compiler;
 
 import java.io.File;
 
-public class Archivo {
+public class ArchivoFuente {
 	private File file;
 	private String HARDCODED_SOURCE = "si 56 <= valor entonces imprimir(hola);";
 	private char [] source;
 	private int pointer;
 	
-	public Archivo (File file){
+	public ArchivoFuente (File file){
 		this.file = file;
+		
+		reset();
 	}
 	
 	public void reset(){

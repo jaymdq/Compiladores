@@ -18,6 +18,8 @@ import com.alee.managers.language.LanguageConstants;
 import com.alee.managers.language.LanguageManager;
 
 import compiler.AnalizadorLexico;
+import compiler.ArchivoFuente;
+import compiler.Compilador;
 import filtro.FiltroCvr;
 
 import javax.swing.JMenuBar;
@@ -46,8 +48,6 @@ import javax.swing.JEditorPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JTabbedPane;
-
-import util.Archivo;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
@@ -66,11 +66,14 @@ public class mainWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		Archivo arch = new Archivo(file);
+		/*ArchivoFuente arch = new ArchivoFuente(file);
 		arch.reset();
 		
 		AnalizadorLexico lexico = new AnalizadorLexico(arch);
-		lexico.getToken();
+		lexico.getToken();*/
+		
+		Compilador comp = new Compilador();
+		comp.compilar(new ArchivoFuente(file));
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
