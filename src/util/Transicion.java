@@ -21,9 +21,9 @@ public class Transicion {
 		return nuevoEstado;
 	}
 
-	public void ejecutarAccionSemantica() {
+	public void ejecutarAccionSemantica(Simbolo s) {
 		if(accionSemantica != null)
-			accionSemantica.ejecutar();
+			accionSemantica.ejecutar(s);
 	}
 
 }

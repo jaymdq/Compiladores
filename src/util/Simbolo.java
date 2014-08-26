@@ -37,4 +37,8 @@ public class Simbolo {
 		return tipo;
 	}
 	
+	public char getCaracter(){
+		return c;
+	}
+	
 }

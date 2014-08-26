@@ -8,21 +8,30 @@ import util.MatrizTransicion.Estado;
 public class AnalizadorLexico {
 
 	private Compilador comp;
-	private MatrizTransicion matriz;
+	private Token tokenActual;
 
 	public AnalizadorLexico(Compilador compilador) {
 		super();
 		this.comp = compilador;
-		this.matriz = new MatrizTransicion();
 	}
 	
 	public Token getToken(){
 		ArchivoFuente fuente = comp.getArchivoFuente();
+		MatrizTransicion matriz = comp.getMatrizTransicion();
 		while (!matriz.getEstado().equals(Estado.FINAL)){
 			Simbolo s = new Simbolo(fuente.getChar());
-			matriz.doTransicion(s.getTipo());
+			matriz.doTransicion(s);
 		}
 		return null;
+	}
+	
+	// Para uso privado de las acciones semanticas
+	public Token getTokenActual(){
+		return tokenActual;
+	}
+	
+	public void setTokenActual(Token token){
+		tokenActual = token;
 	}
 	
 }

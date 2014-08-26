@@ -1,10 +1,13 @@
 package compiler;
 
+import util.MatrizTransicion;
+
 public class Compilador {
 	private ArchivoFuente fuente;
 	private AnalizadorLexico lexico;
 	private AnalizadorSintatico sintactico;
 	
+	private MatrizTransicion transiciones;
 	private TablaDeSimbolos tabla;
 	
 	public Compilador(){
@@ -12,6 +15,7 @@ public class Compilador {
 		sintactico = new AnalizadorSintatico(this);
 		
 		tabla = new TablaDeSimbolos();
+		transiciones = new MatrizTransicion(this);
 	}
 	
 	public void compilar(ArchivoFuente fuente){
@@ -25,5 +29,9 @@ public class Compilador {
 
 	public AnalizadorLexico getAnalizadorLexico() {
 		return lexico;		
+	}
+	
+	public MatrizTransicion getMatrizTransicion(){
+		return transiciones;
 	}
 }
