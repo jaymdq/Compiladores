@@ -36,12 +36,22 @@ public class Simbolo {
 			tipo = TipoSimbolo.LETRA;
 		}else if (c >= '0' && c <= '9'){
 			tipo = TipoSimbolo.DIGITO;
-		}else if (c == ':'){
-			tipo = TipoSimbolo.DOS_PUNTOS;
 		}else if (c == ' '){
 			tipo = TipoSimbolo.BLANCO;
+		}else if (c == '\t'){
+			tipo = TipoSimbolo.TABULACION;
+		}else if (c == '\n'){
+			tipo = TipoSimbolo.NUEVA_LINEA;
+		}else if (c == ':'){
+			tipo = TipoSimbolo.DOS_PUNTOS;
+		}else if (c == '='){
+			tipo = TipoSimbolo.IGUAL;			
+		}else if (c == '>'){
+			tipo = TipoSimbolo.MAYOR;			
+		}else if (c == '<'){
+			tipo = TipoSimbolo.MENOR;			
 		}else {
-			tipo = TipoSimbolo.INVALIDO;			
+			tipo = TipoSimbolo.INVALIDO;
 		}
 		
 	}

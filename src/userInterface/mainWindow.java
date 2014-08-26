@@ -79,7 +79,7 @@ public class mainWindow {
 		lexico.getToken();*/
 		
 		//comp.compilar(new ArchivoFuente(file));
-		
+		/*Hola brian*/
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
