@@ -492,9 +492,14 @@ public class mainWindow {
 				out = new FileWriter(path);
 				out.write(editor.getText());
 				out.close();
-				frame.setTitle(titulo + file.getAbsolutePath());
 				tabbedPane.setSelectedIndex(0);
+				if (file.getAbsolutePath().endsWith(".cvr")){
+				frame.setTitle(titulo + file.getAbsolutePath());
 				tabbedPane.setTitleAt(0, file.getName());
+				}else{
+					frame.setTitle(titulo + file.getAbsolutePath()+".cvr");
+					tabbedPane.setTitleAt(0, file.getName()+".cvr");
+				}
 			} catch (IOException e) {}
 		}else
 			guardarComo();		
