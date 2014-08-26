@@ -597,7 +597,10 @@ public class mainWindow {
 						frame.setTitle(titulo + file.getAbsolutePath());
 						tabbedPane.setSelectedIndex(0);
 						tabbedPane.setTitleAt(0, file.getName());
-
+						botonGuardar.setEnabled(true);
+						botonGuardarComo.setEnabled(true);
+						mntmGuardar.setEnabled(true);
+						mntmGuardarComo.setEnabled(true);
 						//Eventos del editor
 						editor.getDocument().addDocumentListener(new DocumentListener() {
 
