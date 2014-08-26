@@ -2,7 +2,7 @@ package util;
 
 public class Simbolo {
 	public enum TipoSimbolo {
-		LETRA, DIGITO, BLANCO, TABULACION, NUEVA_LINEA, 
+		LETRA, DIGITO, BLANCO, TABULACION, NUEVA_LINEA, RETORNO,
 		DOS_PUNTOS, IGUAL, MAYOR, MENOR, MENOS, MAS, BARRA,
 		ASTERISCO, ACENTO_CIRCUNFLEJO, GUION_BAJO, AMPERSAND,
 		PUNTO_Y_COMA, COMA, PARENTESIS_ABIERTO, PARENTESIS_CERRADO,
@@ -20,6 +20,8 @@ public class Simbolo {
 				return "Tabulacion";
 			}else if (this.equals(TipoSimbolo.NUEVA_LINEA)){
 				return "NuevaLinea";
+			}else if (this.equals(TipoSimbolo.RETORNO)){
+				return "Retorno";
 			}else if (this.equals(TipoSimbolo.DOS_PUNTOS)){
 				return "Dos Puntos";
 			}else if (this.equals(TipoSimbolo.IGUAL)){
@@ -79,6 +81,8 @@ public class Simbolo {
 			tipo = TipoSimbolo.TABULACION;
 		}else if (c == '\n'){
 			tipo = TipoSimbolo.NUEVA_LINEA;
+		}else if (c == '\r'){
+			tipo = TipoSimbolo.RETORNO;
 		}else if (c == ':'){
 			tipo = TipoSimbolo.DOS_PUNTOS;
 		}else if (c == '='){
