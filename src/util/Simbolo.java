@@ -3,7 +3,10 @@ package util;
 public class Simbolo {
 	public enum TipoSimbolo {
 		LETRA, DIGITO, BLANCO, TABULACION, NUEVA_LINEA, 
-		DOS_PUNTOS, IGUAL, MAYOR, MENOR, MENOS, MAS, BARRA, ASTERISCO, ACENTO_CIRCUNFLEJO, GUION_BAJO, AMPERSAN, INVALIDO;
+		DOS_PUNTOS, IGUAL, MAYOR, MENOR, MENOS, MAS, BARRA,
+		ASTERISCO, ACENTO_CIRCUNFLEJO, GUION_BAJO, AMPERSAND,
+		PUNTO_Y_COMA, COMA, PARENTESIS_ABIERTO, PARENTESIS_CERRADO,
+		CORCHETE_ABIERTO, CORCHETE_CERRADO, LLAVE_ABIERTA, LLAVE_CERRADA, INVALIDO;
 		
 		@Override
 		public String toString(){
@@ -35,8 +38,24 @@ public class Simbolo {
 				return "Acento Circunflejo";
 			}else if (this.equals(TipoSimbolo.GUION_BAJO)){
 				return "Guion Bajo";
-			}else if (this.equals(TipoSimbolo.AMPERSAN)){
-				return "Ampersan";
+			}else if (this.equals(TipoSimbolo.AMPERSAND)){
+				return "Ampersand";
+			}else if (this.equals(TipoSimbolo.PUNTO_Y_COMA)){
+				return "Punto y coma";
+			}else if (this.equals(TipoSimbolo.COMA)){
+				return "Coma";
+			}else if (this.equals(TipoSimbolo.PARENTESIS_ABIERTO)){
+				return "Parentesis abierto";
+			}else if (this.equals(TipoSimbolo.PARENTESIS_CERRADO)){
+				return "Parentesis cerrado";
+			}else if (this.equals(TipoSimbolo.CORCHETE_ABIERTO)){
+				return "Corchete abierto";
+			}else if (this.equals(TipoSimbolo.CORCHETE_CERRADO)){
+				return "Corchete cerrado";
+			}else if (this.equals(TipoSimbolo.LLAVE_ABIERTA)){
+				return "Llave abierta";
+			}else if (this.equals(TipoSimbolo.LLAVE_CERRADA)){
+				return "Llave cerrada";
 			}else
 				return "Invalido";
 		}
@@ -79,7 +98,23 @@ public class Simbolo {
 		}else if (c == '_'){
 			tipo = TipoSimbolo.GUION_BAJO;			
 		}else if (c == '&'){
-			tipo = TipoSimbolo.AMPERSAN;			
+			tipo = TipoSimbolo.AMPERSAND;			
+		}else if (c == ';'){
+			tipo = TipoSimbolo.PUNTO_Y_COMA;			
+		}else if (c == ','){
+			tipo = TipoSimbolo.COMA;			
+		}else if (c == '('){
+			tipo = TipoSimbolo.PARENTESIS_ABIERTO;			
+		}else if (c == ')'){
+			tipo = TipoSimbolo.PARENTESIS_CERRADO;			
+		}else if (c == '['){
+			tipo = TipoSimbolo.CORCHETE_ABIERTO;			
+		}else if (c == ']'){
+			tipo = TipoSimbolo.CORCHETE_CERRADO;			
+		}else if (c == '{'){
+			tipo = TipoSimbolo.LLAVE_ABIERTA;			
+		}else if (c == '}'){
+			tipo = TipoSimbolo.LLAVE_CERRADA;			
 		}else {
 			tipo = TipoSimbolo.INVALIDO;
 		}
