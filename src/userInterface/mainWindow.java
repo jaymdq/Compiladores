@@ -495,6 +495,7 @@ public class mainWindow {
 		if (file != null){
 			compilador.compilar(new ArchivoFuente(file));
 		}
+		actualizarTablaSimbolos();
 	}
 
 	private void guardar(){
@@ -650,9 +651,9 @@ public class mainWindow {
 	private void actualizarTablaSimbolos() {
 		Vector<TablaDeSimbolosEntrada> t = compilador.getTablaDeSimbolos().getVector();
 		this.tablaSimbolos.removeAll();
-		for (TablaDeSimbolosEntrada e : t) {
-			
-		}
-		
+		DefaultTableModel modelo = (DefaultTableModel) this.tablaSimbolos.getModel();
+		for (TablaDeSimbolosEntrada e : t)
+			modelo.addRow(new Object[] {e.getTipo(),e.getLexema(),e.isReservada()});	
 	}
+	
 }

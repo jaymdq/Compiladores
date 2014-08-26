@@ -43,7 +43,7 @@ public class TablaDeSimbolos {
 	}
 
 	public Vector<TablaDeSimbolosEntrada> getVector() {
-		return (Vector<TablaDeSimbolosEntrada>) tabla.values();
+		return new Vector<TablaDeSimbolosEntrada>(tabla.values());
 	}
 	
 }
