@@ -17,7 +17,6 @@ import com.alee.laf.filechooser.WebFileChooser;
 import com.alee.managers.language.LanguageConstants;
 import com.alee.managers.language.LanguageManager;
 
-import compiler.AnalizadorLexico;
 import compiler.ArchivoFuente;
 import compiler.Compilador;
 import filtro.FiltroCvr;
@@ -47,9 +46,14 @@ import java.io.IOException;
 import javax.swing.JEditorPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.JTabbedPane;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+
+import java.awt.event.InputMethodListener;
+import java.awt.event.InputMethodEvent;
 
 
 public class mainWindow {
@@ -153,6 +157,11 @@ public class mainWindow {
 		menuBar.add(mnEjecutar);
 		
 		JMenuItem mntmEjecutar = new JMenuItem("Ejecutar");
+		mntmEjecutar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				compilar();
+			}
+		});
 		mntmEjecutar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/run.gif")));
 		mnEjecutar.add(mntmEjecutar);
 
@@ -359,7 +368,31 @@ public class mainWindow {
 		TextLineNumber tln = new TextLineNumber(editor);
 		tln.setDigitAlignment(TextLineNumber.CENTER);
 		//Esta linea descomentarla a la hora de ejecutar. Problemas en el desing de eclipse..
-		//scrollPaneEditor.setRowHeaderView( tln );
+		scrollPaneEditor.setRowHeaderView( tln );
+		
+		//Eventos del editor
+		editor.getDocument().addDocumentListener(new DocumentListener() {
+		
+	        @Override
+	        public void removeUpdate(DocumentEvent e) {
+	        	if (file != null)
+	        		tabbedPane.setTitleAt(0,file.getName() + "*");
+	        	else
+	        		tabbedPane.setTitleAt(0,"Sin Título" + "*");
+	        }
+
+	        @Override
+	        public void insertUpdate(DocumentEvent e) {
+	        	if (file != null)
+	        		tabbedPane.setTitleAt(0,file.getName() + "*");
+	        	else
+	        		tabbedPane.setTitleAt(0,"Sin Título" + "*");
+	        }
+
+	        @Override
+	        public void changedUpdate(DocumentEvent arg0) {	   
+	        }
+	    });
 		
 		//Agregamos el tab del editor.
 		tabbedPane.addTab("Sin Título",scrollPaneEditor );
@@ -391,9 +424,10 @@ public class mainWindow {
 		compilador = new Compilador();
 	}
 
-	protected void compilar() {
-		compilador.compilar(new ArchivoFuente(file));
-		
+	private void compilar() {
+		if (file != null){
+			compilador.compilar(new ArchivoFuente(file));
+		}
 	}
 
 	private void cargarArchivo() {
@@ -412,6 +446,30 @@ public class mainWindow {
 					frame.setTitle(titulo + file.getAbsolutePath());
 					tabbedPane.setSelectedIndex(0);
 					tabbedPane.setTitleAt(0, file.getName());
+					
+					//Eventos del editor
+					editor.getDocument().addDocumentListener(new DocumentListener() {
+					
+				        @Override
+				        public void removeUpdate(DocumentEvent e) {
+				        	if (file != null)
+				        		tabbedPane.setTitleAt(0,file.getName() + "*");
+				        	else
+				        		tabbedPane.setTitleAt(0,"Sin Título" + "*");
+				        }
+
+				        @Override
+				        public void insertUpdate(DocumentEvent e) {
+				        	if (file != null)
+				        		tabbedPane.setTitleAt(0,file.getName() + "*");
+				        	else
+				        		tabbedPane.setTitleAt(0,"Sin Título" + "*");
+				        }
+
+				        @Override
+				        public void changedUpdate(DocumentEvent arg0) {	   
+				        }
+				    });
 				} catch (IOException e) {}
 			}
 		}
