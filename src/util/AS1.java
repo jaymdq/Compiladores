@@ -1,5 +1,6 @@
 package util;
 
+import util.Token.TipoToken;
 import compiler.Compilador;
 
 public class AS1 extends AccionSemantica {
@@ -11,7 +12,7 @@ public class AS1 extends AccionSemantica {
 	@Override
 	public void ejecutar(Simbolo s) {
 		System.out.println("AS1: Iniciar lectura de identificador");
-		Token token = new Token();
+		Token token = new Token(TipoToken.IDENTIFICADOR);
 		token.agregarCaracter(s.getCaracter());
 		comp.getAnalizadorLexico().setTokenActual(token);
 	}

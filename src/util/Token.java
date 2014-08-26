@@ -1,9 +1,15 @@
 package util;
 
 public class Token {
+	enum TipoToken {
+		IDENTIFICADOR, ENTERO;
+	}
+	
 	private String lexema;
+	private TipoToken tipo;
 
-	public Token(){
+	public Token(TipoToken tipo){
+		this.tipo = tipo;
 		lexema = new String();
 	}
 
@@ -15,5 +21,9 @@ public class Token {
 	public String getLexema() {
 		return lexema;
 	}
-	
+
+	public TipoToken getTipo() {
+		return tipo;
+	}
+		
 }
