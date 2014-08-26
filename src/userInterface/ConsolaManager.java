@@ -41,7 +41,7 @@ public class ConsolaManager {
 	public  void escribir (String s){
 		// Con esto se escribe en la consola.
 		SimpleAttributeSet attrs = new SimpleAttributeSet();
-		StyleConstants.setFontSize(attrs, 14);
+		StyleConstants.setFontSize(attrs, 18);
 		Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		try {
 			  if ( getConsola() != null )
@@ -51,7 +51,7 @@ public class ConsolaManager {
 	
 	public void escribirWarning(String s){
 		SimpleAttributeSet attrs = new SimpleAttributeSet();
-		StyleConstants.setFontSize(attrs, 14);
+		StyleConstants.setFontSize(attrs, 18);
 		Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		Consola.insertIcon(new ImageIcon(mainWindow.class.getResource("/images/warning.gif")));
 		try {
@@ -61,7 +61,7 @@ public class ConsolaManager {
 
 	public void escribirError(String s){
 		SimpleAttributeSet attrs = new SimpleAttributeSet();
-		StyleConstants.setFontSize(attrs, 14);
+		StyleConstants.setFontSize(attrs, 18);
 		Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		Consola.insertIcon(new ImageIcon(mainWindow.class.getResource("/images/error.gif")));
 		try {
@@ -71,7 +71,7 @@ public class ConsolaManager {
 	
 	public void escribirInfo(String s){
 		SimpleAttributeSet attrs = new SimpleAttributeSet();
-		StyleConstants.setFontSize(attrs, 14);
+		StyleConstants.setFontSize(attrs, 18);
 		Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		Consola.insertIcon(new ImageIcon(mainWindow.class.getResource("/images/information.gif")));
 		try {

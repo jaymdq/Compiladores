@@ -268,7 +268,7 @@ public class mainWindow {
 		Consola.setToolTipText("Consola");
 		Consola.setPreferredSize(new Dimension(0, 175));
 		Consola.setDoubleBuffered(true);
-		Consola.setFont(new Font("Verdana", Font.PLAIN, 12));
+		Consola.setFont(new Font("Consolas", Font.PLAIN, 12));
 		frame.getContentPane().add(Consola, BorderLayout.SOUTH);
 
 
