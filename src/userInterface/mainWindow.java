@@ -47,6 +47,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Vector;
 
 import javax.swing.JEditorPane;
@@ -66,9 +68,7 @@ import javax.swing.table.DefaultTableModel;
 
 import util.TablaDeSimbolosEntrada;
 
-
 public class mainWindow {
-
 	private JFrame frame;
 	private JScrollPane scrollConsola;
 	private JTextPane Consola;
@@ -479,6 +479,7 @@ public class mainWindow {
 				"Tipo", "Lexema", "Palabra Reservada"
 			}
 		));
+	
 		scrollPaneTabla.setViewportView(tablaSimbolos);
 
 		//Ejemplos
@@ -488,6 +489,13 @@ public class mainWindow {
 		ConsolaManager.getInstance().escribirError("Error");
 
 		compilador = new Compilador();
+		
+		Observer o = new Observer() {
+			public void update(Observable o, Object arg) {
+				actualizarTablaSimbolos();
+			}
+		};
+		compilador.getTablaDeSimbolos().addObserver(o);
 	}
 
 
@@ -495,7 +503,6 @@ public class mainWindow {
 		if (file != null){
 			compilador.compilar(new ArchivoFuente(file));
 		}
-		actualizarTablaSimbolos();
 	}
 
 	private void guardar(){

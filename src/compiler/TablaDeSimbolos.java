@@ -1,13 +1,15 @@
 package compiler;
 
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Vector;
 
 import util.TablaDeSimbolosEntrada;
 import util.Token.TipoToken;
 
-public class TablaDeSimbolos {
+public class TablaDeSimbolos extends Observable {
 
 	private Map<String, TablaDeSimbolosEntrada> tabla;
 	
@@ -23,6 +25,8 @@ public class TablaDeSimbolos {
 
 	public void agregar(String lexema, TablaDeSimbolosEntrada entrada){
 		tabla.put(lexema, entrada);
+		setChanged();
+		notifyObservers();
 	}
 
 	private void initPalabrasReservadas() {
