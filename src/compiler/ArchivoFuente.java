@@ -1,10 +1,14 @@
 package compiler;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ArchivoFuente {
 	private File file;
-	private String HARDCODED_SOURCE = "si 56 <= valor entonces imprimir(hola);";
+	//private String HARDCODED_SOURCE = "si 56 <= valor entonces imprimir(hola);";
 	private char [] source;
 	private int pointer;
 	
@@ -15,7 +19,11 @@ public class ArchivoFuente {
 	}
 	
 	public void reset(){
-		source = HARDCODED_SOURCE.toCharArray();
+		 try {
+			byte[] lectura = Files.readAllBytes(Paths.get(file.getPath()));
+			String texto = new String(lectura,Charset.defaultCharset());
+			source = texto.toCharArray();
+		 } catch (IOException e) {}
 		pointer = 0;
 	}
 	
