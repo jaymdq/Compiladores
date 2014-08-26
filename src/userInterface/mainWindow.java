@@ -20,7 +20,7 @@ import com.alee.managers.language.LanguageManager;
 import compiler.AnalizadorLexico;
 import compiler.ArchivoFuente;
 import compiler.Compilador;
-import fileFilter.FiltroCvr;
+import filtro.FiltroCvr;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
