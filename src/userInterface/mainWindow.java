@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.filechooser.WebFileChooser;
+import com.alee.laf.optionpane.WebOptionPane;
 import com.alee.managers.language.LanguageConstants;
 import com.alee.managers.language.LanguageManager;
 
@@ -28,8 +29,10 @@ import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -41,6 +44,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.JEditorPane;
@@ -67,6 +71,14 @@ public class mainWindow {
 	private JTabbedPane tabbedPane;
 	
 	private Compilador compilador;
+	private JMenuItem mntmNuevo;
+	private JMenuItem mntmAbrir;
+	private JMenuItem mntmGuardar;
+	private JMenuItem mntmGuardarComo;
+	private JButton botonNuevo;
+	private JButton botonCargar;
+	private JButton botonGuardar;
+	private JButton botonGuardarComo;
 
 	/**
 	 * Launch the application.
@@ -79,7 +91,7 @@ public class mainWindow {
 		lexico.getToken();*/
 		
 		//comp.compilar(new ArchivoFuente(file));
-		/*Hola brian*/
+	
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -121,11 +133,16 @@ public class mainWindow {
 		JMenu mnArchivo = new JMenu("Archivo");
 		menuBar.add(mnArchivo);
 		
-		JMenuItem mntmNuevo = new JMenuItem("Nuevo");
+		mntmNuevo = new JMenuItem("Nuevo");
+		mntmNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				nuevoArchivo();
+			}
+		});
 		mntmNuevo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/nuevo.gif")));
 		mnArchivo.add(mntmNuevo);
 		
-		JMenuItem mntmAbrir = new JMenuItem("Abrir");
+		mntmAbrir = new JMenuItem("Abrir");
 		mntmAbrir.setIcon(new ImageIcon(mainWindow.class.getResource("/images/open.png")));
 		mntmAbrir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -134,11 +151,23 @@ public class mainWindow {
 		});
 		mnArchivo.add(mntmAbrir);
 		
-		JMenuItem mntmGuardar = new JMenuItem("Guardar");
+		mntmGuardar = new JMenuItem("Guardar");
+		mntmGuardar.setEnabled(false);
+		mntmGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardar();
+			}
+		});
 		mntmGuardar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/save.png")));
 		mnArchivo.add(mntmGuardar);
 		
-		JMenuItem mntmGuardarComo = new JMenuItem("Guardar Como..");
+		mntmGuardarComo = new JMenuItem("Guardar Como..");
+		mntmGuardarComo.setEnabled(false);
+		mntmGuardarComo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardarComo();
+			}
+		});
 		mntmGuardarComo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/saveall.png")));
 		mnArchivo.add(mntmGuardarComo);
 		
@@ -169,12 +198,17 @@ public class mainWindow {
 		toolBar.setFloatable(false);
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
 		
-		JButton botonNuevo = new JButton("");
+		botonNuevo = new JButton("");
+		botonNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				nuevoArchivo();
+			}
+		});
 		botonNuevo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/nuevo.gif")));
 		botonNuevo.setToolTipText("Nuevo archivo .cvr");
 		toolBar.add(botonNuevo);
 		
-		JButton botonCargar = new JButton("");
+		botonCargar = new JButton("");
 		botonCargar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -185,12 +219,24 @@ public class mainWindow {
 		botonCargar.setToolTipText("Abrir archivo .cvr");
 		toolBar.add(botonCargar);
 		
-		JButton botonGuardar = new JButton("");
+		botonGuardar = new JButton("");
+		botonGuardar.setEnabled(false);
+		botonGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardar();
+			}
+		});
 		botonGuardar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/save.png")));
 		botonGuardar.setToolTipText("Guardar");
 		toolBar.add(botonGuardar);
 		
-		JButton botonGuardarComo = new JButton("");
+		botonGuardarComo = new JButton("");
+		botonGuardarComo.setEnabled(false);
+		botonGuardarComo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardarComo();
+			}
+		});
 		botonGuardarComo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/saveall.png")));
 		botonGuardarComo.setToolTipText("Guardar como..");
 		toolBar.add(botonGuardarComo);
@@ -368,29 +414,33 @@ public class mainWindow {
 		TextLineNumber tln = new TextLineNumber(editor);
 		tln.setDigitAlignment(TextLineNumber.CENTER);
 		//Esta linea descomentarla a la hora de ejecutar. Problemas en el desing de eclipse..
-		scrollPaneEditor.setRowHeaderView( tln );
+		//scrollPaneEditor.setRowHeaderView( tln );
 		
 		//Eventos del editor
 		editor.getDocument().addDocumentListener(new DocumentListener() {
 		
 	        @Override
 	        public void removeUpdate(DocumentEvent e) {
-	        	if (file != null)
-	        		tabbedPane.setTitleAt(0,file.getName() + "*");
-	        	else
-	        		tabbedPane.setTitleAt(0,"Sin Título" + "*");
+	        	operacion();
 	        }
 
 	        @Override
 	        public void insertUpdate(DocumentEvent e) {
-	        	if (file != null)
-	        		tabbedPane.setTitleAt(0,file.getName() + "*");
-	        	else
-	        		tabbedPane.setTitleAt(0,"Sin Título" + "*");
+	        	operacion();
 	        }
 
 	        @Override
 	        public void changedUpdate(DocumentEvent arg0) {	   
+	        }
+	        private void operacion(){
+	        	if (file != null)
+	        		tabbedPane.setTitleAt(0,file.getName() + "*");
+	        	else
+	        		tabbedPane.setTitleAt(0,"Sin Título" + "*");
+	        	botonGuardar.setEnabled(true);
+	        	mntmGuardar.setEnabled(true);
+	        	botonGuardarComo.setEnabled(true);
+	        	mntmGuardarComo.setEnabled(true);
 	        }
 	    });
 		
@@ -424,56 +474,148 @@ public class mainWindow {
 		compilador = new Compilador();
 	}
 
+
 	private void compilar() {
 		if (file != null){
 			compilador.compilar(new ArchivoFuente(file));
 		}
 	}
-
-	private void cargarArchivo() {
-		WebFileChooser fileChooser = new WebFileChooser("sample");
-		fileChooser.setFileFilter(new FiltroCvr());
-		fileChooser.setMultiSelectionEnabled ( false );
-		fileChooser.setDialogTitle("Abrir archivo CVR");
-		fileChooser.setApproveButtonText("Abrir");
-		if ( fileChooser.showOpenDialog ( frame ) == WebFileChooser.APPROVE_OPTION )
-		{
-			File aux = fileChooser.getSelectedFile();
-			if (aux.isFile()){
-				file = aux;
-				try {
-					editor.setPage(file.toURI().toURL());
-					frame.setTitle(titulo + file.getAbsolutePath());
-					tabbedPane.setSelectedIndex(0);
-					tabbedPane.setTitleAt(0, file.getName());
-					
-					//Eventos del editor
-					editor.getDocument().addDocumentListener(new DocumentListener() {
-					
-				        @Override
-				        public void removeUpdate(DocumentEvent e) {
-				        	if (file != null)
-				        		tabbedPane.setTitleAt(0,file.getName() + "*");
-				        	else
-				        		tabbedPane.setTitleAt(0,"Sin Título" + "*");
-				        }
-
-				        @Override
-				        public void insertUpdate(DocumentEvent e) {
-				        	if (file != null)
-				        		tabbedPane.setTitleAt(0,file.getName() + "*");
-				        	else
-				        		tabbedPane.setTitleAt(0,"Sin Título" + "*");
-				        }
-
-				        @Override
-				        public void changedUpdate(DocumentEvent arg0) {	   
-				        }
-				    });
-				} catch (IOException e) {}
+		
+	private void guardar(){
+		if (file != null){
+			String path = file.getAbsolutePath();
+			FileWriter out;
+			if (!path.endsWith(".cvr")){
+				path += ".cvr";
 			}
+			try {
+				out = new FileWriter(path);
+				out.write(editor.getText());
+				out.close();
+				frame.setTitle(titulo + file.getAbsolutePath());
+				tabbedPane.setSelectedIndex(0);
+				tabbedPane.setTitleAt(0, file.getName());
+			} catch (IOException e) {}
+		}else
+			guardarComo();		
+	}
+
+	private void guardarComo() {
+		WebFileChooser guardador = new WebFileChooser();
+		guardador.setFileFilter(new FiltroCvr());
+		guardador.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);  
+		guardador.setMultiSelectionEnabled ( false );
+		guardador.setDialogTitle("Guardar archivo CVR");
+		guardador.setApproveButtonText("Guardar");
+		if ( guardador.showSaveDialog ( frame ) == WebFileChooser.APPROVE_OPTION ){
+			File fileToSave = guardador.getSelectedFile();
+			String path = fileToSave.getAbsolutePath();
+			if (!path.endsWith(".cvr")){
+				path += ".cvr";
+			}
+			FileWriter out;
+			try {
+				out = new FileWriter(path);
+				out.write(editor.getText());
+				out.close();
+				file = fileToSave;
+				tabbedPane.setSelectedIndex(0);
+				if (file.getName().endsWith("*.cvr")){
+					tabbedPane.setTitleAt(0, file.getName());
+					frame.setTitle(titulo + file.getAbsolutePath());
+				}
+				else{
+					tabbedPane.setTitleAt(0, file.getName()+".cvr");
+					frame.setTitle(titulo + file.getAbsolutePath()+".cvr");
+				}
+			} catch (IOException e) {}
 		}
 	}
 
+	private void nuevoArchivo() {
+		if (tabbedPane.getTitleAt(0).endsWith("*")){
+			//Archivo con cambios
+			if( WebOptionPane.showConfirmDialog ( null, "El archivo presenta cambios ¿Desea guardar y continuar? [No = descartar]", "Confirmar", WebOptionPane.YES_NO_OPTION,
+					WebOptionPane.QUESTION_MESSAGE ) == WebOptionPane.YES_OPTION){
+				//Guardar
+				if (file == null){
+					guardarComo();
+				}else{
+					guardar();
+				}
+			}else{
+				editor.setText("");
+				file = null;
+				frame.setTitle(titulo);
+				tabbedPane.setTitleAt(0, "Sin Título");
+			}	
+		}else{
+			editor.setText("");
+			file = null;
+			frame.setTitle(titulo);
+			tabbedPane.setTitleAt(0, "Sin Título");
+		}
+
+	}
+
+	private void cargarArchivo() {
+		if (tabbedPane.getTitleAt(0).endsWith("*")){
+			//Archivo con cambios
+			if( WebOptionPane.showConfirmDialog ( null, "El archivo presenta cambios ¿Desea guardar?", "Confirmar", WebOptionPane.YES_NO_OPTION,
+					WebOptionPane.QUESTION_MESSAGE ) == WebOptionPane.YES_OPTION){
+				//Guardar
+				if (file == null){
+					guardarComo();
+				}else{
+					guardar();
+				}
+				cargarArchivo();
+			}
+
+		}else{
+			WebFileChooser fileChooser = new WebFileChooser("sample");
+			fileChooser.setFileFilter(new FiltroCvr());
+			fileChooser.setMultiSelectionEnabled ( false );
+			fileChooser.setDialogTitle("Abrir archivo CVR");
+			fileChooser.setApproveButtonText("Abrir");
+			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			if ( fileChooser.showOpenDialog ( frame ) == WebFileChooser.APPROVE_OPTION )
+			{
+				File aux = fileChooser.getSelectedFile();
+				if (aux.isFile()){
+					file = aux;
+					try {
+						editor.setPage(file.toURI().toURL());
+						frame.setTitle(titulo + file.getAbsolutePath());
+						tabbedPane.setSelectedIndex(0);
+						tabbedPane.setTitleAt(0, file.getName());
+
+						//Eventos del editor
+						editor.getDocument().addDocumentListener(new DocumentListener() {
+
+							@Override
+							public void removeUpdate(DocumentEvent e) {
+								if (file != null)
+									tabbedPane.setTitleAt(0,file.getName() + "*");
+								else
+									tabbedPane.setTitleAt(0,"Sin Título" + "*");
+							}
+
+							@Override
+							public void insertUpdate(DocumentEvent e) {
+								if (file != null)
+									tabbedPane.setTitleAt(0,file.getName() + "*");
+								else
+									tabbedPane.setTitleAt(0,"Sin Título" + "*");
+							}
+
+							@Override
+							public void changedUpdate(DocumentEvent arg0) {	   
+							}
+						});
+					} catch (IOException e) {}
+				}
+			}
+		}
+	}
 }
-//asd
