@@ -69,7 +69,7 @@ public class mainWindow {
 	private JEditorPane editor;
 	private String titulo = " CVR - ";
 	private JTabbedPane tabbedPane;
-	
+
 	private Compilador compilador;
 	private JMenuItem mntmNuevo;
 	private JMenuItem mntmAbrir;
@@ -86,20 +86,20 @@ public class mainWindow {
 	public static void main(String[] args) {
 		/*ArchivoFuente arch = new ArchivoFuente(file);
 		arch.reset();
-		
+
 		AnalizadorLexico lexico = new AnalizadorLexico(arch);
 		lexico.getToken();*/
-		
+
 		//comp.compilar(new ArchivoFuente(file));
-	
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
+
 					//Look and feel
-				    LanguageManager.setDefaultLanguage(LanguageConstants.SPANISH);
+					LanguageManager.setDefaultLanguage(LanguageConstants.SPANISH);
 					WebLookAndFeel.install();
-					
+
 					mainWindow window = new mainWindow();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -126,13 +126,13 @@ public class mainWindow {
 		frame.setLocationRelativeTo(null);
 		frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
-		
+
 		JMenu mnArchivo = new JMenu("Archivo");
 		menuBar.add(mnArchivo);
-		
+
 		mntmNuevo = new JMenuItem("Nuevo");
 		mntmNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -141,7 +141,7 @@ public class mainWindow {
 		});
 		mntmNuevo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/nuevo.gif")));
 		mnArchivo.add(mntmNuevo);
-		
+
 		mntmAbrir = new JMenuItem("Abrir");
 		mntmAbrir.setIcon(new ImageIcon(mainWindow.class.getResource("/images/open.png")));
 		mntmAbrir.addActionListener(new ActionListener() {
@@ -150,7 +150,7 @@ public class mainWindow {
 			}
 		});
 		mnArchivo.add(mntmAbrir);
-		
+
 		mntmGuardar = new JMenuItem("Guardar");
 		mntmGuardar.setEnabled(false);
 		mntmGuardar.addActionListener(new ActionListener() {
@@ -160,7 +160,7 @@ public class mainWindow {
 		});
 		mntmGuardar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/save.png")));
 		mnArchivo.add(mntmGuardar);
-		
+
 		mntmGuardarComo = new JMenuItem("Guardar Como..");
 		mntmGuardarComo.setEnabled(false);
 		mntmGuardarComo.addActionListener(new ActionListener() {
@@ -170,10 +170,10 @@ public class mainWindow {
 		});
 		mntmGuardarComo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/saveall.png")));
 		mnArchivo.add(mntmGuardarComo);
-		
+
 		JSeparator separator = new JSeparator();
 		mnArchivo.add(separator);
-		
+
 		JMenuItem mntmSalir = new JMenuItem("Salir");
 		mntmSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -181,10 +181,10 @@ public class mainWindow {
 			}
 		});
 		mnArchivo.add(mntmSalir);
-		
+
 		JMenu mnEjecutar = new JMenu("Ejecutar");
 		menuBar.add(mnEjecutar);
-		
+
 		JMenuItem mntmEjecutar = new JMenuItem("Ejecutar");
 		mntmEjecutar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -197,7 +197,7 @@ public class mainWindow {
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
-		
+
 		botonNuevo = new JButton("");
 		botonNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -207,7 +207,7 @@ public class mainWindow {
 		botonNuevo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/nuevo.gif")));
 		botonNuevo.setToolTipText("Nuevo archivo .cvr");
 		toolBar.add(botonNuevo);
-		
+
 		botonCargar = new JButton("");
 		botonCargar.addActionListener(new ActionListener() {
 			@Override
@@ -218,7 +218,7 @@ public class mainWindow {
 		botonCargar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/open.png")));
 		botonCargar.setToolTipText("Abrir archivo .cvr");
 		toolBar.add(botonCargar);
-		
+
 		botonGuardar = new JButton("");
 		botonGuardar.setEnabled(false);
 		botonGuardar.addActionListener(new ActionListener() {
@@ -229,7 +229,7 @@ public class mainWindow {
 		botonGuardar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/save.png")));
 		botonGuardar.setToolTipText("Guardar");
 		toolBar.add(botonGuardar);
-		
+
 		botonGuardarComo = new JButton("");
 		botonGuardarComo.setEnabled(false);
 		botonGuardarComo.addActionListener(new ActionListener() {
@@ -240,9 +240,9 @@ public class mainWindow {
 		botonGuardarComo.setIcon(new ImageIcon(mainWindow.class.getResource("/images/saveall.png")));
 		botonGuardarComo.setToolTipText("Guardar como..");
 		toolBar.add(botonGuardarComo);
-	
+
 		toolBar.addSeparator();
-		
+
 		JButton botonEjecutar = new JButton("");
 		botonEjecutar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -265,15 +265,15 @@ public class mainWindow {
 
 
 		//Scroll de la Consola
-	    scrollConsola = new JScrollPane(Consola);
+		scrollConsola = new JScrollPane(Consola);
 		scrollConsola.setViewportBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		scrollConsola.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollConsola.setPreferredSize(new Dimension(0,175));
 		frame.getContentPane().add(scrollConsola, BorderLayout.SOUTH);
-		
+
 		//Asignamos el ConsolaManager
 		ConsolaManager.getInstance(Consola,scrollConsola);
-		
+
 		//Panel de Consola
 		final JPanel PanelConsola = new JPanel();
 		scrollConsola.setColumnHeaderView(PanelConsola);
@@ -283,7 +283,7 @@ public class mainWindow {
 		gbl_PanelConsola.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_PanelConsola.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		PanelConsola.setLayout(gbl_PanelConsola);
-		
+
 		//Boton de Borrar Consola
 		final JButton Borrar = new JButton("");
 		Borrar.setBorder(null);
@@ -304,8 +304,8 @@ public class mainWindow {
 				Borrar.setBorder(null);
 			}
 		});
-		
-		
+
+
 		//Label que dice CONSOLA
 		JLabel Cons = new JLabel("Consola   ");
 		Cons.setIcon(new ImageIcon(mainWindow.class.getResource("/images/monitor_obj.gif")));
@@ -328,7 +328,7 @@ public class mainWindow {
 		gbc_Borrar.gridx = 1;
 		gbc_Borrar.gridy = 0;
 		PanelConsola.add(Borrar, gbc_Borrar);
-		
+
 		//Boton de maximizar.
 		final JButton Max = new JButton("");
 		//Boton de minimzar.
@@ -348,20 +348,20 @@ public class mainWindow {
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
 				if ( Max.isEnabled() )
-				Max.setBorder(new LineBorder(Color.GRAY, 1));
+					Max.setBorder(new LineBorder(Color.GRAY, 1));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
 				Max.setBorder(null);
 			}
 		});
-		
+
 		//Boton de minimizar.
 		Min.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				if ( Min.isEnabled() )
-				Min.setBorder(new LineBorder(Color.GRAY, 1));
+					Min.setBorder(new LineBorder(Color.GRAY, 1));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
@@ -403,56 +403,59 @@ public class mainWindow {
 		gbc_Max.gridx = 3;
 		gbc_Max.gridy = 0;
 		PanelConsola.add(Max, gbc_Max);
-		
+
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
-		
+
 		//Editor con su scroll y contador de lineas.
 		editor = new JEditorPane();
 		editor.setFont(new Font("Consolas", 0, 16));
 		JScrollPane scrollPaneEditor = new JScrollPane(editor);
 		TextLineNumber tln = new TextLineNumber(editor);
 		tln.setDigitAlignment(TextLineNumber.CENTER);
-		//Esta linea descomentarla a la hora de ejecutar. Problemas en el desing de eclipse..
+		//Esta linea descomentarla a la hora de ejecutar. Problemas en el design de eclipse..
 		//scrollPaneEditor.setRowHeaderView( tln );
-		
+
 		//Eventos del editor
 		editor.getDocument().addDocumentListener(new DocumentListener() {
-		
-	        @Override
-	        public void removeUpdate(DocumentEvent e) {
-	        	operacion();
-	        }
 
-	        @Override
-	        public void insertUpdate(DocumentEvent e) {
-	        	operacion();
-	        }
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				operacion();
+			}
 
-	        @Override
-	        public void changedUpdate(DocumentEvent arg0) {	   
-	        }
-	        private void operacion(){
-	        	if (file != null)
-	        		tabbedPane.setTitleAt(0,file.getName() + "*");
-	        	else
-	        		tabbedPane.setTitleAt(0,"Sin Título" + "*");
-	        	botonGuardar.setEnabled(true);
-	        	mntmGuardar.setEnabled(true);
-	        	botonGuardarComo.setEnabled(true);
-	        	mntmGuardarComo.setEnabled(true);
-	        }
-	    });
-		
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				operacion();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {	   
+			}
+			private void operacion(){
+				if (file != null)
+					if (file.getName().endsWith(".cvr"))
+						tabbedPane.setTitleAt(0,file.getName() + "*");
+					else
+						tabbedPane.setTitleAt(0,file.getName() + ".cvr*");
+				else
+					tabbedPane.setTitleAt(0,"Sin Título" + "*");
+				botonGuardar.setEnabled(true);
+				mntmGuardar.setEnabled(true);
+				botonGuardarComo.setEnabled(true);
+				mntmGuardarComo.setEnabled(true);
+			}
+		});
+
 		//Agregamos el tab del editor.
 		tabbedPane.addTab("Sin Título",scrollPaneEditor );
-		
+
 		//Editor léxico
 		JEditorPane editorLexico = new JEditorPane();
 		editorLexico.setEditable(false);
 		editorLexico.setFont(new Font("Consolas", 0, 16));
 		JScrollPane scrollPaneLexico = new JScrollPane(editorLexico);
-		
+
 		//Agregamos el tab del analizador léxico
 		tabbedPane.addTab("Analizador Léxico", scrollPaneLexico);
 
@@ -470,7 +473,7 @@ public class mainWindow {
 		ConsolaManager.getInstance().escribirInfo("Información");
 		ConsolaManager.getInstance().escribirWarning("Warning");
 		ConsolaManager.getInstance().escribirError("Error");
-		
+
 		compilador = new Compilador();
 	}
 
@@ -480,7 +483,7 @@ public class mainWindow {
 			compilador.compilar(new ArchivoFuente(file));
 		}
 	}
-		
+
 	private void guardar(){
 		if (file != null){
 			String path = file.getAbsolutePath();
@@ -494,8 +497,8 @@ public class mainWindow {
 				out.close();
 				tabbedPane.setSelectedIndex(0);
 				if (file.getAbsolutePath().endsWith(".cvr")){
-				frame.setTitle(titulo + file.getAbsolutePath());
-				tabbedPane.setTitleAt(0, file.getName());
+					frame.setTitle(titulo + file.getAbsolutePath());
+					tabbedPane.setTitleAt(0, file.getName());
 				}else{
 					frame.setTitle(titulo + file.getAbsolutePath()+".cvr");
 					tabbedPane.setTitleAt(0, file.getName()+".cvr");
@@ -600,22 +603,26 @@ public class mainWindow {
 
 							@Override
 							public void removeUpdate(DocumentEvent e) {
-								if (file != null)
-									tabbedPane.setTitleAt(0,file.getName() + "*");
-								else
-									tabbedPane.setTitleAt(0,"Sin Título" + "*");
+								operacion();
 							}
 
 							@Override
 							public void insertUpdate(DocumentEvent e) {
-								if (file != null)
-									tabbedPane.setTitleAt(0,file.getName() + "*");
-								else
-									tabbedPane.setTitleAt(0,"Sin Título" + "*");
+								operacion();
 							}
 
 							@Override
 							public void changedUpdate(DocumentEvent arg0) {	   
+							}
+
+							public void operacion(){
+								if (file != null)
+									if (file.getName().endsWith(".cvr"))
+										tabbedPane.setTitleAt(0,file.getName() + "*");
+									else
+										tabbedPane.setTitleAt(0,file.getName()+ ".cvr*");
+								else
+									tabbedPane.setTitleAt(0,"Sin Título" + "*");
 							}
 						});
 					} catch (IOException e) {}
