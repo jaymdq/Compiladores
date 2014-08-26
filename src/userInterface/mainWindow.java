@@ -658,10 +658,23 @@ public class mainWindow {
 	
 	private void actualizarTablaSimbolos() {
 		Vector<TablaDeSimbolosEntrada> t = compilador.getTablaDeSimbolos().getVector();
-		this.tablaSimbolos.removeAll();
-		DefaultTableModel modelo = (DefaultTableModel) this.tablaSimbolos.getModel();
-		for (TablaDeSimbolosEntrada e : t)
-			modelo.addRow(new Object[] {e.getTipo(),e.getLexema(),e.isReservada()});	
+		DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
+		int a =modelo.getRowCount()-1;  //Índices van de 0 a n-1
+	        //System.out.println("Tabla "+a);   //Para mostrar por consola el resultado
+	    for(int i=a;i>=0;i--){  
+            //System.out.println("i "+i);    //Para mostrar por consola el resultado
+	    	modelo.removeRow(i);
+        }
+		//tablaSimbolos.re
+		ConsolaManager.getInstance().escribirWarning("Insertando " + t.size() + " elementos.");
+		
+		int i = 0;
+		for (TablaDeSimbolosEntrada e : t){
+			modelo.addRow(new Object[] {e.getTipo(),e.getLexema(),e.isReservada()});
+			i++;
+		}
+		ConsolaManager.getInstance().escribirWarning("Insertados " + i + " elementos.");
+		
 	}
 	
 }
