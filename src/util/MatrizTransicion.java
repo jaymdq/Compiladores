@@ -10,7 +10,7 @@ import util.Simbolo.TipoSimbolo;
 public class MatrizTransicion {
 
 	public enum Estado {
-		INICIAL, FINAL, UNO;
+		INICIAL, FINAL, UNO, DOS, TRES, CUATRO, CINCO, SEIS, SIETE, OCHO, NUEVE, DIEZ;
 	}
 		
 	private Compilador comp;
@@ -64,12 +64,25 @@ public class MatrizTransicion {
 		return transicion;
 	}
 	
+	public void volverAInicio(){
+		estado = Estado.INICIAL;
+	}
+	
 	private void initMatriz(){
+		// Estado Inicial
+		setTransicion(Estado.INICIAL, TipoSimbolo.BLANCO, new Transicion(Estado.INICIAL));
+		setTransicion(Estado.INICIAL, TipoSimbolo.TABULACION, new Transicion(Estado.INICIAL));
+		setTransicion(Estado.INICIAL, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.INICIAL));
 		setTransicion(Estado.INICIAL, TipoSimbolo.LETRA, new Transicion(Estado.UNO, new AS1(comp)));
-		setTransicion(Estado.INICIAL, TipoSimbolo.DIGITO, new Transicion(Estado.INICIAL));
+		setTransicion(Estado.INICIAL, TipoSimbolo.DIGITO, new Transicion(Estado.DOS, new AS4(comp)));
 		
+		// Estado 1
 		setTransicion(Estado.UNO, TipoSimbolo.LETRA, new Transicion(Estado.UNO, new AS2(comp)));
 		setTransicion(Estado.UNO, TipoSimbolo.BLANCO, new Transicion(Estado.FINAL, new AS3(comp)));
+		
+		// Estado 2
+		setTransicion(Estado.DOS, TipoSimbolo.DIGITO, new Transicion(Estado.DOS, new AS2(comp)));
+		setTransicion(Estado.DOS, TipoSimbolo.BLANCO, new Transicion(Estado.FINAL, new AS5(comp)));
 		
 	}
 }

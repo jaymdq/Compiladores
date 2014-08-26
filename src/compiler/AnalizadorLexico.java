@@ -18,6 +18,8 @@ public class AnalizadorLexico {
 	public Token getToken(){
 		ArchivoFuente fuente = comp.getArchivoFuente();
 		MatrizTransicion matriz = comp.getMatrizTransicion();
+		
+		matriz.volverAInicio();
 		while (!matriz.getEstado().equals(Estado.FINAL)){
 			Simbolo s = new Simbolo(fuente.getChar());
 			matriz.doTransicion(s);

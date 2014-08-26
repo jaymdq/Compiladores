@@ -18,11 +18,11 @@ public class ArchivoFuente {
 	
 	public void loadFile(File file){
 		this.file = file;
-		 try {
+		try {
 			byte[] lectura = Files.readAllBytes(Paths.get(file.getPath()));
 			String texto = new String(lectura,Charset.defaultCharset());
 			source = texto.toCharArray();
-		 } catch (IOException e) {}
+		} catch (IOException e) {}
 		pointer = 0;
 	}
 	

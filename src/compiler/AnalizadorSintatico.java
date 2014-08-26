@@ -10,7 +10,9 @@ public class AnalizadorSintatico {
 
 	public void ejecutar() {
 		System.out.println("[Sintactico] Obtener Token");
-		comp.getAnalizadorLexico().getToken();		
+		comp.getAnalizadorLexico().getToken();
+		comp.getAnalizadorLexico().getToken();
+		//comp.getAnalizadorLexico().getToken();
 	}
 
 }
