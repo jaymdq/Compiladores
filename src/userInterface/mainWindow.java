@@ -421,8 +421,9 @@ public class mainWindow {
 		JScrollPane scrollPaneEditor = new JScrollPane(editor);
 		TextLineNumber tln = new TextLineNumber(editor);
 		tln.setDigitAlignment(TextLineNumber.CENTER);
+		tln.setFont(new Font("Consolas", 0, 18));
 		//Esta linea descomentarla a la hora de ejecutar. Problemas en el design de eclipse..
-		//scrollPaneEditor.setRowHeaderView( tln );
+		scrollPaneEditor.setRowHeaderView( tln );
 
 		//Eventos del editor
 		editor.getDocument().addDocumentListener(new DocumentListener() {
