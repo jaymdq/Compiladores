@@ -34,4 +34,8 @@ public class Compilador {
 	public MatrizTransicion getMatrizTransicion(){
 		return transiciones;
 	}
+
+	public TablaDeSimbolos getTablaDeSimbolos() {
+		return tabla;
+	}
 }
