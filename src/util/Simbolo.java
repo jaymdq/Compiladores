@@ -3,7 +3,7 @@ package util;
 public class Simbolo {
 	public enum TipoSimbolo {
 		LETRA, DIGITO, BLANCO, TABULACION, NUEVA_LINEA, 
-		DOS_PUNTOS, IGUAL, MAYOR, MENOR, INVALIDO;
+		DOS_PUNTOS, IGUAL, MAYOR, MENOR, MENOS, MAS, BARRA, ASTERISCO, ACENTO_CIRCUNFLEJO, GUION_BAJO, AMPERSAN, INVALIDO;
 		
 		@Override
 		public String toString(){
@@ -17,11 +17,27 @@ public class Simbolo {
 				return "Tabulacion";
 			}else if (this.equals(TipoSimbolo.NUEVA_LINEA)){
 				return "NuevaLinea";
-			}/*else if (this.equals(TipoSimbolo.TABULACION)){
-				return "Tabulacion";
-			}else if (this.equals(TipoSimbolo.TABULACION)){
-				return "Tabulacion";
-			}*/else
+			}else if (this.equals(TipoSimbolo.DOS_PUNTOS)){
+				return "Dos Puntos";
+			}else if (this.equals(TipoSimbolo.IGUAL)){
+				return "Igual";
+			}else if (this.equals(TipoSimbolo.MAYOR)){
+				return "Mayor";
+			}else if (this.equals(TipoSimbolo.MENOS)){
+				return "Menos";
+			}else if (this.equals(TipoSimbolo.MAS)){
+				return "Mas";
+			}else if (this.equals(TipoSimbolo.BARRA)){
+				return "Barra";
+			}else if (this.equals(TipoSimbolo.ASTERISCO)){
+				return "Asterisco";
+			}else if (this.equals(TipoSimbolo.ACENTO_CIRCUNFLEJO)){
+				return "Acento Circunflejo";
+			}else if (this.equals(TipoSimbolo.GUION_BAJO)){
+				return "Guion Bajo";
+			}else if (this.equals(TipoSimbolo.AMPERSAN)){
+				return "Ampersan";
+			}else
 				return "Invalido";
 		}
 	}
@@ -50,6 +66,20 @@ public class Simbolo {
 			tipo = TipoSimbolo.MAYOR;			
 		}else if (c == '<'){
 			tipo = TipoSimbolo.MENOR;			
+		}else if (c == '-'){
+			tipo = TipoSimbolo.MENOS;			
+		}else if (c == '+'){
+			tipo = TipoSimbolo.MAS;			
+		}else if (c == '/'){
+			tipo = TipoSimbolo.BARRA;			
+		}else if (c == '*'){
+			tipo = TipoSimbolo.ASTERISCO;			
+		}else if (c == '^'){
+			tipo = TipoSimbolo.ACENTO_CIRCUNFLEJO;			
+		}else if (c == '_'){
+			tipo = TipoSimbolo.GUION_BAJO;			
+		}else if (c == '&'){
+			tipo = TipoSimbolo.AMPERSAN;			
 		}else {
 			tipo = TipoSimbolo.INVALIDO;
 		}
