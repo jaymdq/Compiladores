@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Vector;
 
+import userInterface.ConsolaManager;
 import util.TablaDeSimbolosEntrada;
 import util.Token.TipoToken;
 
@@ -24,6 +25,7 @@ public class TablaDeSimbolos extends Observable {
 	}
 
 	public void agregar(String lexema, TablaDeSimbolosEntrada entrada){
+		ConsolaManager.getInstance().escribirInfo("[Lexico] Agregar entrada " + lexema);
 		tabla.put(lexema, entrada);
 		setChanged();
 		notifyObservers();
@@ -43,6 +45,7 @@ public class TablaDeSimbolos extends Observable {
 	}
 
 	private void agregarPalabraReservada(TipoToken tipo, String lexema) {
+		ConsolaManager.getInstance().escribirInfo("[Lexico] Agregar entrada " + lexema);
 		tabla.put(lexema, new TablaDeSimbolosEntrada(tipo, lexema, true));
 	}
 

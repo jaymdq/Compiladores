@@ -28,6 +28,8 @@ public class Simbolo {
 				return "Igual";
 			}else if (this.equals(TipoSimbolo.MAYOR)){
 				return "Mayor";
+			}else if (this.equals(TipoSimbolo.MENOR)){
+				return "Menor";
 			}else if (this.equals(TipoSimbolo.MENOS)){
 				return "Menos";
 			}else if (this.equals(TipoSimbolo.MAS)){
