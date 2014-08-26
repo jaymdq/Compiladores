@@ -61,6 +61,8 @@ public class mainWindow {
 	private JEditorPane editor;
 	private String titulo = " CVR - ";
 	private JTabbedPane tabbedPane;
+	
+	private Compilador compilador;
 
 	/**
 	 * Launch the application.
@@ -72,8 +74,7 @@ public class mainWindow {
 		AnalizadorLexico lexico = new AnalizadorLexico(arch);
 		lexico.getToken();*/
 		
-		Compilador comp = new Compilador();
-		comp.compilar(new ArchivoFuente(file));
+		//comp.compilar(new ArchivoFuente(file));
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -188,6 +189,11 @@ public class mainWindow {
 		toolBar.addSeparator();
 		
 		JButton botonEjecutar = new JButton("");
+		botonEjecutar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				compilar();
+			}
+		});
 		botonEjecutar.setIcon(new ImageIcon(mainWindow.class.getResource("/images/run.gif")));
 		botonEjecutar.setToolTipText("Ejecutar");
 		toolBar.add(botonEjecutar);
@@ -382,6 +388,12 @@ public class mainWindow {
 		ConsolaManager.getInstance().escribirWarning("Warning");
 		ConsolaManager.getInstance().escribirError("Error");
 		
+		compilador = new Compilador();
+	}
+
+	protected void compilar() {
+		compilador.compilar(new ArchivoFuente(file));
+		
 	}
 
 	private void cargarArchivo() {
@@ -392,7 +404,7 @@ public class mainWindow {
 		fileChooser.setApproveButtonText("Abrir");
 		if ( fileChooser.showOpenDialog ( frame ) == WebFileChooser.APPROVE_OPTION )
 		{
-			File aux = fileChooser.getSelectedFile ();
+			File aux = fileChooser.getSelectedFile();
 			if (aux.isFile()){
 				file = aux;
 				try {

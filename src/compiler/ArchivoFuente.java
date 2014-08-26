@@ -13,12 +13,11 @@ public class ArchivoFuente {
 	private int pointer;
 	
 	public ArchivoFuente (File file){
-		this.file = file;
-		
-		reset();
+		loadFile(file);
 	}
 	
-	public void reset(){
+	public void loadFile(File file){
+		this.file = file;
 		 try {
 			byte[] lectura = Files.readAllBytes(Paths.get(file.getPath()));
 			String texto = new String(lectura,Charset.defaultCharset());

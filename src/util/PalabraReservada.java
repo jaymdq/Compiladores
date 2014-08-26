@@ -1,10 +1,14 @@
 package util;
 
+import util.Token.TipoToken;
+
 public class PalabraReservada {
 	
+	TipoToken codigo;
 	String lexema;
 
-	public PalabraReservada(String lexema) {
+	public PalabraReservada(TipoToken codigo, String lexema) {
+		this.codigo = codigo;
 		this.lexema = lexema;
 	}
 

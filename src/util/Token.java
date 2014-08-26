@@ -1,7 +1,10 @@
 package util;
 
 public class Token {
-	enum TipoToken {
+	public enum TipoToken {
+		PR_SI, PR_ENTONCES, PR_SINO, 
+		PR_IMPRIMIR, PR_ENTERO, PR_ENTERO_LSS,
+		PR_ITERAR, PR_HASTA, PR_VECTOR, PR_DE,
 		IDENTIFICADOR, ENTERO;
 	}
 	
