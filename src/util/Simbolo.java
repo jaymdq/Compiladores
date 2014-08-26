@@ -6,7 +6,7 @@ public class Simbolo {
 		DOS_PUNTOS, IGUAL, MAYOR, MENOR, MENOS, MAS, BARRA,
 		ASTERISCO, ACENTO_CIRCUNFLEJO, GUION_BAJO, AMPERSAND,
 		PUNTO_Y_COMA, COMA, PARENTESIS_ABIERTO, PARENTESIS_CERRADO,
-		CORCHETE_ABIERTO, CORCHETE_CERRADO, LLAVE_ABIERTA, LLAVE_CERRADA, INVALIDO;
+		CORCHETE_ABIERTO, CORCHETE_CERRADO, LLAVE_ABIERTA, LLAVE_CERRADA, COMILLA, INVALIDO;
 		
 		@Override
 		public String toString(){
@@ -56,6 +56,8 @@ public class Simbolo {
 				return "Llave abierta";
 			}else if (this.equals(TipoSimbolo.LLAVE_CERRADA)){
 				return "Llave cerrada";
+			}else if (this.equals(TipoSimbolo.COMILLA)){
+				return "Comilla";
 			}else
 				return "Invalido";
 		}
@@ -115,6 +117,8 @@ public class Simbolo {
 			tipo = TipoSimbolo.LLAVE_ABIERTA;			
 		}else if (c == '}'){
 			tipo = TipoSimbolo.LLAVE_CERRADA;			
+		}else if (c == '\''){
+			tipo = TipoSimbolo.COMILLA;			
 		}else {
 			tipo = TipoSimbolo.INVALIDO;
 		}
