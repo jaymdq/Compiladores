@@ -10,13 +10,37 @@ public class TablaDeSimbolosEntrada {
 
 	public TablaDeSimbolosEntrada(Token token) {
 		super();
-		this.tipo = token.getTipo();
-		this.lexema = token.getLexema();
+		this.setTipo(token.getTipo());
+		this.setLexema(token.getLexema());
 	}
 
 	public TablaDeSimbolosEntrada(TipoToken tipo, String lexema, boolean reservada) {
+		this.setTipo(tipo);
+		this.setLexema(lexema);
+		this.setReservada(reservada);
+	}
+
+	public TipoToken getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoToken tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getLexema() {
+		return lexema;
+	}
+
+	public void setLexema(String lexema) {
 		this.lexema = lexema;
+	}
+
+	public boolean isReservada() {
+		return reservada;
+	}
+
+	public void setReservada(boolean reservada) {
 		this.reservada = reservada;
 	}
 	

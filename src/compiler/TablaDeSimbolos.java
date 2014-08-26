@@ -2,6 +2,7 @@ package compiler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import util.TablaDeSimbolosEntrada;
 import util.Token.TipoToken;
@@ -39,6 +40,10 @@ public class TablaDeSimbolos {
 
 	private void agregarPalabraReservada(TipoToken tipo, String lexema) {
 		tabla.put(lexema, new TablaDeSimbolosEntrada(tipo, lexema, true));
+	}
+
+	public Vector<TablaDeSimbolosEntrada> getVector() {
+		return (Vector<TablaDeSimbolosEntrada>) tabla.values();
 	}
 	
 }

@@ -20,6 +20,7 @@ import com.alee.managers.language.LanguageManager;
 
 import compiler.ArchivoFuente;
 import compiler.Compilador;
+import compiler.TablaDeSimbolos;
 import filtro.FiltroCvr;
 
 import javax.swing.JMenuBar;
@@ -46,6 +47,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Vector;
 
 import javax.swing.JEditorPane;
 import javax.swing.border.BevelBorder;
@@ -58,6 +60,11 @@ import javax.swing.JSeparator;
 
 import java.awt.event.InputMethodListener;
 import java.awt.event.InputMethodEvent;
+
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+import util.TablaDeSimbolosEntrada;
 
 
 public class mainWindow {
@@ -79,6 +86,7 @@ public class mainWindow {
 	private JButton botonCargar;
 	private JButton botonGuardar;
 	private JButton botonGuardarComo;
+	private JTable tablaSimbolos;
 
 	/**
 	 * Launch the application.
@@ -458,15 +466,20 @@ public class mainWindow {
 
 		//Agregamos el tab del analizador léxico
 		tabbedPane.addTab("Analizador Léxico", scrollPaneLexico);
-
-		//Editor léxico
-		JEditorPane editorTabla = new JEditorPane();
-		editorTabla.setEditable(false);
-		editorTabla.setFont(new Font("Consolas", 0, 16));
-		JScrollPane scrollPaneTabla = new JScrollPane(editorTabla);
+		JScrollPane scrollPaneTabla = new JScrollPane();
 
 		//Agregamos el tab de la tabla de simbolos
 		tabbedPane.addTab("Tabla de Símbolos", scrollPaneTabla);
+		
+		tablaSimbolos = new JTable();
+		tablaSimbolos.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Tipo", "Lexema", "Palabra Reservada"
+			}
+		));
+		scrollPaneTabla.setViewportView(tablaSimbolos);
 
 		//Ejemplos
 		ConsolaManager.getInstance().escribir("Texto Normal");
@@ -632,5 +645,14 @@ public class mainWindow {
 				}
 			}
 		}
+	}
+	
+	private void actualizarTablaSimbolos() {
+		Vector<TablaDeSimbolosEntrada> t = compilador.getTablaDeSimbolos().getVector();
+		this.tablaSimbolos.removeAll();
+		for (TablaDeSimbolosEntrada e : t) {
+			
+		}
+		
 	}
 }
