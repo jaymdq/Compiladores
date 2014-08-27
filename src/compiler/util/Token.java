@@ -1,4 +1,4 @@
-package util;
+package compiler.util;
 
 public class Token {
 	public enum TipoToken {

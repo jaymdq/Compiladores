@@ -1,7 +1,9 @@
-package util;
+package compiler.lexico.as;
 
-import util.Token.TipoToken;
 import compiler.Compilador;
+import compiler.lexico.Simbolo;
+import compiler.util.Token;
+import compiler.util.Token.TipoToken;
 
 public class AS6 extends AccionSemantica {
 

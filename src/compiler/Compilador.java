@@ -1,6 +1,8 @@
 package compiler;
 
-import util.MatrizTransicion;
+import compiler.lexico.AnalizadorLexico;
+import compiler.lexico.ArchivoFuente;
+import compiler.lexico.MatrizTransicion;
 
 public class Compilador {
 	private ArchivoFuente fuente;

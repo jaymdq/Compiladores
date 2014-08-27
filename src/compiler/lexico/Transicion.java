@@ -1,6 +1,7 @@
-package util;
+package compiler.lexico;
 
-import util.MatrizTransicion.Estado;
+import compiler.lexico.MatrizTransicion.Estado;
+import compiler.lexico.as.AccionSemantica;
 
 public class Transicion {
 	private Estado nuevoEstado;

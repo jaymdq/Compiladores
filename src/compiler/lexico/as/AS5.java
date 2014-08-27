@@ -1,7 +1,10 @@
-package util;
+package compiler.lexico.as;
 
 import compiler.Compilador;
 import compiler.TablaDeSimbolos;
+import compiler.lexico.Simbolo;
+import compiler.util.TablaDeSimbolosEntrada;
+import compiler.util.Token;
 
 public class AS5 extends AccionSemantica {
 

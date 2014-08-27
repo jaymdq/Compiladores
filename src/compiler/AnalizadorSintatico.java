@@ -1,7 +1,7 @@
 package compiler;
 
-import userInterface.ConsolaManager;
-import util.Token;
+import gui.ConsolaManager;
+import compiler.util.Token;
 
 public class AnalizadorSintatico {
 	

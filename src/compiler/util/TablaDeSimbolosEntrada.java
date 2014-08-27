@@ -1,6 +1,6 @@
-package util;
+package compiler.util;
 
-import util.Token.TipoToken;
+import compiler.util.Token.TipoToken;
 
 public class TablaDeSimbolosEntrada {
 

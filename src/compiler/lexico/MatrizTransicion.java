@@ -1,11 +1,19 @@
-package util;
+package compiler.lexico;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import compiler.Compilador;
-import util.Simbolo.TipoSimbolo;
-import util.Token.TipoToken;
+import compiler.lexico.Simbolo.TipoSimbolo;
+import compiler.lexico.as.AS1;
+import compiler.lexico.as.AS2;
+import compiler.lexico.as.AS3;
+import compiler.lexico.as.AS4;
+import compiler.lexico.as.AS5;
+import compiler.lexico.as.AS6;
+import compiler.lexico.as.AS7;
+import compiler.lexico.as.ASDirecto;
+import compiler.util.Token.TipoToken;
 
 public class MatrizTransicion {
 

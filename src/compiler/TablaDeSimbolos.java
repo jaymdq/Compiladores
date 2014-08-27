@@ -1,14 +1,15 @@
 package compiler;
 
+import gui.ConsolaManager;
+
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Vector;
 
-import userInterface.ConsolaManager;
-import util.TablaDeSimbolosEntrada;
-import util.Token.TipoToken;
+import compiler.util.TablaDeSimbolosEntrada;
+import compiler.util.Token.TipoToken;
 
 public class TablaDeSimbolos extends Observable {
 

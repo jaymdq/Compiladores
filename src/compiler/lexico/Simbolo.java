@@ -1,4 +1,4 @@
-package util;
+package compiler.lexico;
 
 public class Simbolo {
 	public enum TipoSimbolo {

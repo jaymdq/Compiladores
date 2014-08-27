@@ -1,6 +1,7 @@
-package util;
+package compiler.lexico.as;
 
 import compiler.Compilador;
+import compiler.lexico.Simbolo;
 
 public abstract class AccionSemantica {
 
