@@ -9,4 +9,4 @@ si 56 <= valor entonces
 	imprimir(hola);
 sino
 	imprimir(chau);
-vector arreglo de enteros [67];
+vector arreglo de entero [67];
