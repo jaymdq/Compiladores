@@ -271,7 +271,6 @@ public class mainWindow {
 		Consola.setFont(new Font("Consolas", Font.PLAIN, 12));
 		frame.getContentPane().add(Consola, BorderLayout.SOUTH);
 
-
 		//Scroll de la Consola
 		scrollConsola = new JScrollPane(Consola);
 		scrollConsola.setViewportBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
