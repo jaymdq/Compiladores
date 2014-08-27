@@ -67,6 +67,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import util.TablaDeSimbolosEntrada;
+import util.Token;
 
 public class mainWindow {
 	private JFrame frame;
@@ -87,6 +88,7 @@ public class mainWindow {
 	private JButton botonGuardar;
 	private JButton botonGuardarComo;
 	private JTable tablaSimbolos;
+	private JEditorPane editorLexico;
 
 	/**
 	 * Launch the application.
@@ -422,7 +424,7 @@ public class mainWindow {
 		tln.setDigitAlignment(TextLineNumber.CENTER);
 		tln.setFont(new Font("Consolas", 0, 18));
 		//Esta linea descomentarla a la hora de ejecutar. Problemas en el design de eclipse..
-		scrollPaneEditor.setRowHeaderView( tln );
+		//scrollPaneEditor.setRowHeaderView( tln );
 
 		//Eventos del editor
 		editor.getDocument().addDocumentListener(new DocumentListener() {
@@ -459,7 +461,7 @@ public class mainWindow {
 		tabbedPane.addTab("Sin Título",scrollPaneEditor );
 
 		//Editor léxico
-		JEditorPane editorLexico = new JEditorPane();
+		editorLexico = new JEditorPane();
 		editorLexico.setEditable(false);
 		editorLexico.setFont(new Font("Consolas", 0, 16));
 		JScrollPane scrollPaneLexico = new JScrollPane(editorLexico);
@@ -496,8 +498,19 @@ public class mainWindow {
 			}
 		};
 		compilador.getTablaDeSimbolos().addObserver(o);
+		
+		Observer obsTokens = new Observer(){
+			@Override
+			public void update(Observable arg0, Object arg1) {
+				agregarToken(compilador.getAnalizadorLexico().getTokenActual());
+			}
+		};
+		compilador.getAnalizadorLexico().addObserver(obsTokens);
 	}
 
+	protected void agregarToken(Token tokenActual) {
+		editorLexico.setText(editorLexico.getText() + "[" + tokenActual + "]\n");
+	}
 
 	private void compilar() {
 		if (file != null){

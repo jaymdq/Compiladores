@@ -15,9 +15,7 @@ public class TablaDeSimbolos extends Observable {
 	private Map<String, TablaDeSimbolosEntrada> tabla;
 	
 	public TablaDeSimbolos(){
-		tabla = new HashMap<String, TablaDeSimbolosEntrada>();
-		
-		initPalabrasReservadas();
+		reset();
 	}
 
 	public boolean contieneLexema(String lexema) {
@@ -51,6 +49,13 @@ public class TablaDeSimbolos extends Observable {
 
 	public Vector<TablaDeSimbolosEntrada> getVector() {
 		return new Vector<TablaDeSimbolosEntrada>(tabla.values());
+	}
+
+	public void reset() {
+		tabla = new HashMap<String, TablaDeSimbolosEntrada>();
+		
+		initPalabrasReservadas();
+		
 	}
 	
 }

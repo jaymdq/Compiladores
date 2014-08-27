@@ -1,1 +1,12 @@
-si 56 <= valor entonces imprimir(hola)
+'Esto es una
+   	+ cadena multi -
+  + linea'
+** Esto es un comentario
+* asterisco
+entero valor;
+valor := 78;
+si 56 <= valor entonces 
+	imprimir(hola);
+sino
+	imprimir(chau);
+vector arreglo de enteros [67];

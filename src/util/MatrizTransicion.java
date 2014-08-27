@@ -92,7 +92,7 @@ public class MatrizTransicion {
 		setTransicion(Estado.INICIAL, TipoSimbolo.MAS, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.OP_MAS)));
 		setTransicion(Estado.INICIAL, TipoSimbolo.MENOS, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.OP_MENOS)));
 		setTransicion(Estado.INICIAL, TipoSimbolo.BARRA, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.OP_DIVIDIDO)));
-		setTransicion(Estado.INICIAL, TipoSimbolo.ASTERISCO, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.OP_POR)));
+		setTransicion(Estado.INICIAL, TipoSimbolo.IGUAL, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.COMP_IGUAL)));
 		setTransicion(Estado.INICIAL, TipoSimbolo.PARENTESIS_ABIERTO, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.PARENTESIS_ABIERTO)));
 		setTransicion(Estado.INICIAL, TipoSimbolo.PARENTESIS_CERRADO, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.PARENTESIS_CERRADO)));
 		setTransicion(Estado.INICIAL, TipoSimbolo.LLAVE_ABIERTA, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.LLAVE_ABIERTA)));
@@ -110,7 +110,7 @@ public class MatrizTransicion {
 		setTransicion(Estado.INICIAL, TipoSimbolo.MENOR, new Transicion(Estado.CINCO));
 		setTransicion(Estado.INICIAL, TipoSimbolo.ACENTO_CIRCUNFLEJO, new Transicion(Estado.SEIS));
 		setTransicion(Estado.INICIAL, TipoSimbolo.ASTERISCO, new Transicion(Estado.SIETE));
-		setTransicion(Estado.INICIAL, TipoSimbolo.COMILLA, new Transicion(Estado.NUEVE));
+		setTransicion(Estado.INICIAL, TipoSimbolo.COMILLA, new Transicion(Estado.NUEVE, new AS6(comp)));
 		
 		// Estado 1
 		setTransicion(Estado.UNO, TipoSimbolo.LETRA, new Transicion(Estado.UNO, new AS2(comp)));
@@ -143,17 +143,20 @@ public class MatrizTransicion {
 		
 		// Estado 8
 		setTransicion(Estado.OCHO, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.INICIAL));
+		setTransicion(Estado.OCHO, TipoSimbolo.RETORNO, new Transicion(Estado.INICIAL));
 		setDefaultTransicion(Estado.OCHO, new Transicion(Estado.OCHO));
 		
 		// Estado 9
 		setTransicion(Estado.NUEVE, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.DIEZ));
-		//setTransicion(Estado.NUEVE, TipoSimbolo.COMILLA, new Transicion(Estado.FINAL, new AS(comp)));
-		//setDefaultTransicion(Estado.NUEVE, new Transicion(Estado.NUEVE, new AS(comp)));
+		setTransicion(Estado.NUEVE, TipoSimbolo.RETORNO, new Transicion(Estado.DIEZ));
+		setTransicion(Estado.NUEVE, TipoSimbolo.COMILLA, new Transicion(Estado.FINAL, new AS7(comp)));
+		setDefaultTransicion(Estado.NUEVE, new Transicion(Estado.NUEVE, new AS2(comp)));
 		
 		// Estado 10
 		setTransicion(Estado.DIEZ, TipoSimbolo.BLANCO, new Transicion(Estado.DIEZ));
 		setTransicion(Estado.DIEZ, TipoSimbolo.TABULACION, new Transicion(Estado.DIEZ));
 		setTransicion(Estado.DIEZ, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.DIEZ));
+		setTransicion(Estado.DIEZ, TipoSimbolo.RETORNO, new Transicion(Estado.DIEZ));
 		setTransicion(Estado.DIEZ, TipoSimbolo.MAS, new Transicion(Estado.NUEVE));
 	}
 }

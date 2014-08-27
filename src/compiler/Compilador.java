@@ -20,6 +20,8 @@ public class Compilador {
 	
 	public void compilar(ArchivoFuente fuente){
 		this.fuente = fuente;
+		
+		tabla.reset();
 		sintactico.ejecutar();
 	}
 

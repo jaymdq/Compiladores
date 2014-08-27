@@ -1,11 +1,13 @@
 package compiler;
 
+import java.util.Observable;
+
 import util.MatrizTransicion;
 import util.Simbolo;
 import util.Token;
 import util.MatrizTransicion.Estado;
 
-public class AnalizadorLexico {
+public class AnalizadorLexico extends Observable{
 
 	private Compilador comp;
 	private Token tokenActual;
@@ -20,11 +22,19 @@ public class AnalizadorLexico {
 		MatrizTransicion matriz = comp.getMatrizTransicion();
 		
 		matriz.volverAInicio();
-		while (!matriz.getEstado().equals(Estado.FINAL)){
-			Simbolo s = new Simbolo(fuente.getChar());
+		do {
+			char c = fuente.getChar();
+			if (c == 0){
+				return null;
+			}
+			Simbolo s = new Simbolo(c);
 			matriz.doTransicion(s);
-		}
-		return null;
+		}while (!matriz.getEstado().equals(Estado.FINAL));
+		
+		setChanged();
+		notifyObservers();
+		
+		return tokenActual;
 	}
 	
 	// Para uso privado de las acciones semanticas

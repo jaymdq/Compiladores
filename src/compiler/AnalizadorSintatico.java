@@ -1,6 +1,7 @@
 package compiler;
 
 import userInterface.ConsolaManager;
+import util.Token;
 
 public class AnalizadorSintatico {
 	
@@ -11,11 +12,12 @@ public class AnalizadorSintatico {
 	}
 
 	public void ejecutar() {
-		for(int i = 0; i < 5; i++){
+		Token token;
+		do {
 			ConsolaManager.getInstance().escribirInfo("[Sintactico] Obtener Token");
 			System.out.println("[Sintactico] Obtener Token");
-			comp.getAnalizadorLexico().getToken();
-		}
+			token = comp.getAnalizadorLexico().getToken();
+		} while (token != null);
 	}
 
 }

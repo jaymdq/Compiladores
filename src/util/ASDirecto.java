@@ -21,6 +21,8 @@ public class ASDirecto extends AccionSemantica {
 	@Override
 	public void ejecutar(Simbolo s) {
 		System.out.println("ASDirecto: Publicar token " + tipoToken);
+		comp.getAnalizadorLexico().setTokenActual(new Token(tipoToken));
+		
 		if(unget){
 			System.out.println("ASDirecto: Unget caracter");
 			comp.getArchivoFuente().ungetChar();
