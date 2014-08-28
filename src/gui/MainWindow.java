@@ -19,7 +19,6 @@ import com.alee.managers.language.LanguageConstants;
 import com.alee.managers.language.LanguageManager;
 
 import compiler.Compilador;
-import compiler.TablaDeSimbolos;
 import compiler.lexico.ArchivoFuente;
 import compiler.util.TablaDeSimbolosEntrada;
 import compiler.util.Token;
@@ -35,7 +34,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -61,9 +59,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.JTabbedPane;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
-
-import java.awt.event.InputMethodListener;
-import java.awt.event.InputMethodEvent;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -93,14 +88,7 @@ public class MainWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		/*ArchivoFuente arch = new ArchivoFuente(file);
-		arch.reset();
-
-		AnalizadorLexico lexico = new AnalizadorLexico(arch);
-		lexico.getToken();*/
-
-		//comp.compilar(new ArchivoFuente(file));
-
+	
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
