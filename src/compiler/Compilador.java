@@ -1,5 +1,6 @@
 package compiler;
 
+import gui.ConsolaManager;
 import compiler.lexico.AnalizadorLexico;
 import compiler.lexico.ArchivoFuente;
 import compiler.lexico.MatrizTransicion;
@@ -21,6 +22,7 @@ public class Compilador {
 	}
 	
 	public void compilar(ArchivoFuente fuente){
+		ConsolaManager.getInstance().escribirInfo("[Compilador] Iniciar compilacion de " + fuente);
 		this.fuente = fuente;
 		
 		tabla.reset();

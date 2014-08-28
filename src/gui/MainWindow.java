@@ -423,7 +423,7 @@ public class MainWindow {
 		tln.setDigitAlignment(TextLineNumber.CENTER);
 		tln.setFont(new Font("Consolas", 0, 18));
 		//Esta linea descomentarla a la hora de ejecutar. Problemas en el design de eclipse..
-		//scrollPaneEditor.setRowHeaderView( tln );
+		scrollPaneEditor.setRowHeaderView( tln );
 
 		//Eventos del editor
 		editor.getDocument().addDocumentListener(new DocumentListener() {
@@ -513,6 +513,7 @@ public class MainWindow {
 
 	private void compilar() {
 		if (file != null){
+			editorLexico.setText("");
 			compilador.compilar(new ArchivoFuente(file));
 		}
 	}
@@ -521,55 +522,34 @@ public class MainWindow {
 		if (file != null){
 			String path = file.getAbsolutePath();
 			FileWriter out;
-			if (!path.endsWith(".cvr")){
-				path += ".cvr";
-			}
 			try {
 				out = new FileWriter(path);
 				out.write(editor.getText());
 				out.close();
 				tabbedPane.setSelectedIndex(0);
-				if (file.getAbsolutePath().endsWith(".cvr")){
-					frame.setTitle(titulo + file.getAbsolutePath());
-					tabbedPane.setTitleAt(0, file.getName());
-				}else{
-					frame.setTitle(titulo + file.getAbsolutePath()+".cvr");
-					tabbedPane.setTitleAt(0, file.getName()+".cvr");
-				}
-			} catch (IOException e) {}
-		}else
-			guardarComo();		
+				frame.setTitle(titulo + file.getAbsolutePath());
+				tabbedPane.setTitleAt(0, file.getName());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
+			guardarComo();	
+		}
 	}
 
 	private void guardarComo() {
 		WebFileChooser guardador = new WebFileChooser();
 		guardador.setFileFilter(new FiltroCvr());
-		guardador.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);  
+		guardador.setFileSelectionMode(JFileChooser.FILES_ONLY);  
 		guardador.setMultiSelectionEnabled ( false );
 		guardador.setDialogTitle("Guardar archivo CVR");
 		guardador.setApproveButtonText("Guardar");
+		
 		if ( guardador.showSaveDialog ( frame ) == WebFileChooser.APPROVE_OPTION ){
-			File fileToSave = guardador.getSelectedFile();
-			String path = fileToSave.getAbsolutePath();
-			if (!path.endsWith(".cvr")){
-				path += ".cvr";
-			}
-			FileWriter out;
-			try {
-				out = new FileWriter(path);
-				out.write(editor.getText());
-				out.close();
-				file = fileToSave;
-				tabbedPane.setSelectedIndex(0);
-				if (file.getName().endsWith("*.cvr")){
-					tabbedPane.setTitleAt(0, file.getName());
-					frame.setTitle(titulo + file.getAbsolutePath());
-				}
-				else{
-					tabbedPane.setTitleAt(0, file.getName()+".cvr");
-					frame.setTitle(titulo + file.getAbsolutePath()+".cvr");
-				}
-			} catch (IOException e) {}
+			file = guardador.getSelectedFile();
+			if (!file.getName().endsWith("cvr"))
+				file = new File(file.getAbsolutePath() + ".cvr");
+			guardar();
 		}
 	}
 

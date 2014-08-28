@@ -109,6 +109,7 @@ public class MatrizTransicion {
 		setTransicion(Estado.INICIAL, TipoSimbolo.PUNTO_Y_COMA, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.PUNTO_Y_COMA)));
 		setTransicion(Estado.INICIAL, TipoSimbolo.CORCHETE_ABIERTO, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.CORCHETE_ABIERTO)));
 		setTransicion(Estado.INICIAL, TipoSimbolo.CORCHETE_CERRADO, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.CORCHETE_CERRADO)));
+		setTransicion(Estado.INICIAL, TipoSimbolo.FIN_ARCHIVO, new Transicion(Estado.FINAL, new ASDirecto(comp, TipoToken.FIN_ARCHIVO)));
 		
 		// Indirectos
 		setTransicion(Estado.INICIAL, TipoSimbolo.LETRA, new Transicion(Estado.UNO, new AS1(comp)));

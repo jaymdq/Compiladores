@@ -20,15 +20,14 @@ public class AnalizadorLexico extends Observable{
 		ArchivoFuente fuente = comp.getArchivoFuente();
 		MatrizTransicion matriz = comp.getMatrizTransicion();
 		
+		tokenActual = null;
 		matriz.volverAInicio();
+		char c;
 		do {
-			char c = fuente.getChar();
-			if (c == 0){
-				return null;
-			}
+			c = fuente.getChar();
 			Simbolo s = new Simbolo(c);
 			matriz.doTransicion(s);
-		}while (!matriz.getEstado().equals(Estado.FINAL));
+		}while (!matriz.getEstado().equals(Estado.FINAL) && c != 0);
 		
 		setChanged();
 		notifyObservers();

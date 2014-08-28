@@ -2,7 +2,7 @@ package compiler.lexico;
 
 public class Simbolo {
 	public enum TipoSimbolo {
-		LETRA, DIGITO, BLANCO, TABULACION, NUEVA_LINEA, RETORNO,
+		LETRA, DIGITO, BLANCO, TABULACION, NUEVA_LINEA, RETORNO, FIN_ARCHIVO,
 		DOS_PUNTOS, IGUAL, MAYOR, MENOR, MENOS, MAS, BARRA,
 		ASTERISCO, ACENTO_CIRCUNFLEJO, GUION_BAJO, AMPERSAND,
 		PUNTO_Y_COMA, COMA, PARENTESIS_ABIERTO, PARENTESIS_CERRADO,
@@ -73,7 +73,9 @@ public class Simbolo {
 	public Simbolo(char c){
 		this.c = c;
 		
-		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')){
+		if (c == 0){
+			tipo = TipoSimbolo.FIN_ARCHIVO;
+		}else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')){
 			tipo = TipoSimbolo.LETRA;
 		}else if (c >= '0' && c <= '9'){
 			tipo = TipoSimbolo.DIGITO;

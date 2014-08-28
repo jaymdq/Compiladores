@@ -22,18 +22,25 @@ public class ArchivoFuente {
 			byte[] lectura = Files.readAllBytes(Paths.get(file.getPath()));
 			String texto = new String(lectura,Charset.defaultCharset());
 			source = texto.toCharArray();
-		} catch (IOException e) {}
+		} catch (IOException e) { e.printStackTrace();}
 		pointer = 0;
 	}
 	
 	public char getChar(){
-		if (pointer >= source.length)
+		if (pointer >= source.length){
+			pointer++;
 			return 0;
+		}
 		return source[pointer++];
 	}
 	
 	public void ungetChar(){
 		if (pointer > 0)
 			pointer--;
+	}
+	
+	@Override
+	public String toString() {
+		return file.getName();
 	}
 }

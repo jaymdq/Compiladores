@@ -2,6 +2,7 @@ package compiler;
 
 import gui.ConsolaManager;
 import compiler.util.Token;
+import compiler.util.Token.TipoToken;
 
 public class AnalizadorSintatico {
 	
@@ -17,7 +18,7 @@ public class AnalizadorSintatico {
 			ConsolaManager.getInstance().escribirInfo("[Sintactico] Obtener Token");
 			System.out.println("[Sintactico] Obtener Token");
 			token = comp.getAnalizadorLexico().getToken();
-		} while (token != null);
+		} while (!token.getTipo().equals(TipoToken.FIN_ARCHIVO));
 	}
 
 }
