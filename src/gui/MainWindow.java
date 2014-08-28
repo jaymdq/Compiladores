@@ -301,7 +301,6 @@ public class MainWindow {
 			}
 		});
 
-
 		//Label que dice CONSOLA
 		JLabel Cons = new JLabel("Consola   ");
 		Cons.setIcon(new ImageIcon(MainWindow.class.getResource("/images/monitor_obj.gif")));
@@ -400,6 +399,7 @@ public class MainWindow {
 		gbc_Max.gridy = 0;
 		PanelConsola.add(Max, gbc_Max);
 
+		//tabbedPane = tabs
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
@@ -437,10 +437,7 @@ public class MainWindow {
 						tabbedPane.setTitleAt(0,file.getName() + ".cvr*");
 				else
 					tabbedPane.setTitleAt(0,"Sin Título" + "*");
-				botonGuardar.setEnabled(true);
-				mntmGuardar.setEnabled(true);
-				botonGuardarComo.setEnabled(true);
-				mntmGuardarComo.setEnabled(true);
+				setBotonesGuardar(true);
 			}
 		});
 
@@ -465,7 +462,7 @@ public class MainWindow {
 				new Object[][] {
 				},
 				new String[] {
-						"Tipo", "Lexema", "Palabra Reservada"
+						"Categoria", "Lexema", "Palabra Reservada"
 				}
 				));
 
