@@ -471,16 +471,16 @@ public class MainWindow {
 
 		//Agregamos el tab de la tabla de simbolos
 		tabbedPane.addTab("Tabla de Símbolos", scrollPaneTabla);
-		
+
 		tablaSimbolos = new JTable();
 		tablaSimbolos.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Tipo", "Lexema", "Palabra Reservada"
-			}
-		));
-	
+				new Object[][] {
+				},
+				new String[] {
+						"Tipo", "Lexema", "Palabra Reservada"
+				}
+				));
+
 		scrollPaneTabla.setViewportView(tablaSimbolos);
 
 		//Ejemplos
@@ -490,14 +490,14 @@ public class MainWindow {
 		ConsolaManager.getInstance().escribirError("Error");
 
 		compilador = new Compilador();
-		
+
 		Observer o = new Observer() {
 			public void update(Observable o, Object arg) {
 				actualizarTablaSimbolos();
 			}
 		};
 		compilador.getTablaDeSimbolos().addObserver(o);
-		
+
 		Observer obsTokens = new Observer(){
 			@Override
 			public void update(Observable arg0, Object arg1) {
@@ -529,6 +529,7 @@ public class MainWindow {
 				tabbedPane.setSelectedIndex(0);
 				frame.setTitle(titulo + file.getAbsolutePath());
 				tabbedPane.setTitleAt(0, file.getName());
+				setBotonesGuardar(false);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -544,7 +545,7 @@ public class MainWindow {
 		guardador.setMultiSelectionEnabled ( false );
 		guardador.setDialogTitle("Guardar archivo CVR");
 		guardador.setApproveButtonText("Guardar");
-		
+
 		if ( guardador.showSaveDialog ( frame ) == WebFileChooser.APPROVE_OPTION ){
 			file = guardador.getSelectedFile();
 			if (!file.getName().endsWith("cvr"))
@@ -559,24 +560,15 @@ public class MainWindow {
 			if( WebOptionPane.showConfirmDialog ( null, "El archivo presenta cambios ¿Desea guardar y continuar? [No = descartar]", "Confirmar", WebOptionPane.YES_NO_OPTION,
 					WebOptionPane.QUESTION_MESSAGE ) == WebOptionPane.YES_OPTION){
 				//Guardar
-				if (file == null){
-					guardarComo();
-				}else{
-					guardar();
-				}
-			}else{
-				editor.setText("");
-				file = null;
-				frame.setTitle(titulo);
-				tabbedPane.setTitleAt(0, "Sin Título");
-			}	
-		}else{
-			editor.setText("");
-			file = null;
-			frame.setTitle(titulo);
-			tabbedPane.setTitleAt(0, "Sin Título");
+				guardar();
+			}
 		}
-
+		//Descartamos los cambios
+		editor.setText("");
+		file = null;
+		frame.setTitle(titulo);
+		tabbedPane.setTitleAt(0, "Sin Título");
+		setBotonesGuardar(false);
 	}
 
 	private void cargarArchivo() {
@@ -585,87 +577,81 @@ public class MainWindow {
 			if( WebOptionPane.showConfirmDialog ( null, "El archivo presenta cambios ¿Desea guardar?", "Confirmar", WebOptionPane.YES_NO_OPTION,
 					WebOptionPane.QUESTION_MESSAGE ) == WebOptionPane.YES_OPTION){
 				//Guardar
-				if (file == null){
-					guardarComo();
-				}else{
-					guardar();
-				}
-				cargarArchivo();
-			}
-
-		}else{
-			WebFileChooser fileChooser = new WebFileChooser("sample");
-			fileChooser.setFileFilter(new FiltroCvr());
-			fileChooser.setMultiSelectionEnabled ( false );
-			fileChooser.setDialogTitle("Abrir archivo CVR");
-			fileChooser.setApproveButtonText("Abrir");
-			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			if ( fileChooser.showOpenDialog ( frame ) == WebFileChooser.APPROVE_OPTION )
-			{
-				File aux = fileChooser.getSelectedFile();
-				if (aux.isFile()){
-					file = aux;
-					try {
-						editor.setPage(file.toURI().toURL());
-						frame.setTitle(titulo + file.getAbsolutePath());
-						tabbedPane.setSelectedIndex(0);
-						tabbedPane.setTitleAt(0, file.getName());
-						botonGuardar.setEnabled(true);
-						botonGuardarComo.setEnabled(true);
-						mntmGuardar.setEnabled(true);
-						mntmGuardarComo.setEnabled(true);
-						//Eventos del editor
-						editor.getDocument().addDocumentListener(new DocumentListener() {
-
-							@Override
-							public void removeUpdate(DocumentEvent e) {
-								operacion();
-							}
-
-							@Override
-							public void insertUpdate(DocumentEvent e) {
-								operacion();
-							}
-
-							@Override
-							public void changedUpdate(DocumentEvent arg0) {	   
-							}
-
-							public void operacion(){
-								if (file != null)
-									if (file.getName().endsWith(".cvr"))
-										tabbedPane.setTitleAt(0,file.getName() + "*");
-									else
-										tabbedPane.setTitleAt(0,file.getName()+ ".cvr*");
-								else
-									tabbedPane.setTitleAt(0,"Sin Título" + "*");
-							}
-						});
-					} catch (IOException e) {}
-				}
+				guardar();
 			}
 		}
+		//Pasamos a cargar el archivo
+		WebFileChooser fileChooser = new WebFileChooser("sample");
+		fileChooser.setFileFilter(new FiltroCvr());
+		fileChooser.setMultiSelectionEnabled ( false );
+		fileChooser.setDialogTitle("Abrir archivo CVR");
+		fileChooser.setApproveButtonText("Abrir");
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		if ( fileChooser.showOpenDialog ( frame ) == WebFileChooser.APPROVE_OPTION )
+		{
+			file = fileChooser.getSelectedFile();
+			try {
+				editor.setPage(file.toURI().toURL());
+				frame.setTitle(titulo + file.getAbsolutePath());
+				tabbedPane.setSelectedIndex(0);
+				tabbedPane.setTitleAt(0, file.getName());
+				setBotonesGuardar(false);
+				//Eventos del editor
+				editor.getDocument().addDocumentListener(new DocumentListener() {
+					@Override
+					public void removeUpdate(DocumentEvent e) {
+						operacion();
+					}
+					@Override
+					public void insertUpdate(DocumentEvent e) {
+						operacion();
+					}
+					@Override
+					public void changedUpdate(DocumentEvent arg0) {	   
+					}
+
+					public void operacion(){
+						if (file != null)
+							if (file.getName().endsWith(".cvr"))
+								tabbedPane.setTitleAt(0,file.getName() + "*");
+							else
+								tabbedPane.setTitleAt(0,file.getName()+ ".cvr*");
+						else
+							tabbedPane.setTitleAt(0,"Sin Título" + "*");
+						//Actualizamos los botones de guardar
+						setBotonesGuardar(true);
+					}
+				});
+			} catch (IOException e) {}
+		}
 	}
-	
+
 	private void actualizarTablaSimbolos() {
 		Vector<TablaDeSimbolosEntrada> t = compilador.getTablaDeSimbolos().getVector();
 		DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
 		int a =modelo.getRowCount()-1;  //�?ndices van de 0 a n-1
-	        //System.out.println("Tabla "+a);   //Para mostrar por consola el resultado
-	    for(int i=a;i>=0;i--){  
-            //System.out.println("i "+i);    //Para mostrar por consola el resultado
-	    	modelo.removeRow(i);
-        }
+		//System.out.println("Tabla "+a);   //Para mostrar por consola el resultado
+		for(int i=a;i>=0;i--){  
+			//System.out.println("i "+i);    //Para mostrar por consola el resultado
+			modelo.removeRow(i);
+		}
 		//tablaSimbolos.re
 		ConsolaManager.getInstance().escribirWarning("Insertando " + t.size() + " elementos.");
-		
+
 		int i = 0;
 		for (TablaDeSimbolosEntrada e : t){
 			modelo.addRow(new Object[] {e.getTipo(),e.getLexema(),e.isReservada()});
 			i++;
 		}
 		ConsolaManager.getInstance().escribirWarning("Insertados " + i + " elementos.");
-		
+
 	}
-	
+
+
+	private void setBotonesGuardar(boolean condicion){
+		botonGuardar.setEnabled(condicion);
+		botonGuardarComo.setEnabled(condicion);
+		mntmGuardar.setEnabled(condicion);
+		mntmGuardarComo.setEnabled(condicion);
+	}
 }
