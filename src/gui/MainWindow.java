@@ -88,7 +88,7 @@ public class MainWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-	
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -468,12 +468,7 @@ public class MainWindow {
 
 		scrollPaneTabla.setViewportView(tablaSimbolos);
 
-		//Ejemplos
-		ConsolaManager.getInstance().escribir("Texto Normal");
-		ConsolaManager.getInstance().escribirInfo("Información");
-		ConsolaManager.getInstance().escribirWarning("Warning");
-		ConsolaManager.getInstance().escribirError("Error");
-
+		//COMPILADOR
 		compilador = new Compilador();
 
 		Observer o = new Observer() {
@@ -497,8 +492,12 @@ public class MainWindow {
 	}
 
 	private void compilar() {
+		if (file == null)
+			guardarComo();
+
 		if (file != null){
 			editorLexico.setText("");
+			borrarTablaSimbolos();
 			compilador.compilar(new ArchivoFuente(file));
 		}
 	}
@@ -614,13 +613,8 @@ public class MainWindow {
 	private void actualizarTablaSimbolos() {
 		Vector<TablaDeSimbolosEntrada> t = compilador.getTablaDeSimbolos().getVector();
 		DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
-		int a =modelo.getRowCount()-1;  //�?ndices van de 0 a n-1
-		//System.out.println("Tabla "+a);   //Para mostrar por consola el resultado
-		for(int i=a;i>=0;i--){  
-			//System.out.println("i "+i);    //Para mostrar por consola el resultado
-			modelo.removeRow(i);
-		}
-		//tablaSimbolos.re
+		borrarTablaSimbolos();
+
 		ConsolaManager.getInstance().escribirWarning("Insertando " + t.size() + " elementos.");
 
 		int i = 0;
@@ -638,5 +632,13 @@ public class MainWindow {
 		botonGuardarComo.setEnabled(condicion);
 		mntmGuardar.setEnabled(condicion);
 		mntmGuardarComo.setEnabled(condicion);
+	}
+
+	private void borrarTablaSimbolos(){
+		DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
+		int a = modelo.getRowCount()-1;  //�?ndices van de 0 a n-1
+		for(int i=a;i>=0;i--){  
+			modelo.removeRow(i);
+		}
 	}
 }
