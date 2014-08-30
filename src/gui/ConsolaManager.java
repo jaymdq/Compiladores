@@ -14,21 +14,13 @@ public class ConsolaManager {
 	private static JTextPane Consola;
 	private static JScrollPane scr;
 	private static ConsolaManager instancia ;
-	
-	private ConsolaManager (){
-		Consola.setContentType("text/html");
-	}
-	
+	private SimpleAttributeSet attrs;
+		
 	private  ConsolaManager( JTextPane consola2,JScrollPane scr ){
 		ConsolaManager.setConsola(consola2);
 		ConsolaManager.setScr(scr);		
-	}
-	
-	public static ConsolaManager getInstance(){
-		if ( instancia == null ){
-			instancia = new ConsolaManager();
-		}
-		return instancia;
+		attrs = new SimpleAttributeSet();
+		StyleConstants.setFontSize(attrs, 17);
 	}
 	
 	public static ConsolaManager getInstance(JTextPane consola2,JScrollPane scr){
@@ -40,8 +32,6 @@ public class ConsolaManager {
 	
 	public  void escribir (String s){
 		// Con esto se escribe en la consola.
-		SimpleAttributeSet attrs = new SimpleAttributeSet();
-		StyleConstants.setFontSize(attrs, 17);
 		Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		try {
 			  if ( getConsola() != null )
@@ -50,8 +40,6 @@ public class ConsolaManager {
 	}
 	
 	public void escribirWarning(String s){
-		SimpleAttributeSet attrs = new SimpleAttributeSet();
-		StyleConstants.setFontSize(attrs, 17);
 		Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		Consola.insertIcon(new ImageIcon(MainWindow.class.getResource("/images/warning.gif")));
 		try {
@@ -60,8 +48,6 @@ public class ConsolaManager {
 	}
 
 	public void escribirError(String s){
-		SimpleAttributeSet attrs = new SimpleAttributeSet();
-		StyleConstants.setFontSize(attrs, 17);
 		Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		Consola.insertIcon(new ImageIcon(MainWindow.class.getResource("/images/error.gif")));
 		try {
@@ -70,9 +56,7 @@ public class ConsolaManager {
 	}
 	
 	public void escribirInfo(String s){
-		SimpleAttributeSet attrs = new SimpleAttributeSet();
-		StyleConstants.setFontSize(attrs, 17);
-		Consola.setCaretPosition(Consola.getStyledDocument().getLength());
+	Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		Consola.insertIcon(new ImageIcon(MainWindow.class.getResource("/images/information.gif")));
 		try {
 			Consola.getStyledDocument().insertString(Consola.getStyledDocument().getLength(), s+"\n", attrs);
