@@ -18,10 +18,6 @@ import com.alee.laf.optionpane.WebOptionPane;
 import com.alee.managers.language.LanguageConstants;
 import com.alee.managers.language.LanguageManager;
 
-import compiler.Compilador;
-import compiler.lexico.ArchivoFuente;
-import compiler.util.TablaDeSimbolosEntrada;
-import compiler.util.Token;
 import filtro.FiltroCvr;
 
 import javax.swing.JMenuBar;
@@ -49,7 +45,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Vector;
 
 import javax.swing.JEditorPane;
 import javax.swing.border.BevelBorder;
@@ -59,20 +54,20 @@ import javax.swing.event.DocumentListener;
 import javax.swing.JTabbedPane;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
-
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import proyecto.Proyecto;
+import proyecto.Token;
 
 public class MainWindow {
 	private JFrame frame;
 	private JScrollPane scrollConsola;
 	private JTextPane Consola;
-	private static File file = null;
 	private JEditorPane editor;
 	private String titulo = " CVR - ";
 	private JTabbedPane tabbedPane;
 
-	private Compilador compilador;
 	private JMenuItem mntmNuevo;
 	private JMenuItem mntmAbrir;
 	private JMenuItem mntmGuardar;
@@ -83,7 +78,9 @@ public class MainWindow {
 	private JButton botonGuardarComo;
 	private JTable tablaSimbolos;
 	private JEditorPane editorLexico;
-
+	
+	private static Proyecto proyecto;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -92,11 +89,12 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-
 					//Look and feel
 					LanguageManager.setDefaultLanguage(LanguageConstants.SPANISH);
 					WebLookAndFeel.install();
-
+					
+					proyecto = new Proyecto();
+					
 					MainWindow window = new MainWindow();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -430,11 +428,11 @@ public class MainWindow {
 			public void changedUpdate(DocumentEvent arg0) {	   
 			}
 			private void operacion(){
-				if (file != null)
-					if (file.getName().endsWith(".cvr"))
-						tabbedPane.setTitleAt(0,file.getName() + "*");
+				if (proyecto.getFile() != null)
+					if (proyecto.getFile().getName().endsWith(".cvr"))
+						tabbedPane.setTitleAt(0,proyecto.getFile().getName() + "*");
 					else
-						tabbedPane.setTitleAt(0,file.getName() + ".cvr*");
+						tabbedPane.setTitleAt(0,proyecto.getFile().getName() + ".cvr*");
 				else
 					tabbedPane.setTitleAt(0,"Sin Título" + "*");
 				setBotonesGuardar(true);
@@ -468,51 +466,57 @@ public class MainWindow {
 
 		scrollPaneTabla.setViewportView(tablaSimbolos);
 
-		//COMPILADOR
-		compilador = new Compilador();
-
+		// Tabla de simbolos
 		Observer o = new Observer() {
 			public void update(Observable o, Object arg) {
-				actualizarTablaSimbolos();
+				if (arg == null)
+					borrarTablaSimbolos();
+				else {
+					Token t = (Token) arg;
+					DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
+					modelo.addRow(new Object[] {t.getTipo(),t.getLexema(),t.isReservado()});
+				}
 			}
 		};
-		compilador.getTablaDeSimbolos().addObserver(o);
+		proyecto.getTablaDeSimbolos().addObserver(o);
 
 		Observer obsTokens = new Observer(){
 			@Override
 			public void update(Observable arg0, Object arg1) {
-				agregarToken(compilador.getAnalizadorLexico().getTokenActual());
+				if (arg1 == null)
+					editorLexico.setText("");
+				else
+					agregarToken( (int) arg1);
 			}
 		};
-		compilador.getAnalizadorLexico().addObserver(obsTokens);
+		proyecto.addObserver(obsTokens);
 	}
-
-	protected void agregarToken(Token tokenActual) {
-		editorLexico.setText(editorLexico.getText() + "[" + tokenActual + "]\n");
+	
+	protected void agregarToken(int pos) {
+		editorLexico.setText(editorLexico.getText() + "[" + proyecto.getTablaDeSimbolos().getToken(pos) + "]\n");
 	}
 
 	private void compilar() {
-		if (file == null)
+		if (proyecto.getFile() == null)
 			guardarComo();
-
-		if (file != null){
+		
+		if (proyecto.getFile() != null){
 			editorLexico.setText("");
-			borrarTablaSimbolos();
-			compilador.compilar(new ArchivoFuente(file));
+			proyecto.compilar();
 		}
 	}
 
 	private void guardar(){
-		if (file != null){
-			String path = file.getAbsolutePath();
+		if (proyecto.getFile() != null){
+			String path = proyecto.getFile().getAbsolutePath();
 			FileWriter out;
 			try {
 				out = new FileWriter(path);
 				out.write(editor.getText());
 				out.close();
 				tabbedPane.setSelectedIndex(0);
-				frame.setTitle(titulo + file.getAbsolutePath());
-				tabbedPane.setTitleAt(0, file.getName());
+				frame.setTitle(titulo + proyecto.getFile().getAbsolutePath());
+				tabbedPane.setTitleAt(0, proyecto.getFile().getName());
 				setBotonesGuardar(false);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -531,9 +535,9 @@ public class MainWindow {
 		guardador.setApproveButtonText("Guardar");
 
 		if ( guardador.showSaveDialog ( frame ) == WebFileChooser.APPROVE_OPTION ){
-			file = guardador.getSelectedFile();
-			if (!file.getName().endsWith("cvr"))
-				file = new File(file.getAbsolutePath() + ".cvr");
+			proyecto.setFile(guardador.getSelectedFile());
+			if (!proyecto.getFile().getName().endsWith("cvr"))
+				proyecto.setFile(new File(proyecto.getFile().getAbsolutePath() + ".cvr"));
 			guardar();
 		}
 	}
@@ -549,7 +553,7 @@ public class MainWindow {
 		}
 		//Descartamos los cambios
 		editor.setText("");
-		file = null;
+		proyecto.setFile(null);
 		frame.setTitle(titulo);
 		tabbedPane.setTitleAt(0, "Sin Título");
 		setBotonesGuardar(false);
@@ -573,12 +577,12 @@ public class MainWindow {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		if ( fileChooser.showOpenDialog ( frame ) == WebFileChooser.APPROVE_OPTION )
 		{
-			file = fileChooser.getSelectedFile();
+			proyecto.setFile(fileChooser.getSelectedFile());
 			try {
-				editor.setPage(file.toURI().toURL());
-				frame.setTitle(titulo + file.getAbsolutePath());
+				editor.setPage(proyecto.getFile().toURI().toURL());
+				frame.setTitle(titulo + proyecto.getFile().getAbsolutePath());
 				tabbedPane.setSelectedIndex(0);
-				tabbedPane.setTitleAt(0, file.getName());
+				tabbedPane.setTitleAt(0, proyecto.getFile().getName());
 				setBotonesGuardar(false);
 				//Eventos del editor
 				editor.getDocument().addDocumentListener(new DocumentListener() {
@@ -595,11 +599,11 @@ public class MainWindow {
 					}
 
 					public void operacion(){
-						if (file != null)
-							if (file.getName().endsWith(".cvr"))
-								tabbedPane.setTitleAt(0,file.getName() + "*");
+						if (proyecto.getFile() != null)
+							if (proyecto.getFile().getName().endsWith(".cvr"))
+								tabbedPane.setTitleAt(0,proyecto.getFile().getName() + "*");
 							else
-								tabbedPane.setTitleAt(0,file.getName()+ ".cvr*");
+								tabbedPane.setTitleAt(0,proyecto.getFile().getName()+ ".cvr*");
 						else
 							tabbedPane.setTitleAt(0,"Sin Título" + "*");
 						//Actualizamos los botones de guardar
@@ -610,23 +614,6 @@ public class MainWindow {
 		}
 	}
 
-	private void actualizarTablaSimbolos() {
-		Vector<TablaDeSimbolosEntrada> t = compilador.getTablaDeSimbolos().getVector();
-		DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
-		borrarTablaSimbolos();
-
-		ConsolaManager.getInstance().escribirWarning("Insertando " + t.size() + " elementos.");
-
-		int i = 0;
-		for (TablaDeSimbolosEntrada e : t){
-			modelo.addRow(new Object[] {e.getTipo(),e.getLexema(),e.isReservada()});
-			i++;
-		}
-		ConsolaManager.getInstance().escribirWarning("Insertados " + i + " elementos.");
-
-	}
-
-
 	private void setBotonesGuardar(boolean condicion){
 		botonGuardar.setEnabled(condicion);
 		botonGuardarComo.setEnabled(condicion);
@@ -636,7 +623,7 @@ public class MainWindow {
 
 	private void borrarTablaSimbolos(){
 		DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
-		int a = modelo.getRowCount()-1;  //�?ndices van de 0 a n-1
+		int a = modelo.getRowCount()-1;
 		for(int i=a;i>=0;i--){  
 			modelo.removeRow(i);
 		}

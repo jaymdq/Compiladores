@@ -1,4 +1,4 @@
-empiezo 'Esto es una
+'Esto es una
    	+ cadena multi -
   + linea'
 ** Esto es un comentario
@@ -10,4 +10,3 @@ si 56 <= valor entonces
 sino
 	imprimir(chau);
 vector arreglo de entero [67];
-sigo y termine;
