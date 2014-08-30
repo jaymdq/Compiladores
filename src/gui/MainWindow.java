@@ -73,8 +73,12 @@ public class MainWindow {
 	private JTabbedPane tabbedPane;
 
 	private Compilador compilador;
+	private JMenuItem mntmNuevo;
+	private JMenuItem mntmAbrir;
 	private JMenuItem mntmGuardar;
 	private JMenuItem mntmGuardarComo;
+	private JButton botonNuevo;
+	private JButton botonCargar;
 	private JButton botonGuardar;
 	private JButton botonGuardarComo;
 	private JTable tablaSimbolos;
@@ -90,8 +94,8 @@ public class MainWindow {
 				try {
 
 					//Look and feel
-					//LanguageManager.setDefaultLanguage(LanguageConstants.SPANISH);
-					//WebLookAndFeel.install();
+					LanguageManager.setDefaultLanguage(LanguageConstants.SPANISH);
+					WebLookAndFeel.install();
 
 					MainWindow window = new MainWindow();
 					window.frame.setVisible(true);
@@ -113,9 +117,155 @@ public class MainWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		
-		
-		/
+		frame = new JFrame(titulo );
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/icono.png")));
+		frame.setBounds(0,0,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
+		frame.setLocationRelativeTo(null);
+		frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		JMenuBar menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
+
+		JMenu mnArchivo = new JMenu("Archivo");
+		menuBar.add(mnArchivo);
+
+		mntmNuevo = new JMenuItem("Nuevo");
+		mntmNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				nuevoArchivo();
+			}
+		});
+		mntmNuevo.setIcon(new ImageIcon(MainWindow.class.getResource("/images/nuevo.gif")));
+		mnArchivo.add(mntmNuevo);
+
+		mntmAbrir = new JMenuItem("Abrir");
+		mntmAbrir.setIcon(new ImageIcon(MainWindow.class.getResource("/images/open.png")));
+		mntmAbrir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cargarArchivo();
+			}
+		});
+		mnArchivo.add(mntmAbrir);
+
+		mntmGuardar = new JMenuItem("Guardar");
+		mntmGuardar.setEnabled(false);
+		mntmGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardar();
+			}
+		});
+		mntmGuardar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/save.png")));
+		mnArchivo.add(mntmGuardar);
+
+		mntmGuardarComo = new JMenuItem("Guardar Como..");
+		mntmGuardarComo.setEnabled(false);
+		mntmGuardarComo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardarComo();
+			}
+		});
+		mntmGuardarComo.setIcon(new ImageIcon(MainWindow.class.getResource("/images/saveall.png")));
+		mnArchivo.add(mntmGuardarComo);
+
+		JSeparator separator = new JSeparator();
+		mnArchivo.add(separator);
+
+		JMenuItem mntmSalir = new JMenuItem("Salir");
+		mntmSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+			}
+		});
+		mnArchivo.add(mntmSalir);
+
+		JMenu mnEjecutar = new JMenu("Ejecutar");
+		menuBar.add(mnEjecutar);
+
+		JMenuItem mntmEjecutar = new JMenuItem("Ejecutar");
+		mntmEjecutar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				compilar();
+			}
+		});
+		mntmEjecutar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/run.gif")));
+		mnEjecutar.add(mntmEjecutar);
+
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
+
+		botonNuevo = new JButton("");
+		botonNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				nuevoArchivo();
+			}
+		});
+		botonNuevo.setIcon(new ImageIcon(MainWindow.class.getResource("/images/nuevo.gif")));
+		botonNuevo.setToolTipText("Nuevo archivo .cvr");
+		toolBar.add(botonNuevo);
+
+		botonCargar = new JButton("");
+		botonCargar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cargarArchivo();				
+			}
+		});
+		botonCargar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/open.png")));
+		botonCargar.setToolTipText("Abrir archivo .cvr");
+		toolBar.add(botonCargar);
+
+		botonGuardar = new JButton("");
+		botonGuardar.setEnabled(false);
+		botonGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardar();
+			}
+		});
+		botonGuardar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/save.png")));
+		botonGuardar.setToolTipText("Guardar");
+		toolBar.add(botonGuardar);
+
+		botonGuardarComo = new JButton("");
+		botonGuardarComo.setEnabled(false);
+		botonGuardarComo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardarComo();
+			}
+		});
+		botonGuardarComo.setIcon(new ImageIcon(MainWindow.class.getResource("/images/saveall.png")));
+		botonGuardarComo.setToolTipText("Guardar como..");
+		toolBar.add(botonGuardarComo);
+
+		toolBar.addSeparator();
+
+		JButton botonEjecutar = new JButton("");
+		botonEjecutar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				compilar();
+			}
+		});
+		botonEjecutar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/run.gif")));
+		botonEjecutar.setToolTipText("Ejecutar");
+		toolBar.add(botonEjecutar);
+
+		//Consola
+		Consola = new JTextPane();
+		Consola.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		Consola.setEditable(false);
+		Consola.setToolTipText("Consola");
+		Consola.setPreferredSize(new Dimension(0, 175));
+		Consola.setDoubleBuffered(true);
+		Consola.setFont(new Font("Consolas", Font.PLAIN, 12));
+		frame.getContentPane().add(Consola, BorderLayout.SOUTH);
+
+		//Scroll de la Consola
+		scrollConsola = new JScrollPane(Consola);
+		scrollConsola.setViewportBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		scrollConsola.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollConsola.setPreferredSize(new Dimension(0,175));
+		frame.getContentPane().add(scrollConsola, BorderLayout.SOUTH);
 
 		//Asignamos el ConsolaManager
 		ConsolaManager.getInstance(Consola,scrollConsola);
