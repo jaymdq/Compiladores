@@ -89,9 +89,11 @@ public class Proyecto extends Observable {
 		AnalizadorSintactico.ejecutar(this);
 	}
 
-	public void addToken(int pos) { // Este observable no me gusta aca, despes habria que acomodarlo
+	public int addToken(Token to) {
+		int pos = this.t.add(to);
 		this.ls.add(pos);
 		setChanged();
 		notifyObservers(pos);
+		return pos;
 	}
 }

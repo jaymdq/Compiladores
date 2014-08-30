@@ -20,10 +20,9 @@ import proyecto.Token;
 public class AnalizadorLexico {
 
 	private static MatrizTransicion mt = null;
-	// Estado Inicial
 
 	public static int getToken(Proyecto p){
-		
+	
 		Estado e = Estado.INICIAL;
 		Token t = new Token();
 		
@@ -37,8 +36,7 @@ public class AnalizadorLexico {
 		if (e == Estado.FINAL) {
 			if (t.getLexema() == "")
 				return getToken(p);
-			p.addToken(p.getTablaDeSimbolos().getPos(t.getLexema()));
-			return p.getTablaDeSimbolos().getPos(t.getLexema());
+			return p.addToken(t);
 		}
 		return -1;
 	}
