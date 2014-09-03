@@ -14,73 +14,72 @@ import sintactico.AnalizadorSintactico;
 
 public class Proyecto extends Observable {
 	
-	private File f;
-	private char[] s;
-	private TablaDeSimbolos t;
-	private List<Integer> ls;	// Lista de referencias a tokens que aparecen en el analisis lexico
-	private int p;
+	private File archivo;
+	private char[] caracteres;
+	private TablaDeSimbolos tablaSimbolos;
+	private List<Integer> listaReferencias;	// Lista de referencias a tokens que aparecen en el analisis lexico
+	private int posicion;
 	
-	public Proyecto(File f) {
-		this.f = f;
-		this.t = new TablaDeSimbolos();
-		this.ls = new Vector<Integer>();
+	public Proyecto(File archivo) {
+		this.archivo = archivo;
+		this.tablaSimbolos = new TablaDeSimbolos();
+		this.listaReferencias = new Vector<Integer>();
 		this.reset();
 		this.loadFile();
 	}
 	
 	public Proyecto() {
-		this.f = null;
-		this.t = new TablaDeSimbolos();
-		this.ls = new Vector<Integer>();
+		this.archivo = null;
+		this.tablaSimbolos = new TablaDeSimbolos();
+		this.listaReferencias = new Vector<Integer>();
 		this.reset();
 	}
 
 	public void reset() {
-		this.p = 0;
-		this.t.clear();
-		this.ls.clear();
+		this.posicion = 0;
+		this.tablaSimbolos.clear();
+		this.listaReferencias.clear();
 		setChanged();
 		notifyObservers(null);
 	}
 	
 	public void loadFile() {
-		this.s = null;
+		this.caracteres = null;
 		this.reset();
-		if (this.f != null) {
+		if (this.archivo != null) {
 			try {
-				byte[] lectura = Files.readAllBytes(Paths.get(this.f.getPath()));
+				byte[] lectura = Files.readAllBytes(Paths.get(this.archivo.getPath()));
 				String texto = new String(lectura,Charset.defaultCharset());
-				this.s = texto.toCharArray();
+				this.caracteres = texto.toCharArray();
 			} catch (IOException e) {};
 		}
 	}
 	
-	public void setFile(File f) {
-		this.f = f;
+	public void setFile(File archivo) {
+		this.archivo = archivo;
 		this.loadFile();
 	}
 	
 	public File getFile() {
-		return this.f;
+		return this.archivo;
 	}
 	
 	public TablaDeSimbolos getTablaDeSimbolos() {
-		return this.t;
+		return this.tablaSimbolos;
 	}
 	
 	public void back() {
-		if (this.p > 0)
-			this.p--;
+		if (this.posicion > 0)
+			this.posicion--;
 	}
 	
 	public char getNext() {
-		this.p++;
-		return this.s[p-1];
+		return this.caracteres[this.posicion++];
 	}
 	
 	
 	public boolean isEOF() {
-		return (this.p == this.s.length);
+		return (this.posicion == this.caracteres.length);
 	}
 	
 	public void compilar() {
@@ -90,8 +89,8 @@ public class Proyecto extends Observable {
 	}
 
 	public int addToken(Token to) {
-		int pos = this.t.add(to);
-		this.ls.add(pos);
+		int pos = this.tablaSimbolos.add(to);
+		this.listaReferencias.add(pos);
 		setChanged();
 		notifyObservers(pos);
 		return pos;

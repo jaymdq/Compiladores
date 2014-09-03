@@ -10,7 +10,6 @@ public class Simbolo {
 		CORCHETE_ABIERTO, CORCHETE_CERRADO, LLAVE_ABIERTA, LLAVE_CERRADA, COMILLA, INVALIDO, FIN_ARCHIVO;
 	}
 	
-	
 	private char c;
 	private TipoSimbolo t;
 	

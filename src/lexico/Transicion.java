@@ -8,32 +8,32 @@ import proyecto.Token;
 
 public class Transicion {
 	
-	private Estado ne;
-	private AccionSemantica as;
+	private Estado nuevoEstado;
+	private AccionSemantica accionSemantica;
 
  	public Transicion(Estado ne, AccionSemantica as) {
 		super();
-		this.ne = ne;
-		this.as = as;
+		this.nuevoEstado = ne;
+		this.accionSemantica = as;
 	}
  	 	
 	public Transicion(Estado ne) {
 		super();
-		this.ne = ne;
-		this.as = null;
+		this.nuevoEstado = ne;
+		this.accionSemantica = null;
 	}
 
 	public Estado getNuevoEstado() {
-		return ne;
+		return nuevoEstado;
 	}
 
 	public void ejecutarAccionSemantica(Token t, Simbolo s, Proyecto p) {
-		if(as != null)
-			as.ejecutar(t,s,p);
+		if(accionSemantica != null)
+			accionSemantica.ejecutar(t,s,p);
 	}
 	
 	public boolean isEnd() {
-		return (ne == Estado.FINAL);
+		return (nuevoEstado == Estado.FINAL);
 	}
 	
 }
