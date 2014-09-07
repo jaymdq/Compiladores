@@ -499,7 +499,14 @@ public class MainWindow {
 	private void compilar() {
 		if (proyecto.getFile() == null)
 			guardarComo();
-		
+		else{
+			//Si presenta cambios, se guarda y se manda a compilar
+			if (tabbedPane.getTitleAt(0).endsWith("*")){
+				guardar();
+			}
+		}
+
+
 		if (proyecto.getFile() != null){
 			editorLexico.setText("");
 			proyecto.compilar();
@@ -518,9 +525,9 @@ public class MainWindow {
 				frame.setTitle(titulo + proyecto.getFile().getAbsolutePath());
 				tabbedPane.setTitleAt(0, proyecto.getFile().getName());
 				setBotonesGuardar(false);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+				//Falta resetear el proyecto
+				proyecto.setFile(new File(path));
+			} catch (IOException e) {}
 		}else{
 			guardarComo();	
 		}
