@@ -34,21 +34,20 @@ public class TablaDeSimbolos extends Observable {
 	}
 	
 	public boolean containsToken(String l) {
-		for (Token t : this.t) {
-			if (t.getLexema().equals(l))
+		for (Token token : this.t) {
+			if (token.getLexema().equals(l))
 				return true;
 		}
 		return false;
 	}
 	
-	public int add(Token to) {
-		int p = this.getPos(to.getLexema());
-		if (p != -1)
-			return p;
+	public Token add(Token to) {
+		if (this.containsToken(to.getLexema()))
+			return this.t.elementAt(this.getPos(to.getLexema()));
 		this.t.add(to);
 		this.setChanged();
 		this.notifyObservers(to);
-		return this.t.size()-1;
+		return to;
 	}
 	
 	public void clear() {

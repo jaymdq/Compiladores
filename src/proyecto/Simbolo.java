@@ -67,6 +67,8 @@ public class Simbolo {
 			this.t = TipoSimbolo.LLAVE_CERRADA;			
 		}else if (c == '\''){
 			this.t = TipoSimbolo.COMILLA;			
+		}else if (c == '\0'){
+			this.t = TipoSimbolo.FIN_ARCHIVO;			
 		}else {
 			this.t = TipoSimbolo.INVALIDO;
 		}	
@@ -133,6 +135,8 @@ public class Simbolo {
 			return "Llave cerrada";
 		}else if (this.t == TipoSimbolo.COMILLA){
 			return "Comilla";
+		}else if (this.t == TipoSimbolo.FIN_ARCHIVO){
+			return "Fin de archivo";
 		}else
 			return "Invalido";
 	}

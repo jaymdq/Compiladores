@@ -8,8 +8,7 @@ public class AS7 extends AccionSemantica {
 
 	@Override
 	public void ejecutar(Token t, Simbolo s, Proyecto p) {
-		if ( ! p.getTablaDeSimbolos().containsToken(t.getLexema()) )
-			p.getTablaDeSimbolos().add(t);
+		t = p.addTokenToTable(t);
 	}
 
 }

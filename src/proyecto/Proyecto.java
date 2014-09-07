@@ -17,13 +17,14 @@ public class Proyecto extends Observable {
 	private File archivo;
 	private char[] caracteres;
 	private TablaDeSimbolos tablaSimbolos;
-	private List<Integer> listaReferencias;	// Lista de referencias a tokens que aparecen en el analisis lexico
+	private List<Token> listaTokens;	// Lista de referencias a tokens que aparecen en el analisis lexico
 	private int posicion;
+	private int lineaActual;
 	
 	public Proyecto(File archivo) {
 		this.archivo = archivo;
 		this.tablaSimbolos = new TablaDeSimbolos();
-		this.listaReferencias = new Vector<Integer>();
+		this.listaTokens = new Vector<Token>();
 		this.reset();
 		this.loadFile();
 	}
@@ -31,14 +32,15 @@ public class Proyecto extends Observable {
 	public Proyecto() {
 		this.archivo = null;
 		this.tablaSimbolos = new TablaDeSimbolos();
-		this.listaReferencias = new Vector<Integer>();
+		this.listaTokens = new Vector<Token>();
 		this.reset();
 	}
 
 	public void reset() {
 		this.posicion = 0;
 		this.tablaSimbolos.clear();
-		this.listaReferencias.clear();
+		this.listaTokens.clear();
+		this.lineaActual = 1;
 		setChanged();
 		notifyObservers(null);
 	}
@@ -73,8 +75,11 @@ public class Proyecto extends Observable {
 			this.posicion--;
 	}
 	
-	public char getNext() {
-		return this.caracteres[this.posicion++];
+	public char getNextCaracter() {
+		if (!this.isEOF())
+			return this.caracteres[this.posicion++];
+		this.posicion++;
+		return '\0';
 	}
 	
 	
@@ -88,11 +93,26 @@ public class Proyecto extends Observable {
 		AnalizadorSintactico.ejecutar(this);
 	}
 
-	public int addToken(Token to) {
-		int pos = this.tablaSimbolos.add(to);
-		this.listaReferencias.add(pos);
+	public Token addTokenToTable(Token to) {
+		this.addTokenToList(to);
+		return this.tablaSimbolos.add(to);
+	}
+	
+	public void addTokenToList(Token to) {
+		this.listaTokens.add(to);
 		setChanged();
-		notifyObservers(pos);
-		return pos;
+		notifyObservers(to);
+	}
+
+	public int getLineaActual() {
+		return lineaActual;
+	}
+
+	public void setLineaActual(int lineaActual) {
+		this.lineaActual = lineaActual;
+	}
+	
+	public void avanzarLinea(){
+		this.lineaActual++;
 	}
 }

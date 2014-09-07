@@ -486,14 +486,14 @@ public class MainWindow {
 				if (arg1 == null)
 					editorLexico.setText("");
 				else
-					agregarToken( (int) arg1);
+					agregarToken( (Token) arg1);
 			}
 		};
 		proyecto.addObserver(obsTokens);
 	}
 	
-	protected void agregarToken(int pos) {
-		editorLexico.setText(editorLexico.getText() + "[" + proyecto.getTablaDeSimbolos().getToken(pos) + "]\n");
+	protected void agregarToken(Token t) {
+		editorLexico.setText(editorLexico.getText() + "[" + t.getLexema() + "]\n");
 	}
 
 	private void compilar() {

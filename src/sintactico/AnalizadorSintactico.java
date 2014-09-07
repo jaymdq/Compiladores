@@ -1,17 +1,16 @@
 package sintactico;
 
 import lexico.AnalizadorLexico;
-
-
 import proyecto.Proyecto;
+import proyecto.Token;
 
 public class AnalizadorSintactico {
 
 	public static void ejecutar(Proyecto p) {
-		int i = -1;
+		Token t;
 		do {
-			i = AnalizadorLexico.getToken(p);
-		} while (i != -1);
-	}
+			t = AnalizadorLexico.getToken(p);
+		} while (t!= null && t.getTipo()!= null && !t.getTipo().equals(Token.TipoToken.FIN_ARCHIVO));
+	} 
 
 }
