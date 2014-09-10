@@ -41,6 +41,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Observable;
@@ -56,6 +57,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
 import proyecto.Proyecto;
 import proyecto.Token;
@@ -506,9 +509,9 @@ public class MainWindow {
 			}
 		}
 
-
 		if (proyecto.getFile() != null){
 			editorLexico.setText("");
+			ConsolaManager.getInstance().borrar();
 			proyecto.compilar();
 		}
 	}
@@ -586,13 +589,13 @@ public class MainWindow {
 		{
 			proyecto.setFile(fileChooser.getSelectedFile());
 			try {
-				editor.setPage(proyecto.getFile().toURI().toURL());
+				editor.getEditorKit().read( new FileReader(proyecto.getFile()), editor.getDocument(), 0);
 				frame.setTitle(titulo + proyecto.getFile().getAbsolutePath());
 				tabbedPane.setSelectedIndex(0);
 				tabbedPane.setTitleAt(0, proyecto.getFile().getName());
 				setBotonesGuardar(false);
 				//Eventos del editor
-				editor.getDocument().addDocumentListener(new DocumentListener() {
+			/*	editor.getDocument().addDocumentListener(new DocumentListener() {
 					@Override
 					public void removeUpdate(DocumentEvent e) {
 						operacion();
@@ -616,8 +619,8 @@ public class MainWindow {
 						//Actualizamos los botones de guardar
 						setBotonesGuardar(true);
 					}
-				});
-			} catch (IOException e) {}
+				});*/
+			} catch (IOException e) {} catch (BadLocationException e) {}
 		}
 	}
 

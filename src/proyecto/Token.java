@@ -5,7 +5,7 @@ public class Token {
 	
 	public enum TipoToken {
 		PR_SI, PR_ENTONCES, PR_SINO, PR_IMPRIMIR, PR_ENTERO, PR_ENTERO_LSS,	PR_ITERAR, PR_HASTA, PR_VECTOR, PR_DE,
-		IDENTIFICADOR, ENTERO, CADENA_MULTILINEA,
+		IDENTIFICADOR, ENTERO,ENTERO_LSS, CADENA_MULTILINEA,
 		OP_MAS, OP_MENOS, OP_POR, OP_DIVIDIDO, COMP_MAYOR, COMP_MAYOR_IGUAL, COMP_MENOR, COMP_MENOR_IGUAL, COMP_DISTINTO, COMP_IGUAL,
 		PARENTESIS_ABIERTO, PARENTESIS_CERRADO,	CORCHETE_ABIERTO, CORCHETE_CERRADO,	LLAVE_ABIERTA, LLAVE_CERRADA,
 		COMA, PUNTO_Y_COMA,	ASIGNACION, FIN_ARCHIVO;
@@ -56,67 +56,67 @@ public class Token {
 		}
 	}
 	
-	private String l;
-	private TipoToken t;
-	private boolean r;
+	private String lexema;
+	private TipoToken tipo;
+	private boolean reservado;
 	
 	public Token() {
 		this.setLexema("");
-		this.t = null;
-		this.r = false;
+		this.tipo = null;
+		this.reservado = false;
 	}
 	
 	public Token(TipoToken t){
-		this.t = t;
+		this.tipo = t;
 		this.setLexema("");
 		this.setReservado(false);
 	}
 	
 	public Token(TipoToken t, String l){
-		this.t = t;
+		this.tipo = t;
 		this.setLexema(l);
 		this.setReservado(false);
 	}
 	
 	public Token(TipoToken t, String l, boolean r){
-		this.t = t;
+		this.tipo = t;
 		this.setLexema(l);
 		this.setReservado(r);
 	}
 
 	public void agregarCaracter(char c) {
-		this.l += c;
+		this.lexema += c;
 	}
 
 	public String getLexema() {
-		return this.l;
+		return this.lexema;
 	}
 
 	public void setLexema(String lexema) {
-		this.l = lexema;
+		this.lexema = lexema;
 	}
 	
 	public TipoToken getTipo() {
-		return t;
+		return tipo;
 	}
 	
 	public void setTipo(TipoToken t) {
-		this.t = t;
+		this.tipo = t;
 	}
 	
 	public String toString() {
 		// WARNING - ¿Porque retorna el tipo si lexema es vacio?
-		if ( this.l.equals("") )
-			return t.toString();
-		return this.l;
+		if ( this.lexema.equals("") )
+			return tipo.toString();
+		return this.lexema;
 	}
 	
 	public boolean isReservado() {
-		return r;
+		return reservado;
 	}
 
 	public void setReservado(boolean r) {
-		this.r = r;
+		this.reservado = r;
 	}
 
 	public boolean isOperador(){

@@ -3,12 +3,15 @@ package lexico;
 import lexico.Transicion;
 import proyecto.Simbolo.TipoSimbolo;
 import lexico.as.AS1;
+import lexico.as.AS10;
 import lexico.as.AS2;
 import lexico.as.AS3;
 import lexico.as.AS4;
 import lexico.as.AS5;
 import lexico.as.AS6;
 import lexico.as.AS7;
+import lexico.as.AS8;
+import lexico.as.AS9;
 import lexico.as.ASDirecto;
 import proyecto.Token.TipoToken;
 import lexico.MatrizTransicion.Estado;
@@ -35,16 +38,17 @@ public class AnalizadorLexico {
 			// Obtengo el siguiente caracter y creo su simbolo
 			char caracter = proyecto.getNextCaracter();
 			Simbolo simbolo = new Simbolo(caracter);
-			// Si el simbolo es una nueva linea, avanzo de linea en el proyecto
-			if ( simbolo.getTipo().equals(Simbolo.TipoSimbolo.NUEVA_LINEA) )
-				proyecto.avanzarLinea();
+			
 			// Obtengo la transicion correspondiente de la matriz y la ejecuto
 			Transicion transicion = matrizTransicion.getTransicion(estado,simbolo);
 			estado = transicion.getNuevoEstado();
 			transicion.ejecutarAccionSemantica(token,simbolo,proyecto);
+			
+			// Si el simbolo es una nueva linea, avanzo de linea en el proyecto
+			if ( simbolo.getTipo().equals(Simbolo.TipoSimbolo.NUEVA_LINEA) )
+				proyecto.avanzarLinea();
 		}
 
-		//return proyecto.getTablaDeSimbolos().getToken(token.getLexema());
 		return token;
 	}
 
@@ -76,7 +80,8 @@ public class AnalizadorLexico {
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.TABULACION, new Transicion(Estado.INICIAL));
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.INICIAL));
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.RETORNO, new Transicion(Estado.INICIAL));
-
+			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.INVALIDO, new Transicion(Estado.INICIAL,new AS9()));
+			
 			// Directos al final
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.MAS, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.OP_MAS,false)));
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.MENOS, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.OP_MENOS,false)));
@@ -111,6 +116,9 @@ public class AnalizadorLexico {
 
 			// Estado 2
 			matrizTransicion.setTransicion(Estado.DOS, TipoSimbolo.DIGITO, new Transicion(Estado.DOS, new AS2()));
+			matrizTransicion.setTransicion(Estado.DOS, TipoSimbolo.LETRA, new Transicion(Estado.INICIAL, new AS8()));
+			matrizTransicion.setTransicion(Estado.DOS, TipoSimbolo.AMPERSAND, new Transicion(Estado.INICIAL, new AS8()));
+			matrizTransicion.setTransicion(Estado.DOS, TipoSimbolo.GUION_BAJO, new Transicion(Estado.INICIAL, new AS8()));
 			matrizTransicion.setDefault(Estado.DOS, new Transicion(Estado.FINAL, new AS5()));
 
 			// Estado 3
@@ -134,13 +142,14 @@ public class AnalizadorLexico {
 			// Estado 8
 			matrizTransicion.setTransicion(Estado.OCHO, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.INICIAL));
 			matrizTransicion.setTransicion(Estado.OCHO, TipoSimbolo.RETORNO, new Transicion(Estado.INICIAL));
+			matrizTransicion.setTransicion(Estado.OCHO, TipoSimbolo.FIN_ARCHIVO, new Transicion(Estado.FINAL));
 			matrizTransicion.setDefault(Estado.OCHO, new Transicion(Estado.OCHO));
 
 			// Estado 9
 			matrizTransicion.setTransicion(Estado.NUEVE, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.DIEZ));
 			matrizTransicion.setTransicion(Estado.NUEVE, TipoSimbolo.RETORNO, new Transicion(Estado.DIEZ));
 			matrizTransicion.setTransicion(Estado.NUEVE, TipoSimbolo.COMILLA, new Transicion(Estado.FINAL, new AS7()));
-			matrizTransicion.setDefault(Estado.NUEVE, new Transicion(Estado.NUEVE, new AS2()));
+			matrizTransicion.setDefault(Estado.NUEVE, new Transicion(Estado.NUEVE, new AS10()));
 
 			// Estado 10
 			matrizTransicion.setTransicion(Estado.DIEZ, TipoSimbolo.BLANCO, new Transicion(Estado.DIEZ));

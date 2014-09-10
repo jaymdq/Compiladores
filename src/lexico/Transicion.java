@@ -1,5 +1,6 @@
 package lexico;
 
+import excepciones.ExcepcionAccionSemantica;
 import lexico.MatrizTransicion.Estado;
 import lexico.as.AccionSemantica;
 import proyecto.Proyecto;
@@ -29,7 +30,11 @@ public class Transicion {
 
 	public void ejecutarAccionSemantica(Token t, Simbolo s, Proyecto p) {
 		if(accionSemantica != null)
-			accionSemantica.ejecutar(t,s,p);
+			try {
+				accionSemantica.ejecutar(t,s,p);
+			} catch (ExcepcionAccionSemantica e) {
+				e.avisarPorConsola(p, t);
+			}
 	}
 	
 	public boolean isEnd() {

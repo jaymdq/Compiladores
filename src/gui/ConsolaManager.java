@@ -15,17 +15,28 @@ public class ConsolaManager {
 	private static JScrollPane scr;
 	private static ConsolaManager instancia ;
 	private SimpleAttributeSet attrs;
+	
+	private  ConsolaManager(  ){
 		
+	}
+	
 	private  ConsolaManager( JTextPane consola2,JScrollPane scr ){
 		ConsolaManager.setConsola(consola2);
 		ConsolaManager.setScr(scr);		
 		attrs = new SimpleAttributeSet();
-		StyleConstants.setFontSize(attrs, 17);
+		StyleConstants.setFontSize(attrs, 16);
 	}
 	
 	public static ConsolaManager getInstance(JTextPane consola2,JScrollPane scr){
 		if ( instancia == null ){
 			instancia = new ConsolaManager(consola2,scr);
+		}
+		return instancia;
+	}
+	
+	public static ConsolaManager getInstance(){
+		if ( instancia == null ){
+			instancia = new ConsolaManager();
 		}
 		return instancia;
 	}

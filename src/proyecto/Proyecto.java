@@ -84,7 +84,7 @@ public class Proyecto extends Observable {
 	
 	
 	public boolean isEOF() {
-		return (this.posicion == this.caracteres.length);
+		return (this.posicion >= this.caracteres.length);
 	}
 	
 	public void compilar() {
@@ -115,4 +115,9 @@ public class Proyecto extends Observable {
 	public void avanzarLinea(){
 		this.lineaActual++;
 	}
+
+	public void retrocederLinea() {
+		this.lineaActual--;
+	}
+
 }

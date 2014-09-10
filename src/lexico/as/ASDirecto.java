@@ -7,6 +7,10 @@ import proyecto.Token.TipoToken;
 
 public class ASDirecto extends AccionSemantica {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private boolean doBack;
 	private TipoToken tipo;
 	
@@ -20,8 +24,12 @@ public class ASDirecto extends AccionSemantica {
 		t.setTipo(this.tipo);
 		t.setLexema(tipo.toString());
 		p.addTokenToList(t);
-		if(doBack)
+		if(doBack){
 			p.back();
+			//Areglar linea actual del proyecto
+			p.retrocederLinea();
+		}
+			
 	}
 
 }
