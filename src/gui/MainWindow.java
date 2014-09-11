@@ -589,37 +589,13 @@ public class MainWindow {
 		{
 			proyecto.setFile(fileChooser.getSelectedFile());
 			try {
+				editor.setText("");
 				editor.getEditorKit().read( new FileReader(proyecto.getFile()), editor.getDocument(), 0);
 				frame.setTitle(titulo + proyecto.getFile().getAbsolutePath());
 				tabbedPane.setSelectedIndex(0);
 				tabbedPane.setTitleAt(0, proyecto.getFile().getName());
 				setBotonesGuardar(false);
-				//Eventos del editor
-			/*	editor.getDocument().addDocumentListener(new DocumentListener() {
-					@Override
-					public void removeUpdate(DocumentEvent e) {
-						operacion();
-					}
-					@Override
-					public void insertUpdate(DocumentEvent e) {
-						operacion();
-					}
-					@Override
-					public void changedUpdate(DocumentEvent arg0) {	   
-					}
-
-					public void operacion(){
-						if (proyecto.getFile() != null)
-							if (proyecto.getFile().getName().endsWith(".cvr"))
-								tabbedPane.setTitleAt(0,proyecto.getFile().getName() + "*");
-							else
-								tabbedPane.setTitleAt(0,proyecto.getFile().getName()+ ".cvr*");
-						else
-							tabbedPane.setTitleAt(0,"Sin Título" + "*");
-						//Actualizamos los botones de guardar
-						setBotonesGuardar(true);
-					}
-				});*/
+		
 			} catch (IOException e) {} catch (BadLocationException e) {}
 		}
 	}
