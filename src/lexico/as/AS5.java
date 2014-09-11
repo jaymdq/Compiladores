@@ -1,6 +1,6 @@
 package lexico.as;
 
-import excepciones.ExcepcionRangoEntero;
+import gui.ConsolaManager;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
 import proyecto.Token;
@@ -8,29 +8,26 @@ import proyecto.Token;
 
 public class AS5 extends AccionSemantica {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	@Override
-	public void ejecutar(Token t, Simbolo s, Proyecto p) throws ExcepcionRangoEntero{
+	public void ejecutar(Token t, Simbolo s, Proyecto p){
 
 
 		//Por ahora solo enteros positivos..
 		//0 a 2^32-1 = 4294967295L
 		Long a = new Long(t.getLexema());
-		if (a.compareTo(4294967295L) > 0)
-			throw new ExcepcionRangoEntero();
-		else if ( a > 32767){
+		if (a.compareTo(4294967295L) > 0){
+			ConsolaManager.getInstance().escribirError("[Línea "+p.getLineaActual()+"] La constante entera \"" + t.getLexema() + "\" no se encuentra dentro del rango 0 y 2^32 -1.");
+		}else if ( a > 32767){
 			t.setTipo(Token.TipoToken.ENTERO_LSS);
 			t = p.addTokenToTable(t);
 		}else
 			t = p.addTokenToTable(t);
-			
+
 		p.back();
-		//Arreglar linea actual del proyecto..
-		p.retrocederLinea();
+		if ( s.getTipo() == Simbolo.TipoSimbolo.NUEVA_LINEA){
+			//Arreglar linea actual del proyecto..
+			p.retrocederLinea();
+		}
 
 	}
 

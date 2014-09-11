@@ -1,20 +1,15 @@
 package lexico.as;
 
-import excepciones.ExcepcionIdentificadorInvalido;
+import gui.ConsolaManager;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
 import proyecto.Token;
 
 public class AS8 extends AccionSemantica{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public void ejecutar(Token t, Simbolo s, Proyecto p) throws ExcepcionIdentificadorInvalido{
+	public void ejecutar(Token t, Simbolo s, Proyecto p){
 		t.setLexema("");
 		t.setTipo(null);
-		throw new ExcepcionIdentificadorInvalido();
+		ConsolaManager.getInstance().escribirError("[Línea "+p.getLineaActual()+"] Identificador inválido.");
 	}
 }

@@ -1,7 +1,6 @@
 package lexico;
 
-import lexico.Transicion;
-import proyecto.Simbolo.TipoSimbolo;
+import lexico.MatrizTransicion.Estado;
 import lexico.as.AS1;
 import lexico.as.AS10;
 import lexico.as.AS2;
@@ -13,12 +12,12 @@ import lexico.as.AS7;
 import lexico.as.AS8;
 import lexico.as.AS9;
 import lexico.as.ASDirecto;
-import proyecto.Token.TipoToken;
-import lexico.MatrizTransicion.Estado;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
+import proyecto.Simbolo.TipoSimbolo;
 import proyecto.TablaDeSimbolos;
 import proyecto.Token;
+import proyecto.Token.TipoToken;
 
 public class AnalizadorLexico {
 
@@ -149,7 +148,7 @@ public class AnalizadorLexico {
 			matrizTransicion.setTransicion(Estado.NUEVE, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.DIEZ));
 			matrizTransicion.setTransicion(Estado.NUEVE, TipoSimbolo.RETORNO, new Transicion(Estado.DIEZ));
 			matrizTransicion.setTransicion(Estado.NUEVE, TipoSimbolo.COMILLA, new Transicion(Estado.FINAL, new AS7()));
-			matrizTransicion.setDefault(Estado.NUEVE, new Transicion(Estado.NUEVE, new AS10()));
+			matrizTransicion.setDefault(Estado.NUEVE, new Transicion(Estado.NUEVE, new AS2()));
 
 			// Estado 10
 			matrizTransicion.setTransicion(Estado.DIEZ, TipoSimbolo.BLANCO, new Transicion(Estado.DIEZ));
@@ -157,6 +156,8 @@ public class AnalizadorLexico {
 			matrizTransicion.setTransicion(Estado.DIEZ, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.DIEZ));
 			matrizTransicion.setTransicion(Estado.DIEZ, TipoSimbolo.RETORNO, new Transicion(Estado.DIEZ));
 			matrizTransicion.setTransicion(Estado.DIEZ, TipoSimbolo.MAS, new Transicion(Estado.NUEVE));
+			matrizTransicion.setDefault(Estado.DIEZ, new Transicion(Estado.INICIAL, new AS10()));
+
 		}
 	}
 
