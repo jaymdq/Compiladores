@@ -117,13 +117,5 @@ public class Token {
 	public void setReservado(boolean r) {
 		this.reservado = r;
 	}
-
-	public static Token corroborarPalabraReservada(Token t){
-		
-		
-		
-									
-		return t;
-	}
 	
 }
