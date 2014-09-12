@@ -105,7 +105,6 @@ public class Token {
 	}
 	
 	public String toString() {
-		// WARNING - ¿Porque retorna el tipo si lexema es vacio?
 		if ( this.lexema.equals("") )
 			return tipo.toString();
 		return this.lexema;
