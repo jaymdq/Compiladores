@@ -13,7 +13,7 @@ public class AS10 extends AccionSemantica {
 		t.setTipo(null);		
 		p.back();
 		
-		ConsolaManager.getInstance().escribirError("[Línea "+p.getLineaActual()+"] Error no se especificó al caracter \"+\" en la cadena multilínea.");
+		ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] Error no se especificó al caracter \"+\" en la cadena multilínea.");
 
 	}
 

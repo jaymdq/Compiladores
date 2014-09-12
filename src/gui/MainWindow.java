@@ -459,14 +459,25 @@ public class MainWindow {
 		tabbedPane.addTab("Tabla de Símbolos", scrollPaneTabla);
 
 		tablaSimbolos = new JTable();
+		tablaSimbolos.setColumnSelectionAllowed(false);
+		tablaSimbolos.setDragEnabled(false);
 		tablaSimbolos.setModel(new DefaultTableModel(
 				new Object[][] {
 				},
 				new String[] {
-						"Categoria", "Lexema", "Palabra Reservada"
+						"Categoria", "Lexema"
 				}
-				));
+				){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				//Only the third column
+				return false;
+			}});
 		scrollPaneTabla.setViewportView(tablaSimbolos);
 
 		// Tabla de simbolos
@@ -477,7 +488,7 @@ public class MainWindow {
 				else {
 					Token t = (Token) arg;
 					DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
-					modelo.addRow(new Object[] {t.getTipo(),t.getLexema(),t.isReservado()});
+					modelo.addRow(new Object[] {t.getTipo(),t.getLexema()});
 				}
 			}
 		};

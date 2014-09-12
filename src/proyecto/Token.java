@@ -55,7 +55,7 @@ public class Token {
 				return super.toString();
 		}
 	}
-	
+		
 	private String lexema;
 	private TipoToken tipo;
 	private boolean reservado;
@@ -119,10 +119,12 @@ public class Token {
 		this.reservado = r;
 	}
 
-	public boolean isOperador(){
-		boolean condicion = false;
+	public static Token corroborarPalabraReservada(Token t){
 		
-		return condicion;
+		
+		
+									
+		return t;
 	}
 	
 }

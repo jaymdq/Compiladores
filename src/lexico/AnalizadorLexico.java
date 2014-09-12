@@ -1,5 +1,8 @@
 package lexico;
 
+import java.util.HashMap;
+import java.util.Vector;
+
 import lexico.MatrizTransicion.Estado;
 import lexico.as.AS1;
 import lexico.as.AS10;
@@ -22,7 +25,8 @@ import proyecto.Token.TipoToken;
 public class AnalizadorLexico {
 
 	private static MatrizTransicion matrizTransicion = null;
-
+	private static HashMap<String,TipoToken> palabrasReservadas = new HashMap<String,TipoToken>();
+	
 	public static Token getToken(Proyecto proyecto){
 		// Se verifica si el archivo ya termino
 		if (proyecto.isEOF())
@@ -53,23 +57,34 @@ public class AnalizadorLexico {
 
 	public static void prepare(Proyecto p) {
 		init();
-		setSimbols(p.getTablaDeSimbolos());		
+		setPalabrasReservadas(p.getTablaDeSimbolos());		
 	}
 
-	public static void setSimbols(TablaDeSimbolos t) {
+	private static void setPalabrasReservadas(TablaDeSimbolos t) {
 		t.clear();
-		t.add(new Token(TipoToken.PR_SI,"si",true));
-		t.add(new Token(TipoToken.PR_ENTONCES, "entonces",true));
-		t.add(new Token(TipoToken.PR_SINO, "sino",true));
-		t.add(new Token(TipoToken.PR_IMPRIMIR, "imprimir",true));
-		t.add(new Token(TipoToken.PR_ENTERO, "entero",true));
-		t.add(new Token(TipoToken.PR_ENTERO_LSS, "entero_lss",true));
-		t.add(new Token(TipoToken.PR_ITERAR, "iterar",true));
-		t.add(new Token(TipoToken.PR_HASTA, "hasta",true));
-		t.add(new Token(TipoToken.PR_VECTOR, "vector",true));
-		t.add(new Token(TipoToken.PR_DE, "de",true));
+			
+		palabrasReservadas.put("si", TipoToken.PR_SI);
+		palabrasReservadas.put("entonces", TipoToken.PR_ENTONCES);
+		palabrasReservadas.put("imprimir", TipoToken.PR_IMPRIMIR);
+		palabrasReservadas.put("entero", TipoToken.PR_ENTERO);
+		palabrasReservadas.put("entero_lss", TipoToken.PR_ENTERO_LSS);
+		palabrasReservadas.put("iterar", TipoToken.PR_ITERAR);
+		palabrasReservadas.put("hasta", TipoToken.PR_HASTA);
+		palabrasReservadas.put("vector", TipoToken.PR_VECTOR);
+		palabrasReservadas.put("de", TipoToken.PR_DE);
+		
 	}
 
+	
+	public static boolean isPalabraReservada(String lexema){
+		return palabrasReservadas.containsKey(lexema);
+	}
+	
+	public static  void setearTokenAPalabraReservada(Token t){
+		t.setTipo(palabrasReservadas.get(t.getLexema()));
+		t.setReservado(true);
+	}
+	
 	private static void init() {
 		if (matrizTransicion == null) {
 			matrizTransicion = new MatrizTransicion();

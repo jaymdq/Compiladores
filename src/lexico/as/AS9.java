@@ -9,6 +9,6 @@ public class AS9 extends AccionSemantica {
 
 	@Override
 	public void ejecutar(Token t, Simbolo s, Proyecto p){
-		ConsolaManager.getInstance().escribirError("[Línea "+p.getLineaActual()+"] Carácter inválido."); 
+		ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] Carácter inválido."); 
 	}
 }

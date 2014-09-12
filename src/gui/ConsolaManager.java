@@ -54,7 +54,7 @@ public class ConsolaManager {
 		Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		Consola.insertIcon(new ImageIcon(MainWindow.class.getResource("/images/warning.gif")));
 		try {
-			Consola.getStyledDocument().insertString(Consola.getStyledDocument().getLength(),"WARNING"+ s +"\n", attrs);
+			Consola.getStyledDocument().insertString(Consola.getStyledDocument().getLength(), s +"\n", attrs);
 		} catch (BadLocationException e) {}
 	}
 
@@ -62,7 +62,7 @@ public class ConsolaManager {
 		Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		Consola.insertIcon(new ImageIcon(MainWindow.class.getResource("/images/error.gif")));
 		try {
-			Consola.getStyledDocument().insertString(Consola.getStyledDocument().getLength(),"ERROR"+ s +"\n", attrs);
+			Consola.getStyledDocument().insertString(Consola.getStyledDocument().getLength(),s +"\n", attrs);
 		} catch (BadLocationException e) {}
 	}
 	
@@ -70,7 +70,7 @@ public class ConsolaManager {
 	Consola.setCaretPosition(Consola.getStyledDocument().getLength());
 		Consola.insertIcon(new ImageIcon(MainWindow.class.getResource("/images/information.gif")));
 		try {
-			Consola.getStyledDocument().insertString(Consola.getStyledDocument().getLength(),"INFO"+ s +"\n", attrs);
+			Consola.getStyledDocument().insertString(Consola.getStyledDocument().getLength(),s +"\n", attrs);
 		} catch (BadLocationException e) {}
 	}
 	
