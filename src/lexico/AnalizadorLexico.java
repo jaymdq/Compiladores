@@ -1,7 +1,6 @@
 package lexico;
 
 import java.util.HashMap;
-import java.util.Vector;
 
 import lexico.MatrizTransicion.Estado;
 import lexico.as.AS1;
@@ -26,8 +25,9 @@ public class AnalizadorLexico {
 
 	private static MatrizTransicion matrizTransicion = null;
 	private static HashMap<String,TipoToken> palabrasReservadas = new HashMap<String,TipoToken>();
+	private static Proyecto proyecto;
 	
-	public static Token getToken(Proyecto proyecto){
+	public static Token yylex(){
 		// Se verifica si el archivo ya termino
 		if (proyecto.isEOF())
 			return new Token(Token.TipoToken.FIN_ARCHIVO);
@@ -57,9 +57,14 @@ public class AnalizadorLexico {
 
 	public static void prepare(Proyecto p) {
 		init();
+		proyecto = p;
 		setPalabrasReservadas(p.getTablaDeSimbolos());		
 	}
 
+	public static void setProyecto(Proyecto p){
+		proyecto = p;
+	}
+	
 	private static void setPalabrasReservadas(TablaDeSimbolos t) {
 		t.clear();
 			

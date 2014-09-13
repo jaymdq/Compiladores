@@ -9,7 +9,7 @@ public class AnalizadorSintactico {
 	public static void ejecutar(Proyecto p) {
 		Token t;
 		do {
-			t = AnalizadorLexico.getToken(p);
+			t = AnalizadorLexico.yylex();
 		} while (t!= null && t.getTipo()!= null && !t.getTipo().equals(Token.TipoToken.FIN_ARCHIVO));
 	} 
 
