@@ -5,7 +5,7 @@ import proyecto.Proyecto;
 import proyecto.Simbolo;
 import proyecto.Token;
 
-public class AS10 extends AccionSemantica {
+public class AS12 extends AccionSemantica {
 
 	@Override
 	public void ejecutar(Token t, Simbolo s, Proyecto p) {
@@ -13,7 +13,7 @@ public class AS10 extends AccionSemantica {
 		t.setTipo(null);		
 		p.back();
 		
-		ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] No se especificó al caracter \"+\" en la cadena multilínea.");
+		ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] No se especificó al caracter \"=\" luego del \"^\".");
 
 	}
 

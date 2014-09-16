@@ -5,6 +5,8 @@ import java.util.HashMap;
 import lexico.MatrizTransicion.Estado;
 import lexico.as.AS1;
 import lexico.as.AS10;
+import lexico.as.AS11;
+import lexico.as.AS12;
 import lexico.as.AS2;
 import lexico.as.AS3;
 import lexico.as.AS4;
@@ -142,7 +144,8 @@ public class AnalizadorLexico {
 
 			// Estado 3
 			matrizTransicion.setTransicion(Estado.TRES, TipoSimbolo.IGUAL, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.ASIGNACION,false)));
-
+			matrizTransicion.setDefault(Estado.TRES, new Transicion(Estado.INICIAL, new AS11()));
+			
 			// Estado 4
 			matrizTransicion.setTransicion(Estado.CUATRO, TipoSimbolo.IGUAL, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MAYOR_IGUAL,false)));
 			matrizTransicion.setDefault(Estado.CUATRO, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MAYOR, true)));
@@ -153,7 +156,9 @@ public class AnalizadorLexico {
 
 			// Estado 6
 			matrizTransicion.setTransicion(Estado.SEIS, TipoSimbolo.IGUAL, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_DISTINTO,false)));
-
+			matrizTransicion.setDefault(Estado.SEIS, new Transicion(Estado.INICIAL, new AS12()));
+			
+			
 			// Estado 7
 			matrizTransicion.setTransicion(Estado.SIETE, TipoSimbolo.ASTERISCO, new Transicion(Estado.OCHO));
 			matrizTransicion.setDefault(Estado.SIETE, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.OP_POR, true)));
