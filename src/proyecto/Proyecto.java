@@ -20,12 +20,13 @@ public class Proyecto extends Observable {
 	private List<Token> listaTokens;	// Lista de referencias a tokens que aparecen en el analisis lexico
 	private List<String> listaSentencias;
 	private int posicion;
-	private int lineaActual;
+	private static int lineaActual;
 	
 	public Proyecto(File archivo) {
 		this.archivo = archivo;
 		this.tablaSimbolos = new TablaDeSimbolos();
 		this.listaTokens = new Vector<Token>();
+		this.listaSentencias = new Vector<String>();
 		this.reset();
 		this.loadFile();
 	}
@@ -34,6 +35,7 @@ public class Proyecto extends Observable {
 		this.archivo = null;
 		this.tablaSimbolos = new TablaDeSimbolos();
 		this.listaTokens = new Vector<Token>();
+		this.listaSentencias = new Vector<String>();
 		this.reset();
 	}
 
@@ -105,7 +107,7 @@ public class Proyecto extends Observable {
 		notifyObservers(to);
 	}
 
-	public int getLineaActual() {
+	public static int getLineaActual() {
 		return lineaActual;
 	}
 
@@ -124,7 +126,7 @@ public class Proyecto extends Observable {
 	public void addSentenciaToList(String sentencia){
 		this.listaSentencias.add(sentencia);
 		setChanged();
-		notifyObservers();
+		notifyObservers(sentencia);
 	}
 
 }

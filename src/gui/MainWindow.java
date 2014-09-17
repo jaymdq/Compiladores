@@ -469,7 +469,7 @@ public class MainWindow {
 					editorSintactico.setText("");
 				else
 					if (arg instanceof String)
-						agregarSentencia( (String) arg);
+					agregarSentencia( (String) arg );
 			}
 		};
 		proyecto.addObserver(obsSin);
@@ -521,6 +521,7 @@ public class MainWindow {
 				if (arg1 == null)
 					editorLexico.setText("");
 				else
+					if (arg1 instanceof Token)
 					agregarToken( (Token) arg1);
 			}
 		};
@@ -528,7 +529,7 @@ public class MainWindow {
 	}
 	
 	protected void agregarSentencia(String sentencia) {
-		editorSintactico.setText(editorSintactico.getText() + "[" + sentencia + "]\n");
+		editorSintactico.setText(editorSintactico.getText() + sentencia + "\n");
 	}
 
 	protected void agregarToken(Token t) {

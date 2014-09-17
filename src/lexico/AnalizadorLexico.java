@@ -8,6 +8,7 @@ import lexico.as.AS10;
 import lexico.as.AS11;
 import lexico.as.AS12;
 import lexico.as.AS13;
+import lexico.as.AS14;
 import lexico.as.AS2;
 import lexico.as.AS3;
 import lexico.as.AS4;
@@ -78,6 +79,7 @@ public class AnalizadorLexico {
 			
 		palabrasReservadas.put("si", TipoToken.PR_SI);
 		palabrasReservadas.put("entonces", TipoToken.PR_ENTONCES);
+		palabrasReservadas.put("sino", TipoToken.PR_SINO);
 		palabrasReservadas.put("imprimir", TipoToken.PR_IMPRIMIR);
 		palabrasReservadas.put("entero", TipoToken.PR_ENTERO);
 		palabrasReservadas.put("entero_lss", TipoToken.PR_ENTERO_LSS);
@@ -108,6 +110,8 @@ public class AnalizadorLexico {
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.INICIAL));
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.RETORNO, new Transicion(Estado.INICIAL));
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.INVALIDO, new Transicion(Estado.INICIAL,new AS9()));
+			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.GUION_BAJO, new Transicion(Estado.INICIAL,new AS14()));
+			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.AMPERSAND, new Transicion(Estado.INICIAL,new AS14()));
 			
 			
 			// Directos al final
