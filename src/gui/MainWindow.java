@@ -81,6 +81,7 @@ public class MainWindow {
 	private JButton botonGuardarComo;
 	private JTable tablaSimbolos;
 	private JEditorPane editorLexico;
+	private JEditorPane editorSintactico;
 	
 	private static Proyecto proyecto;
 	
@@ -453,9 +454,18 @@ public class MainWindow {
 
 		//Agregamos el tab del analizador léxico
 		tabbedPane.addTab("Analizador Léxico", scrollPaneLexico);
-		JScrollPane scrollPaneTabla = new JScrollPane();
+		
+		//Editor sintáctico
+		editorSintactico = new JEditorPane();
+		editorSintactico.setEditable(false);
+		editorSintactico.setFont(new Font("Consolas", 0, 16));
+		JScrollPane scrollPaneSintactico = new JScrollPane(editorSintactico);
 
+		//Agregamos el tab del analizador sintáctico
+		tabbedPane.addTab("Analizador Sintáctico", scrollPaneSintactico);
+		
 		//Agregamos el tab de la tabla de simbolos
+		JScrollPane scrollPaneTabla = new JScrollPane();
 		tabbedPane.addTab("Tabla de Símbolos", scrollPaneTabla);
 
 		tablaSimbolos = new JTable();

@@ -28,7 +28,10 @@ public class AS3 extends AccionSemantica {
 		//Si no resulto ser una palabra reservada, se agrega a la tabla de simbolos.
 		if (! t.isReservado() ){
 			t = p.addTokenToTable(t);
+		}else{
+			p.addTokenToList(t);
 		}
+			
 		
 		
 		p.back();

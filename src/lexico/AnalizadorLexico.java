@@ -22,6 +22,7 @@ import proyecto.Simbolo.TipoSimbolo;
 import proyecto.TablaDeSimbolos;
 import proyecto.Token;
 import proyecto.Token.TipoToken;
+import sintactico.ParserVal;
 
 public class AnalizadorLexico {
 
@@ -29,10 +30,12 @@ public class AnalizadorLexico {
 	private static HashMap<String,TipoToken> palabrasReservadas = new HashMap<String,TipoToken>();
 	private static Proyecto proyecto;
 	
-	public static Token yylex(){
+	public static ParserVal yylval;
+	
+	public static int yylex(){
 		// Se verifica si el archivo ya termino
 		if (proyecto.isEOF())
-			return new Token(Token.TipoToken.FIN_ARCHIVO);
+			return Token.TipoToken.FIN_ARCHIVO.getValor();
 		
 		// Inicializamos el estado y el token
 		Estado estado = Estado.INICIAL;
@@ -54,7 +57,7 @@ public class AnalizadorLexico {
 				proyecto.avanzarLinea();
 		}
 
-		return token;
+		return token.getTipo().getValor();
 	}
 
 	public static void prepare(Proyecto p) {

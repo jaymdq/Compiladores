@@ -17,24 +17,63 @@ public class Token {
 	public final static short PR_HASTA=268;
 	public final static short PR_VECTOR=269;
 	public final static short PR_DE=270;
+	public final static short COMP_MAYOR_IGUAL=271;
+	public final static short COMP_MENOR_IGUAL=272;
+	public final static short COMP_DISTINTO=273;
+	public final static short ASIGNACION=274;
 	public final static short YYERRCODE=256;
 	
-	public final static short COMA = ',';
 	
 	public enum TipoToken {
-				
-		//PR_SI(Token.PR_SI),
+			
+		//Palabras Reservadas
+		PR_SI(Token.PR_SI),
+		PR_ENTONCES(Token.PR_ENTONCES),
+		PR_SINO(Token.PR_SINO), 
+		PR_IMPRIMIR(Token.PR_IMPRIMIR), 
+		PR_ENTERO(Token.PR_ENTERO), 
+		PR_ENTERO_LSS(Token.PR_ENTERO_LSS),	
+		PR_ITERAR(Token.PR_ITERAR), 
+		PR_HASTA(Token.PR_HASTA), 
+		PR_VECTOR(Token.PR_VECTOR), 
+		PR_DE(Token.PR_DE),
 		
-		PR_SI,PR_ENTONCES, PR_SINO, PR_IMPRIMIR, PR_ENTERO, PR_ENTERO_LSS,	PR_ITERAR, PR_HASTA, PR_VECTOR, PR_DE,
-		IDENTIFICADOR, ENTERO,ENTERO_LSS, CADENA_MULTILINEA,
-		OP_MAS, OP_MENOS, OP_POR, OP_DIVIDIDO, COMP_MAYOR, COMP_MAYOR_IGUAL, COMP_MENOR, COMP_MENOR_IGUAL, COMP_DISTINTO, COMP_IGUAL,
-		PARENTESIS_ABIERTO, PARENTESIS_CERRADO,	CORCHETE_ABIERTO, CORCHETE_CERRADO,	LLAVE_ABIERTA, LLAVE_CERRADA,
-		COMA, PUNTO_Y_COMA,	ASIGNACION, FIN_ARCHIVO;
-	/*	
+		//No Terminales
+		IDENTIFICADOR(Token.IDENTIFICADOR),
+		ENTERO(Token.ENTERO),
+		ENTERO_LSS(Token.ENTERO_LSS),
+		CADENA_MULTILINEA(Token.CADENA_MULTILINEA),
+		
+		//Literales
+		OP_MAS((char) '+'), 
+		OP_MENOS((char) '-'), 
+		OP_POR((char) '*'), 
+		OP_DIVIDIDO((char) '/'), 
+		COMP_MAYOR((char) '>'), 
+		COMP_MENOR((char) '<'), 
+		COMP_IGUAL((char) '='),		
+		PARENTESIS_ABIERTO((char) '('), 
+		PARENTESIS_CERRADO((char) ')'),	
+		CORCHETE_ABIERTO((char) '['), 
+		CORCHETE_CERRADO((char) ']'),	
+		LLAVE_ABIERTA((char) '{'), 
+		LLAVE_CERRADA((char) '}'),
+		COMA((char) ','), 
+		PUNTO_Y_COMA((char) ';'),	
+		
+		
+		//No Literales importantes
+		COMP_MAYOR_IGUAL(Token.COMP_MAYOR_IGUAL), 
+		COMP_MENOR_IGUAL(Token.COMP_MENOR_IGUAL), 
+		COMP_DISTINTO(Token.COMP_DISTINTO), 
+		ASIGNACION(Token.ASIGNACION), 
+		FIN_ARCHIVO(0);
+		
+	
 		private int valor;
 		private TipoToken(int id){
-			this.valor = id;
-		}*/
+			this.setValor(id);
+		}
 		
 		public String toString(){
 			if (this.equals(OP_MAS))
@@ -79,6 +118,14 @@ public class Token {
 				return "EOF";
 			else
 				return super.toString();
+		}
+
+		public int getValor() {
+			return valor;
+		}
+
+		public void setValor(int valor) {
+			this.valor = valor;
 		}
 	}
 		
