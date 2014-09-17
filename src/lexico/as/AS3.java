@@ -21,6 +21,7 @@ public class AS3 extends AccionSemantica {
 			//Verificamos si en realidad es una palabra reservada. Y en caso de serlo, seteamos su tipo.
 			if (AnalizadorLexico.isPalabraReservada(t.getLexema())){
 				AnalizadorLexico.setearTokenAPalabraReservada(t);
+				t.setLexema(t.getLexema().toLowerCase());
 			}
 			
 		}
@@ -31,9 +32,7 @@ public class AS3 extends AccionSemantica {
 		}else{
 			p.addTokenToList(t);
 		}
-			
-		
-		
+
 		p.back();
 		if ( s.getTipo() == Simbolo.TipoSimbolo.NUEVA_LINEA){
 			//Arreglar linea actual del proyecto..

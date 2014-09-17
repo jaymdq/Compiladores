@@ -18,6 +18,7 @@ public class AnalizadorSintactico {
 		
 		Parser parser = new Parser();
 		parser.yyparse();
+		
 	} 
 
 }

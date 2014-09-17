@@ -7,7 +7,7 @@ public class Simbolo {
 		DOS_PUNTOS, IGUAL, MAYOR, MENOR, MENOS, MAS, BARRA,
 		ASTERISCO, ACENTO_CIRCUNFLEJO, GUION_BAJO, AMPERSAND,
 		PUNTO_Y_COMA, COMA, PARENTESIS_ABIERTO, PARENTESIS_CERRADO,
-		CORCHETE_ABIERTO, CORCHETE_CERRADO, LLAVE_ABIERTA, LLAVE_CERRADA, COMILLA, INVALIDO, FIN_ARCHIVO;
+		CORCHETE_ABIERTO, CORCHETE_CERRADO, LLAVE_ABIERTA, LLAVE_CERRADA, COMILLA, INVALIDO, PUNTO, FIN_ARCHIVO;
 	}
 	
 	private char c;
@@ -69,6 +69,8 @@ public class Simbolo {
 			this.t = TipoSimbolo.COMILLA;			
 		}else if (c == '\0'){
 			this.t = TipoSimbolo.FIN_ARCHIVO;			
+		}else if (c == '.'){
+			this.t = TipoSimbolo.PUNTO;	
 		}else {
 			this.t = TipoSimbolo.INVALIDO;
 		}	
@@ -137,6 +139,8 @@ public class Simbolo {
 			return "Comilla";
 		}else if (this.t == TipoSimbolo.FIN_ARCHIVO){
 			return "Fin de archivo";
+		}else if (this.t == TipoSimbolo.PUNTO){
+			return "Punto";
 		}else
 			return "Invalido";
 	}

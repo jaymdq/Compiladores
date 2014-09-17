@@ -18,6 +18,7 @@ public class Proyecto extends Observable {
 	private char[] caracteres;
 	private TablaDeSimbolos tablaSimbolos;
 	private List<Token> listaTokens;	// Lista de referencias a tokens que aparecen en el analisis lexico
+	private List<String> listaSentencias;
 	private int posicion;
 	private int lineaActual;
 	
@@ -120,6 +121,10 @@ public class Proyecto extends Observable {
 		this.lineaActual--;
 	}
 
-
+	public void addSentenciaToList(String sentencia){
+		this.listaSentencias.add(sentencia);
+		setChanged();
+		notifyObservers();
+	}
 
 }

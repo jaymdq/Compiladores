@@ -9,7 +9,7 @@ import proyecto.Simbolo.TipoSimbolo;
 public class MatrizTransicion {
 
 	public enum Estado {
-		INICIAL, FINAL, UNO, DOS, TRES, CUATRO, CINCO, SEIS, SIETE, OCHO, NUEVE, DIEZ;
+		INICIAL, FINAL, UNO, DOS, TRES, CUATRO, CINCO, SEIS, SIETE, OCHO, NUEVE, DIEZ, ONCE;
 	}
 		
 	Map<Estado, Map<TipoSimbolo, Transicion>> matriz;

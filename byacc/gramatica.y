@@ -1,4 +1,4 @@
-%token IDENTIFICADOR ENTERO ENTERO_LSS CADENA_MULTILINEA PR_SI PR_ENTONCES PR_SINO PR_IMPRIMIR PR_ENTERO PR_ENTERO_LSS	PR_ITERAR PR_HASTA PR_VECTOR PR_DE COMP_MAYOR_IGUAL COMP_MENOR_IGUAL COMP_DISTINTO ASIGNACION 
+%token IDENTIFICADOR ENTERO ENTERO_LSS CADENA_MULTILINEA PR_SI PR_ENTONCES PR_SINO PR_IMPRIMIR PR_ENTERO PR_ENTERO_LSS	PR_ITERAR PR_HASTA PR_VECTOR PR_DE COMP_MAYOR_IGUAL COMP_MENOR_IGUAL COMP_DISTINTO ASIGNACION PUNTO_PUNTO
 		 
 		 
 		 
@@ -11,9 +11,9 @@ programa	: sent_decl sent_ejec
 			;
 		
 sent_decl	: tipo_dato lista_variables '\;'
-			| IDENTIFICADOR'\['ENTERO '\..' ENTERO'\]' PR_VECTOR PR_DE tipo_dato '\;'
+			| IDENTIFICADOR'\['ENTERO PUNTO_PUNTO ENTERO'\]' PR_VECTOR PR_DE tipo_dato '\;'
 			| sent_decl tipo_dato lista_variables '\;'
-			| sent_decl IDENTIFICADOR'\['ENTERO '\..' ENTERO'\]' PR_VECTOR PR_DE tipo_dato '\;'
+			| sent_decl IDENTIFICADOR'\['ENTERO PUNTO_PUNTO ENTERO'\]' PR_VECTOR PR_DE tipo_dato '\;'
 			;
 			
 lista_variables	: IDENTIFICADOR
@@ -48,6 +48,8 @@ asignacion	: asignable ASIGNACION e
 			;
 
 bloque		: '\{' lista_sentencias '\}'
+			| sentencia
+			;
 
 lista_sentencias	: sentencia
 					| lista_sentencias sentencia
@@ -82,3 +84,13 @@ f	: asignable
 asignable	: IDENTIFICADOR
 			| IDENTIFICADOR '\[' e '\]'
 			;
+			
+%%
+
+private void yyerror(String string) {
+	System.out.println(string);	
+}
+
+private int yylex(){
+	return AnalizadorLexico.yylex();
+}

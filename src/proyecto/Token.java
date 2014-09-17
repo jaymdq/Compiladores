@@ -21,6 +21,7 @@ public class Token {
 	public final static short COMP_MENOR_IGUAL=272;
 	public final static short COMP_DISTINTO=273;
 	public final static short ASIGNACION=274;
+	public final static short PUNTO_PUNTO=275;
 	public final static short YYERRCODE=256;
 	
 	
@@ -67,6 +68,7 @@ public class Token {
 		COMP_MENOR_IGUAL(Token.COMP_MENOR_IGUAL), 
 		COMP_DISTINTO(Token.COMP_DISTINTO), 
 		ASIGNACION(Token.ASIGNACION), 
+		PUNTO_PUNTO(Token.PUNTO_PUNTO),
 		FIN_ARCHIVO(0);
 		
 	
@@ -116,6 +118,8 @@ public class Token {
 				return ":=";
 			else if (this.equals(FIN_ARCHIVO))
 				return "EOF";
+			else if (this.equals(PUNTO_PUNTO))
+				return "..";
 			else
 				return super.toString();
 		}

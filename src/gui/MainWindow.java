@@ -463,6 +463,16 @@ public class MainWindow {
 
 		//Agregamos el tab del analizador sintáctico
 		tabbedPane.addTab("Analizador Sintáctico", scrollPaneSintactico);
+		Observer obsSin = new Observer(){
+			public void update(Observable o, Object arg) {
+				if (arg == null)
+					editorSintactico.setText("");
+				else
+					if (arg instanceof String)
+						agregarSentencia( (String) arg);
+			}
+		};
+		proyecto.addObserver(obsSin);
 		
 		//Agregamos el tab de la tabla de simbolos
 		JScrollPane scrollPaneTabla = new JScrollPane();
@@ -504,6 +514,7 @@ public class MainWindow {
 		};
 		proyecto.getTablaDeSimbolos().addObserver(o);
 
+		//Léxico
 		Observer obsTokens = new Observer(){
 			@Override
 			public void update(Observable arg0, Object arg1) {
@@ -516,6 +527,10 @@ public class MainWindow {
 		proyecto.addObserver(obsTokens);
 	}
 	
+	protected void agregarSentencia(String sentencia) {
+		editorSintactico.setText(editorSintactico.getText() + "[" + sentencia + "]\n");
+	}
+
 	protected void agregarToken(Token t) {
 		editorLexico.setText(editorLexico.getText() + "[" + t.getLexema() + "]\n");
 	}
