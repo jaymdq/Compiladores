@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import lexico.MatrizTransicion.Estado;
 import lexico.as.ASDirecto;
-import lexico.as.ASDirecto;
 import lexico.as.AS_CTE_Finish;
 import lexico.as.AS_CTE_Start;
 import lexico.as.AS_Caret_Unexpected;
