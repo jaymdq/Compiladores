@@ -23,47 +23,48 @@
 
   14  $$2 :
 
-  15  sentencia : $$2 iteracion ';'
+  15  sentencia : $$2 iteracion
 
   16  $$3 :
 
-  17  sentencia : $$3 impresion ';'
-  18            | asignacion ';'
+  17  sentencia : $$3 impresion
+  18            | asignacion
 
   19  seleccion : PR_SI '(' condicion ')' PR_ENTONCES bloque
   20            | PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO bloque
 
-  21  iteracion : PR_ITERAR bloque PR_HASTA condicion
+  21  iteracion : PR_ITERAR bloque PR_HASTA condicion ';'
 
-  22  impresion : PR_IMPRIMIR '(' CADENA_MULTILINEA ')'
+  22  impresion : PR_IMPRIMIR '(' CADENA_MULTILINEA ')' ';'
 
-  23  asignacion : asignable ASIGNACION e
+  23  asignacion : asignable ASIGNACION e ';'
 
   24  bloque : sentencia
   25         | '{' sent_ejecutable '}'
 
   26  condicion : e comparador e
-  27            | error ';'
 
-  28  comparador : '>'
-  29             | COMP_MAYOR_IGUAL
-  30             | '<'
-  31             | COMP_MENOR_IGUAL
-  32             | '='
-  33             | COMP_DISTINTO
+  27  comparador : '>'
+  28             | COMP_MAYOR_IGUAL
+  29             | '<'
+  30             | COMP_MENOR_IGUAL
+  31             | '='
+  32             | COMP_DISTINTO
 
-  34  e : e '+' t
-  35    | e '-' t
-  36    | t
-  37    | '-' e
+  33  e : e '+' t
+  34    | e '-' t
+  35    | t
 
-  38  t : t '*' f
-  39    | t '/' f
-  40    | f
+  36  t : t '*' f
+  37    | t '/' f
+  38    | f
 
-  41  f : asignable
-  42    | ENTERO
-  43    | ENTERO_LSS
+  39  f : valor
+  40    | '-' valor
+
+  41  valor : asignable
+  42        | ENTERO
+  43        | ENTERO_LSS
 
   44  asignable : IDENTIFICADOR
   45            | IDENTIFICADOR '[' e ']'
@@ -182,7 +183,7 @@ state 10
 
 
 state 11
-	sentencia : $$2 . iteracion ';'  (15)
+	sentencia : $$2 . iteracion  (15)
 
 	PR_ITERAR  shift 22
 	.  error
@@ -191,7 +192,7 @@ state 11
 
 
 state 12
-	sentencia : $$3 . impresion ';'  (17)
+	sentencia : $$3 . impresion  (17)
 
 	PR_IMPRIMIR  shift 24
 	.  error
@@ -200,16 +201,15 @@ state 12
 
 
 state 13
-	sentencia : asignacion . ';'  (18)
+	sentencia : asignacion .  (18)
 
-	';'  shift 26
-	.  error
+	.  reduce 18
 
 
 state 14
-	asignacion : asignable . ASIGNACION e  (23)
+	asignacion : asignable . ASIGNACION e ';'  (23)
 
-	ASIGNACION  shift 27
+	ASIGNACION  shift 26
 	.  error
 
 
@@ -218,15 +218,16 @@ state 15
 	asignable : IDENTIFICADOR '[' . e ']'  (45)
 
 	IDENTIFICADOR  shift 16
-	ENTERO  shift 28
-	ENTERO_LSS  shift 29
-	'-'  shift 30
+	ENTERO  shift 27
+	ENTERO_LSS  shift 28
+	'-'  shift 29
 	.  error
 
-	asignable  goto 31
-	e  goto 32
-	t  goto 33
-	f  goto 34
+	asignable  goto 30
+	e  goto 31
+	t  goto 32
+	f  goto 33
+	valor  goto 34
 
 
 state 16
@@ -238,16 +239,16 @@ state 16
 	COMP_MENOR_IGUAL  reduce 44
 	COMP_DISTINTO  reduce 44
 	ASIGNACION  reduce 44
-	'-'  reduce 44
-	'+'  reduce 44
-	'*'  reduce 44
-	'/'  reduce 44
 	';'  reduce 44
 	']'  reduce 44
 	')'  reduce 44
 	'>'  reduce 44
 	'<'  reduce 44
 	'='  reduce 44
+	'+'  reduce 44
+	'-'  reduce 44
+	'*'  reduce 44
+	'/'  reduce 44
 
 
 state 17
@@ -286,7 +287,7 @@ state 21
 
 
 state 22
-	iteracion : PR_ITERAR . bloque PR_HASTA condicion  (21)
+	iteracion : PR_ITERAR . bloque PR_HASTA condicion ';'  (21)
 	$$1 : .  (12)
 	$$2 : .  (14)
 	$$3 : .  (16)
@@ -307,136 +308,133 @@ state 22
 
 
 state 23
-	sentencia : $$2 iteracion . ';'  (15)
+	sentencia : $$2 iteracion .  (15)
 
-	';'  shift 42
-	.  error
+	.  reduce 15
 
 
 state 24
-	impresion : PR_IMPRIMIR . '(' CADENA_MULTILINEA ')'  (22)
+	impresion : PR_IMPRIMIR . '(' CADENA_MULTILINEA ')' ';'  (22)
 
-	'('  shift 43
+	'('  shift 42
 	.  error
 
 
 state 25
-	sentencia : $$3 impresion . ';'  (17)
+	sentencia : $$3 impresion .  (17)
 
-	';'  shift 44
-	.  error
+	.  reduce 17
 
 
 state 26
-	sentencia : asignacion ';' .  (18)
+	asignacion : asignable ASIGNACION . e ';'  (23)
 
-	.  reduce 18
+	IDENTIFICADOR  shift 16
+	ENTERO  shift 43
+	ENTERO_LSS  shift 28
+	'-'  shift 29
+	.  error
+
+	asignable  goto 30
+	e  goto 44
+	t  goto 32
+	f  goto 33
+	valor  goto 34
 
 
 state 27
-	asignacion : asignable ASIGNACION . e  (23)
+	declaracion : IDENTIFICADOR '[' ENTERO . PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';'  (5)
+	valor : ENTERO .  (42)
 
-	IDENTIFICADOR  shift 16
-	ENTERO  shift 45
-	ENTERO_LSS  shift 29
-	'-'  shift 30
-	.  error
-
-	asignable  goto 31
-	e  goto 46
-	t  goto 33
-	f  goto 34
+	PUNTO_PUNTO  shift 45
+	']'  reduce 42
+	'+'  reduce 42
+	'-'  reduce 42
+	'*'  reduce 42
+	'/'  reduce 42
 
 
 state 28
-	declaracion : IDENTIFICADOR '[' ENTERO . PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';'  (5)
-	f : ENTERO .  (42)
-
-	PUNTO_PUNTO  shift 47
-	'-'  reduce 42
-	'+'  reduce 42
-	'*'  reduce 42
-	'/'  reduce 42
-	']'  reduce 42
-
-
-state 29
-	f : ENTERO_LSS .  (43)
+	valor : ENTERO_LSS .  (43)
 
 	.  reduce 43
 
 
-state 30
-	e : '-' . e  (37)
+state 29
+	f : '-' . valor  (40)
 
 	IDENTIFICADOR  shift 16
-	ENTERO  shift 45
-	ENTERO_LSS  shift 29
-	'-'  shift 30
+	ENTERO  shift 43
+	ENTERO_LSS  shift 28
 	.  error
 
-	asignable  goto 31
-	e  goto 48
-	t  goto 33
-	f  goto 34
+	asignable  goto 30
+	valor  goto 46
 
 
-state 31
-	f : asignable .  (41)
+state 30
+	valor : asignable .  (41)
 
 	.  reduce 41
 
 
-state 32
-	e : e . '+' t  (34)
-	e : e . '-' t  (35)
+state 31
+	e : e . '+' t  (33)
+	e : e . '-' t  (34)
 	asignable : IDENTIFICADOR '[' e . ']'  (45)
 
+	']'  shift 47
+	'+'  shift 48
 	'-'  shift 49
-	'+'  shift 50
-	']'  shift 51
 	.  error
 
 
-state 33
-	e : t .  (36)
-	t : t . '*' f  (38)
-	t : t . '/' f  (39)
+state 32
+	e : t .  (35)
+	t : t . '*' f  (36)
+	t : t . '/' f  (37)
 
-	'*'  shift 52
-	'/'  shift 53
-	COMP_MAYOR_IGUAL  reduce 36
-	COMP_MENOR_IGUAL  reduce 36
-	COMP_DISTINTO  reduce 36
-	'-'  reduce 36
-	'+'  reduce 36
-	';'  reduce 36
-	']'  reduce 36
-	')'  reduce 36
-	'>'  reduce 36
-	'<'  reduce 36
-	'='  reduce 36
+	'*'  shift 50
+	'/'  shift 51
+	COMP_MAYOR_IGUAL  reduce 35
+	COMP_MENOR_IGUAL  reduce 35
+	COMP_DISTINTO  reduce 35
+	';'  reduce 35
+	']'  reduce 35
+	')'  reduce 35
+	'>'  reduce 35
+	'<'  reduce 35
+	'='  reduce 35
+	'+'  reduce 35
+	'-'  reduce 35
+
+
+state 33
+	t : f .  (38)
+
+	.  reduce 38
 
 
 state 34
-	t : f .  (40)
+	f : valor .  (39)
 
-	.  reduce 40
+	.  reduce 39
 
 
 state 35
 	asignable : IDENTIFICADOR '[' . e ']'  (45)
 
 	IDENTIFICADOR  shift 16
-	ENTERO  shift 45
-	ENTERO_LSS  shift 29
-	'-'  shift 30
+	ENTERO  shift 43
+	ENTERO_LSS  shift 28
+	'-'  shift 29
 	.  error
 
-	asignable  goto 31
-	e  goto 32
-	t  goto 33
-	f  goto 34
+	asignable  goto 30
+	e  goto 31
+	t  goto 32
+	f  goto 33
+	valor  goto 34
 
 
 state 36
@@ -448,7 +446,7 @@ state 36
 state 37
 	lista_variables : lista_variables ',' . IDENTIFICADOR  (7)
 
-	IDENTIFICADOR  shift 54
+	IDENTIFICADOR  shift 52
 	.  error
 
 
@@ -456,18 +454,18 @@ state 38
 	seleccion : PR_SI '(' . condicion ')' PR_ENTONCES bloque  (19)
 	seleccion : PR_SI '(' . condicion ')' PR_ENTONCES bloque PR_SINO bloque  (20)
 
-	error  shift 55
 	IDENTIFICADOR  shift 16
-	ENTERO  shift 45
-	ENTERO_LSS  shift 29
-	'-'  shift 30
+	ENTERO  shift 43
+	ENTERO_LSS  shift 28
+	'-'  shift 29
 	.  error
 
-	condicion  goto 56
-	asignable  goto 31
-	e  goto 57
-	t  goto 33
-	f  goto 34
+	condicion  goto 53
+	asignable  goto 30
+	e  goto 54
+	t  goto 32
+	f  goto 33
+	valor  goto 34
 
 
 state 39
@@ -481,7 +479,7 @@ state 39
 	PR_IMPRIMIR  reduce 16
 	PR_ITERAR  reduce 14
 
-	sent_ejecutable  goto 58
+	sent_ejecutable  goto 55
 	sentencia  goto 9
 	$$1  goto 10
 	$$2  goto 11
@@ -497,158 +495,146 @@ state 40
 
 
 state 41
-	iteracion : PR_ITERAR bloque . PR_HASTA condicion  (21)
+	iteracion : PR_ITERAR bloque . PR_HASTA condicion ';'  (21)
 
-	PR_HASTA  shift 59
+	PR_HASTA  shift 56
 	.  error
 
 
 state 42
-	sentencia : $$2 iteracion ';' .  (15)
+	impresion : PR_IMPRIMIR '(' . CADENA_MULTILINEA ')' ';'  (22)
 
-	.  reduce 15
-
-
-state 43
-	impresion : PR_IMPRIMIR '(' . CADENA_MULTILINEA ')'  (22)
-
-	CADENA_MULTILINEA  shift 60
+	CADENA_MULTILINEA  shift 57
 	.  error
 
 
-state 44
-	sentencia : $$3 impresion ';' .  (17)
-
-	.  reduce 17
-
-
-state 45
-	f : ENTERO .  (42)
+state 43
+	valor : ENTERO .  (42)
 
 	.  reduce 42
 
 
-state 46
-	asignacion : asignable ASIGNACION e .  (23)
-	e : e . '+' t  (34)
-	e : e . '-' t  (35)
+state 44
+	asignacion : asignable ASIGNACION e . ';'  (23)
+	e : e . '+' t  (33)
+	e : e . '-' t  (34)
 
+	';'  shift 58
+	'+'  shift 48
 	'-'  shift 49
-	'+'  shift 50
-	';'  reduce 23
+	.  error
+
+
+state 45
+	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO . ENTERO ']' PR_VECTOR PR_DE tipo_dato ';'  (5)
+
+	ENTERO  shift 59
+	.  error
+
+
+state 46
+	f : '-' valor .  (40)
+
+	.  reduce 40
 
 
 state 47
-	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO . ENTERO ']' PR_VECTOR PR_DE tipo_dato ';'  (5)
-
-	ENTERO  shift 61
-	.  error
-
-
-state 48
-	e : e . '+' t  (34)
-	e : e . '-' t  (35)
-	e : '-' e .  (37)
-
-	.  reduce 37
-
-
-state 49
-	e : e '-' . t  (35)
-
-	IDENTIFICADOR  shift 16
-	ENTERO  shift 45
-	ENTERO_LSS  shift 29
-	.  error
-
-	asignable  goto 31
-	t  goto 62
-	f  goto 34
-
-
-state 50
-	e : e '+' . t  (34)
-
-	IDENTIFICADOR  shift 16
-	ENTERO  shift 45
-	ENTERO_LSS  shift 29
-	.  error
-
-	asignable  goto 31
-	t  goto 63
-	f  goto 34
-
-
-state 51
 	asignable : IDENTIFICADOR '[' e ']' .  (45)
 
 	.  reduce 45
 
 
+state 48
+	e : e '+' . t  (33)
+
+	IDENTIFICADOR  shift 16
+	ENTERO  shift 43
+	ENTERO_LSS  shift 28
+	'-'  shift 29
+	.  error
+
+	asignable  goto 30
+	t  goto 60
+	f  goto 33
+	valor  goto 34
+
+
+state 49
+	e : e '-' . t  (34)
+
+	IDENTIFICADOR  shift 16
+	ENTERO  shift 43
+	ENTERO_LSS  shift 28
+	'-'  shift 29
+	.  error
+
+	asignable  goto 30
+	t  goto 61
+	f  goto 33
+	valor  goto 34
+
+
+state 50
+	t : t '*' . f  (36)
+
+	IDENTIFICADOR  shift 16
+	ENTERO  shift 43
+	ENTERO_LSS  shift 28
+	'-'  shift 29
+	.  error
+
+	asignable  goto 30
+	f  goto 62
+	valor  goto 34
+
+
+state 51
+	t : t '/' . f  (37)
+
+	IDENTIFICADOR  shift 16
+	ENTERO  shift 43
+	ENTERO_LSS  shift 28
+	'-'  shift 29
+	.  error
+
+	asignable  goto 30
+	f  goto 63
+	valor  goto 34
+
+
 state 52
-	t : t '*' . f  (38)
-
-	IDENTIFICADOR  shift 16
-	ENTERO  shift 45
-	ENTERO_LSS  shift 29
-	.  error
-
-	asignable  goto 31
-	f  goto 64
-
-
-state 53
-	t : t '/' . f  (39)
-
-	IDENTIFICADOR  shift 16
-	ENTERO  shift 45
-	ENTERO_LSS  shift 29
-	.  error
-
-	asignable  goto 31
-	f  goto 65
-
-
-state 54
 	lista_variables : lista_variables ',' IDENTIFICADOR .  (7)
 
 	.  reduce 7
 
 
-state 55
-	condicion : error . ';'  (27)
-
-	';'  shift 66
-	.  error
-
-
-state 56
+state 53
 	seleccion : PR_SI '(' condicion . ')' PR_ENTONCES bloque  (19)
 	seleccion : PR_SI '(' condicion . ')' PR_ENTONCES bloque PR_SINO bloque  (20)
 
-	')'  shift 67
+	')'  shift 64
 	.  error
 
 
-state 57
+state 54
 	condicion : e . comparador e  (26)
-	e : e . '+' t  (34)
-	e : e . '-' t  (35)
+	e : e . '+' t  (33)
+	e : e . '-' t  (34)
 
-	COMP_MAYOR_IGUAL  shift 68
-	COMP_MENOR_IGUAL  shift 69
-	COMP_DISTINTO  shift 70
+	COMP_MAYOR_IGUAL  shift 65
+	COMP_MENOR_IGUAL  shift 66
+	COMP_DISTINTO  shift 67
+	'>'  shift 68
+	'<'  shift 69
+	'='  shift 70
+	'+'  shift 48
 	'-'  shift 49
-	'+'  shift 50
-	'>'  shift 71
-	'<'  shift 72
-	'='  shift 73
 	.  error
 
-	comparador  goto 74
+	comparador  goto 71
 
 
-state 58
+state 55
 	sent_ejecutable : sent_ejecutable . sentencia  (11)
 	bloque : '{' sent_ejecutable . '}'  (25)
 	$$1 : .  (12)
@@ -656,7 +642,7 @@ state 58
 	$$3 : .  (16)
 
 	IDENTIFICADOR  shift 16
-	'}'  shift 75
+	'}'  shift 72
 	PR_SI  reduce 12
 	PR_IMPRIMIR  reduce 16
 	PR_ITERAR  reduce 14
@@ -669,180 +655,183 @@ state 58
 	asignable  goto 14
 
 
-state 59
-	iteracion : PR_ITERAR bloque PR_HASTA . condicion  (21)
+state 56
+	iteracion : PR_ITERAR bloque PR_HASTA . condicion ';'  (21)
 
-	error  shift 55
 	IDENTIFICADOR  shift 16
-	ENTERO  shift 45
-	ENTERO_LSS  shift 29
-	'-'  shift 30
+	ENTERO  shift 43
+	ENTERO_LSS  shift 28
+	'-'  shift 29
 	.  error
 
-	condicion  goto 76
-	asignable  goto 31
-	e  goto 57
-	t  goto 33
-	f  goto 34
+	condicion  goto 73
+	asignable  goto 30
+	e  goto 54
+	t  goto 32
+	f  goto 33
+	valor  goto 34
+
+
+state 57
+	impresion : PR_IMPRIMIR '(' CADENA_MULTILINEA . ')' ';'  (22)
+
+	')'  shift 74
+	.  error
+
+
+state 58
+	asignacion : asignable ASIGNACION e ';' .  (23)
+
+	.  reduce 23
+
+
+state 59
+	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO . ']' PR_VECTOR PR_DE tipo_dato ';'  (5)
+
+	']'  shift 75
+	.  error
 
 
 state 60
-	impresion : PR_IMPRIMIR '(' CADENA_MULTILINEA . ')'  (22)
+	e : e '+' t .  (33)
+	t : t . '*' f  (36)
+	t : t . '/' f  (37)
 
-	')'  shift 77
-	.  error
+	'*'  shift 50
+	'/'  shift 51
+	COMP_MAYOR_IGUAL  reduce 33
+	COMP_MENOR_IGUAL  reduce 33
+	COMP_DISTINTO  reduce 33
+	';'  reduce 33
+	']'  reduce 33
+	')'  reduce 33
+	'>'  reduce 33
+	'<'  reduce 33
+	'='  reduce 33
+	'+'  reduce 33
+	'-'  reduce 33
 
 
 state 61
-	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO . ']' PR_VECTOR PR_DE tipo_dato ';'  (5)
+	e : e '-' t .  (34)
+	t : t . '*' f  (36)
+	t : t . '/' f  (37)
 
-	']'  shift 78
-	.  error
-
-
-state 62
-	e : e '-' t .  (35)
-	t : t . '*' f  (38)
-	t : t . '/' f  (39)
-
-	'*'  shift 52
-	'/'  shift 53
-	COMP_MAYOR_IGUAL  reduce 35
-	COMP_MENOR_IGUAL  reduce 35
-	COMP_DISTINTO  reduce 35
-	'-'  reduce 35
-	'+'  reduce 35
-	';'  reduce 35
-	']'  reduce 35
-	')'  reduce 35
-	'>'  reduce 35
-	'<'  reduce 35
-	'='  reduce 35
-
-
-state 63
-	e : e '+' t .  (34)
-	t : t . '*' f  (38)
-	t : t . '/' f  (39)
-
-	'*'  shift 52
-	'/'  shift 53
+	'*'  shift 50
+	'/'  shift 51
 	COMP_MAYOR_IGUAL  reduce 34
 	COMP_MENOR_IGUAL  reduce 34
 	COMP_DISTINTO  reduce 34
-	'-'  reduce 34
-	'+'  reduce 34
 	';'  reduce 34
 	']'  reduce 34
 	')'  reduce 34
 	'>'  reduce 34
 	'<'  reduce 34
 	'='  reduce 34
+	'+'  reduce 34
+	'-'  reduce 34
+
+
+state 62
+	t : t '*' f .  (36)
+
+	.  reduce 36
+
+
+state 63
+	t : t '/' f .  (37)
+
+	.  reduce 37
 
 
 state 64
-	t : t '*' f .  (38)
-
-	.  reduce 38
-
-
-state 65
-	t : t '/' f .  (39)
-
-	.  reduce 39
-
-
-state 66
-	condicion : error ';' .  (27)
-
-	.  reduce 27
-
-
-state 67
 	seleccion : PR_SI '(' condicion ')' . PR_ENTONCES bloque  (19)
 	seleccion : PR_SI '(' condicion ')' . PR_ENTONCES bloque PR_SINO bloque  (20)
 
-	PR_ENTONCES  shift 79
+	PR_ENTONCES  shift 76
 	.  error
 
 
-state 68
-	comparador : COMP_MAYOR_IGUAL .  (29)
-
-	.  reduce 29
-
-
-state 69
-	comparador : COMP_MENOR_IGUAL .  (31)
-
-	.  reduce 31
-
-
-state 70
-	comparador : COMP_DISTINTO .  (33)
-
-	.  reduce 33
-
-
-state 71
-	comparador : '>' .  (28)
+state 65
+	comparador : COMP_MAYOR_IGUAL .  (28)
 
 	.  reduce 28
 
 
-state 72
-	comparador : '<' .  (30)
+state 66
+	comparador : COMP_MENOR_IGUAL .  (30)
 
 	.  reduce 30
 
 
-state 73
-	comparador : '=' .  (32)
+state 67
+	comparador : COMP_DISTINTO .  (32)
 
 	.  reduce 32
 
 
-state 74
+state 68
+	comparador : '>' .  (27)
+
+	.  reduce 27
+
+
+state 69
+	comparador : '<' .  (29)
+
+	.  reduce 29
+
+
+state 70
+	comparador : '=' .  (31)
+
+	.  reduce 31
+
+
+state 71
 	condicion : e comparador . e  (26)
 
 	IDENTIFICADOR  shift 16
-	ENTERO  shift 45
-	ENTERO_LSS  shift 29
-	'-'  shift 30
+	ENTERO  shift 43
+	ENTERO_LSS  shift 28
+	'-'  shift 29
 	.  error
 
-	asignable  goto 31
-	e  goto 80
-	t  goto 33
-	f  goto 34
+	asignable  goto 30
+	e  goto 77
+	t  goto 32
+	f  goto 33
+	valor  goto 34
 
 
-state 75
+state 72
 	bloque : '{' sent_ejecutable '}' .  (25)
 
 	.  reduce 25
 
 
-state 76
-	iteracion : PR_ITERAR bloque PR_HASTA condicion .  (21)
+state 73
+	iteracion : PR_ITERAR bloque PR_HASTA condicion . ';'  (21)
 
-	.  reduce 21
-
-
-state 77
-	impresion : PR_IMPRIMIR '(' CADENA_MULTILINEA ')' .  (22)
-
-	.  reduce 22
-
-
-state 78
-	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' . PR_VECTOR PR_DE tipo_dato ';'  (5)
-
-	PR_VECTOR  shift 81
+	';'  shift 78
 	.  error
 
 
-state 79
+state 74
+	impresion : PR_IMPRIMIR '(' CADENA_MULTILINEA ')' . ';'  (22)
+
+	';'  shift 79
+	.  error
+
+
+state 75
+	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' . PR_VECTOR PR_DE tipo_dato ';'  (5)
+
+	PR_VECTOR  shift 80
+	.  error
+
+
+state 76
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES . bloque  (19)
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES . bloque PR_SINO bloque  (20)
 	$$1 : .  (12)
@@ -860,33 +849,45 @@ state 79
 	$$2  goto 11
 	$$3  goto 12
 	asignacion  goto 13
-	bloque  goto 82
+	bloque  goto 81
 	asignable  goto 14
 
 
-state 80
+state 77
 	condicion : e comparador e .  (26)
-	e : e . '+' t  (34)
-	e : e . '-' t  (35)
+	e : e . '+' t  (33)
+	e : e . '-' t  (34)
 
+	'+'  shift 48
 	'-'  shift 49
-	'+'  shift 50
 	';'  reduce 26
 	')'  reduce 26
 
 
-state 81
+state 78
+	iteracion : PR_ITERAR bloque PR_HASTA condicion ';' .  (21)
+
+	.  reduce 21
+
+
+state 79
+	impresion : PR_IMPRIMIR '(' CADENA_MULTILINEA ')' ';' .  (22)
+
+	.  reduce 22
+
+
+state 80
 	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR . PR_DE tipo_dato ';'  (5)
 
-	PR_DE  shift 83
+	PR_DE  shift 82
 	.  error
 
 
-state 82
+state 81
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES bloque .  (19)
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES bloque . PR_SINO bloque  (20)
 
-	PR_SINO  shift 84
+	PR_SINO  shift 83
 	$end  reduce 19
 	IDENTIFICADOR  reduce 19
 	PR_SI  reduce 19
@@ -896,17 +897,17 @@ state 82
 	'}'  reduce 19
 
 
-state 83
+state 82
 	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE . tipo_dato ';'  (5)
 
 	PR_ENTERO  shift 4
 	PR_ENTERO_LSS  shift 5
 	.  error
 
-	tipo_dato  goto 85
+	tipo_dato  goto 84
 
 
-state 84
+state 83
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO . bloque  (20)
 	$$1 : .  (12)
 	$$2 : .  (14)
@@ -923,28 +924,28 @@ state 84
 	$$2  goto 11
 	$$3  goto 12
 	asignacion  goto 13
-	bloque  goto 86
+	bloque  goto 85
 	asignable  goto 14
 
 
-state 85
+state 84
 	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato . ';'  (5)
 
-	';'  shift 87
+	';'  shift 86
 	.  error
 
 
-state 86
+state 85
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO bloque .  (20)
 
 	.  reduce 20
 
 
-state 87
+state 86
 	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';' .  (5)
 
 	.  reduce 5
 
 
-37 terminals, 22 nonterminals
-46 grammar rules, 88 states
+37 terminals, 23 nonterminals
+46 grammar rules, 87 states
