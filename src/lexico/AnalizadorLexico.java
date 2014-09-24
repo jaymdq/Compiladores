@@ -53,6 +53,8 @@ public class AnalizadorLexico {
 			estado = transicion.getNuevoEstado();
 			transicion.ejecutarAccionSemantica(token,simbolo,proyecto);
 
+			System.out.println("Simbolo " + simbolo + " \nEstado " + estado);
+			
 			// Si el simbolo es una nueva linea, avanzo de linea en el proyecto
 			if ( simbolo.getTipo().equals(Simbolo.TipoSimbolo.NUEVA_LINEA) )
 				proyecto.avanzarLinea();
@@ -146,7 +148,7 @@ public class AnalizadorLexico {
 			matrizTransicion.setTransicion(Estado.UNO, TipoSimbolo.TABULACION, new Transicion(Estado.FINAL, new AS_ID_Finish(false)));
 			matrizTransicion.setTransicion(Estado.UNO, TipoSimbolo.RETORNO, new Transicion(Estado.FINAL, new AS_ID_Finish(false)));
 			// Simbolo invalido
-			matrizTransicion.setTransicion(Estado.UNO, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.TRECE, new AS_Invalid_Start()));
+			matrizTransicion.setTransicion(Estado.UNO, TipoSimbolo.INVALIDO, new Transicion(Estado.TRECE, new AS_Invalid_Start()));
 			// Default
 			matrizTransicion.setDefault(Estado.UNO, new Transicion(Estado.FINAL, new AS_ID_Finish(true)));
 
