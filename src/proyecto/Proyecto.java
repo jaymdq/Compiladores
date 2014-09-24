@@ -20,7 +20,7 @@ public class Proyecto extends Observable {
 	private List<Token> listaTokens;	// Lista de referencias a tokens que aparecen en el analisis lexico
 	private List<String> listaSentencias;
 	private int posicion;
-	private static int lineaActual;
+	private int lineaActual;
 	
 	public Proyecto(File archivo) {
 		this.archivo = archivo;
@@ -107,7 +107,7 @@ public class Proyecto extends Observable {
 		notifyObservers(to);
 	}
 
-	public static int getLineaActual() {
+	public int getLineaActual() {
 		return lineaActual;
 	}
 

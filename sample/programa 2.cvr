@@ -1,0 +1,25 @@
+** Sentencias Declarativas
+entero a,b;
+
+** Sentencias de Ejecución
+a := 1;
+
+si ( a > 0 ) entonces
+	si ( a = 1 ) entonces
+		imprimir('a es igual a 1');
+	sino{
+		imprimir('a no es 1');
+		imprimir('pero a es mayor a 0');
+	}
+
+iterar 
+	imprimir('Que buen compilador.');
+hasta a > 0;
+
+si (a>0) entonces
+	iterar{
+		a := a + 1;
+	}
+	hasta a = 10;
+sino
+	imprimir ('gg');

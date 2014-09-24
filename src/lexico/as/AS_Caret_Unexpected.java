@@ -5,7 +5,7 @@ import proyecto.Proyecto;
 import proyecto.Simbolo;
 import proyecto.Token;
 
-public class AS12 extends AccionSemantica {
+public class AS_Caret_Unexpected extends AccionSemantica {
 
 	@Override
 	public void ejecutar(Token t, Simbolo s, Proyecto p) {

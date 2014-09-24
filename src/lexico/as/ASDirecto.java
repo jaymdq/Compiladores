@@ -20,12 +20,8 @@ public class ASDirecto extends AccionSemantica {
 		t.setTipo(this.tipo);
 		t.setLexema(tipo.toString());
 		p.addTokenToList(t);
-		if(doBack){
+		if(doBack)
 			p.back();
-			//Areglar linea actual del proyecto
-			p.retrocederLinea();
-		}
-			
 	}
 
 }

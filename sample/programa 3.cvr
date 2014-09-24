@@ -1,0 +1,9 @@
+** Sentencias Declarativas
+entero a,b;
+
+** Sentencias de Ejecución
+a := 1;
+
+si ( a > 0 ) entonces
+	imprimir ('a es mayor a 0');
+		

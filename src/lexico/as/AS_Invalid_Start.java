@@ -1,15 +1,15 @@
 package lexico.as;
 
-import gui.ConsolaManager;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
 import proyecto.Token;
 
-public class AS14 extends AccionSemantica {
+public class AS_Invalid_Start extends AccionSemantica {
 
 	@Override
 	public void ejecutar(Token t, Simbolo s, Proyecto p) {
-		ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] Carácter sólo."); 
+		t.setTipo(null);
+		t.agregarCaracter(s.getCaracter());
 	}
 
 }
