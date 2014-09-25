@@ -11,6 +11,7 @@ import java.util.Vector;
 
 import lexico.AnalizadorLexico;
 import sintactico.AnalizadorSintactico;
+import sintactico.ParserVal;
 
 public class Proyecto extends Observable {
 	
@@ -98,7 +99,9 @@ public class Proyecto extends Observable {
 
 	public Token addTokenToTable(Token to) {
 		this.addTokenToList(to);
-		return this.tablaSimbolos.add(to);
+		Token salida = this.tablaSimbolos.add(to);
+		AnalizadorLexico.yylval = new ParserVal(this.tablaSimbolos.getPos(salida.getLexema()));
+		return salida;
 	}
 	
 	public void addTokenToList(Token to) {

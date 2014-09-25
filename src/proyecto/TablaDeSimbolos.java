@@ -3,6 +3,9 @@ package proyecto;
 import java.util.Observable;
 import java.util.Vector;
 
+import sintactico.ParserVal;
+import lexico.AnalizadorLexico;
+
 public class TablaDeSimbolos extends Observable {
 
 	private Vector<Token> tabla;
@@ -42,13 +45,16 @@ public class TablaDeSimbolos extends Observable {
 	}
 	
 	public Token add(Token to) {
-		if (this.containsToken(to.getLexema()))
+		if (this.containsToken(to.getLexema())){
+			this.tabla.elementAt(this.getPos(to.getLexema())).aumentarContador();
 			return this.tabla.elementAt(this.getPos(to.getLexema()));
+		}
+			
 		this.tabla.add(to);
 		this.setChanged();
 		this.notifyObservers(to);
 		
-		
+		AnalizadorLexico.yylval = new ParserVal(tabla.size() - 1);
 		return to;
 	}
 	
@@ -60,6 +66,10 @@ public class TablaDeSimbolos extends Observable {
 
 	public Vector<Token> getList() {
 		return tabla;
+	}
+
+	public void setearCambios() {
+		this.setChanged();
 	}
 
 }

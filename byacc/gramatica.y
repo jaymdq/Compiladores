@@ -84,12 +84,12 @@ t	: t '*' f			{ $$.ival = $1.ival * $3.ival; }
 	;
 	
 f	: valor
+	| ENTERO_LSS
 	| '-' valor %prec NEG	{ chequearNegativo($2.ival); $$.ival = -$2.ival; }
 	;
 
 valor	: asignable
 		| ENTERO
-		| ENTERO_LSS
 		;
 
 asignable	: IDENTIFICADOR

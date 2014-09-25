@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -503,9 +504,11 @@ public class MainWindow {
 		// Tabla de simbolos
 		Observer o = new Observer() {
 			public void update(Observable o, Object arg) {
-				if (arg == null)
+				if (arg == null){
 					borrarTablaSimbolos();
-				else {
+					
+				}	
+				else{
 					Token t = (Token) arg;
 					DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
 					modelo.addRow(new Object[] {t.getTipo(),t.getLexema()});

@@ -22,6 +22,7 @@ public class Token {
 	public final static short COMP_DISTINTO=273;
 	public final static short ASIGNACION=274;
 	public final static short RANGO=275;
+	public final static short FUERA_RANGO=276;
 	public final static short YYERRCODE=256;
 	
 	
@@ -69,7 +70,9 @@ public class Token {
 		COMP_DISTINTO(Token.COMP_DISTINTO), 
 		ASIGNACION(Token.ASIGNACION), 
 		RANGO(Token.RANGO),
-		FIN_ARCHIVO(0);
+		FIN_ARCHIVO(0),
+		ERROR(Token.YYERRCODE), 
+		FUERA_RANGO(Token.FUERA_RANGO);
 		
 	
 		private int valor;
@@ -136,6 +139,7 @@ public class Token {
 	private String lexema;
 	private TipoToken tipo;
 	private boolean reservado;
+	private int contador = 1;
 	
 	public Token() {
 		this.setLexema("");
@@ -195,5 +199,15 @@ public class Token {
 		this.reservado = r;
 	}
 	
+	public void aumentarContador(){
+		contador++;
+	}
 	
+	public void disminuirContador(){
+		contador--;
+	}
+	
+	public int getContador(){
+		return contador;
+	}
 }

@@ -53,8 +53,6 @@ public class AnalizadorLexico {
 			estado = transicion.getNuevoEstado();
 			transicion.ejecutarAccionSemantica(token,simbolo,proyecto);
 
-			System.out.println("Simbolo " + simbolo + " \nEstado " + estado);
-			
 			// Si el simbolo es una nueva linea, avanzo de linea en el proyecto
 			if ( simbolo.getTipo().equals(Simbolo.TipoSimbolo.NUEVA_LINEA) )
 				proyecto.avanzarLinea();

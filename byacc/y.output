@@ -60,11 +60,11 @@
   38    | f
 
   39  f : valor
-  40    | '-' valor
+  40    | ENTERO_LSS
+  41    | '-' valor
 
-  41  valor : asignable
-  42        | ENTERO
-  43        | ENTERO_LSS
+  42  valor : asignable
+  43        | ENTERO
 
   44  asignable : IDENTIFICADOR
   45            | IDENTIFICADOR '[' e ']'
@@ -344,28 +344,27 @@ state 26
 
 state 27
 	declaracion : IDENTIFICADOR '[' ENTERO . PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';'  (5)
-	valor : ENTERO .  (42)
+	valor : ENTERO .  (43)
 
 	PUNTO_PUNTO  shift 45
-	']'  reduce 42
-	'+'  reduce 42
-	'-'  reduce 42
-	'*'  reduce 42
-	'/'  reduce 42
+	']'  reduce 43
+	'+'  reduce 43
+	'-'  reduce 43
+	'*'  reduce 43
+	'/'  reduce 43
 
 
 state 28
-	valor : ENTERO_LSS .  (43)
+	f : ENTERO_LSS .  (40)
 
-	.  reduce 43
+	.  reduce 40
 
 
 state 29
-	f : '-' . valor  (40)
+	f : '-' . valor  (41)
 
 	IDENTIFICADOR  shift 16
 	ENTERO  shift 43
-	ENTERO_LSS  shift 28
 	.  error
 
 	asignable  goto 30
@@ -373,9 +372,9 @@ state 29
 
 
 state 30
-	valor : asignable .  (41)
+	valor : asignable .  (42)
 
-	.  reduce 41
+	.  reduce 42
 
 
 state 31
@@ -509,9 +508,9 @@ state 42
 
 
 state 43
-	valor : ENTERO .  (42)
+	valor : ENTERO .  (43)
 
-	.  reduce 42
+	.  reduce 43
 
 
 state 44
@@ -533,9 +532,9 @@ state 45
 
 
 state 46
-	f : '-' valor .  (40)
+	f : '-' valor .  (41)
 
-	.  reduce 40
+	.  reduce 41
 
 
 state 47
