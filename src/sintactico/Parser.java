@@ -418,13 +418,23 @@ private boolean chequearNegativo(Integer valor){
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
 	if ( t.getContador() == 1){
 		//Lo pisas
-		t.setLexema("-"+t.getLexema());
+		
+		Token tnuevo = new Token(Token.TipoToken.ENTERO,"-"+t.getLexema());
+		if (! proyecto.getTablaDeSimbolos().containsToken(tnuevo.getLexema()) )
+			t.setLexema("-"+t.getLexema());
+		else{
+			proyecto.getTablaDeSimbolos().getToken(tnuevo.getLexema()).aumentarContador();
+			proyecto.getTablaDeSimbolos().remove(t.getLexema());
+		}
 	}else{
 		//restas y creas otro
 		t.disminuirContador();
+		
 		Token tnuevo = new Token(Token.TipoToken.ENTERO,"-"+t.getLexema());
 		if (! proyecto.getTablaDeSimbolos().containsToken(tnuevo.getLexema()) )
-			proyecto.addTokenToList(tnuevo);
+			proyecto.getTablaDeSimbolos().add(tnuevo);
+		else
+			proyecto.getTablaDeSimbolos().getToken(tnuevo.getLexema()).aumentarContador();
 	}
 	proyecto.getTablaDeSimbolos().setearCambios();
 	proyecto.getTablaDeSimbolos().notifyObservers();

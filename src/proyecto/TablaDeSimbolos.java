@@ -58,6 +58,15 @@ public class TablaDeSimbolos extends Observable {
 		return to;
 	}
 	
+	public void remove(String lexema){
+		for (Token t : tabla){
+			if (t.getLexema().equals(lexema)){
+				tabla.remove(t);
+				return;
+			}
+		}
+	}
+	
 	public void clear() {
 		this.tabla.clear();
 		this.setChanged();
