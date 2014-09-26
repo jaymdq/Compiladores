@@ -1,0 +1,9 @@
+entero a
+,b;
+vec[1..10] vector de entero_lss;
+a := 1
++	2;
+si ( vec[a+1]  30) entonces
+	imprimir('sisisisi 
+			+ nononono');
+			

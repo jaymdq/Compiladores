@@ -1,0 +1,10 @@
+imprimir('Hola');
+imprimir'como');
+imprimir();
+imprimir('va';
+imprimir(a);
+imprimir(3);
+imprimir(a
+;
+imprimir(a)
+** Hay que detectar las faltas de los ;

@@ -21,7 +21,7 @@ public class Token {
 	public final static short COMP_MENOR_IGUAL=272;
 	public final static short COMP_DISTINTO=273;
 	public final static short ASIGNACION=274;
-	public final static short RANGO=275;
+	public final static short PUNTO_PUNTO=275;
 	public final static short FUERA_RANGO=276;
 	public final static short YYERRCODE=256;
 	
@@ -69,10 +69,10 @@ public class Token {
 		COMP_MENOR_IGUAL(Token.COMP_MENOR_IGUAL), 
 		COMP_DISTINTO(Token.COMP_DISTINTO), 
 		ASIGNACION(Token.ASIGNACION), 
-		RANGO(Token.RANGO),
 		FIN_ARCHIVO(0),
 		ERROR(Token.YYERRCODE), 
-		FUERA_RANGO(Token.FUERA_RANGO);
+		FUERA_RANGO(Token.FUERA_RANGO), 
+		PUNTO_PUNTO(Token.PUNTO_PUNTO);
 		
 	
 		private int valor;
@@ -121,8 +121,8 @@ public class Token {
 				return ":=";
 			else if (this.equals(FIN_ARCHIVO))
 				return "EOF";
-			else if (this.equals(RANGO))
-				return "RANGO";
+			else if (this.equals(PUNTO_PUNTO))
+				return "..";
 			else
 				return super.toString();
 		}

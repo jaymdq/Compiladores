@@ -12,6 +12,7 @@ import lexico.as.AS_Chain_Start;
 import lexico.as.AS_Chain_Unexpected;
 import lexico.as.AS_Colon_Unexpected;
 import lexico.as.AS_Continue;
+import lexico.as.AS_Dot_Expected;
 import lexico.as.AS_ID_Finish;
 import lexico.as.AS_ID_Start;
 import lexico.as.AS_Invalid_Finish;
@@ -109,8 +110,6 @@ public class AnalizadorLexico {
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.MENOR, new Transicion(Estado.CINCO));
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.ACENTO_CIRCUNFLEJO, new Transicion(Estado.SEIS));
 
-			// WARNING PUNTO
-			//matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.PUNTO, new Transicion(Estado.ONCE, new AS_ID_Continue()));
 			// Simples
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.MAS, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.OP_MAS,false)));
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.MENOS, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.OP_MENOS,false)));
@@ -125,7 +124,8 @@ public class AnalizadorLexico {
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.CORCHETE_ABIERTO, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.CORCHETE_ABIERTO,false)));
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.CORCHETE_CERRADO, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.CORCHETE_CERRADO,false)));
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.FIN_ARCHIVO, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.FIN_ARCHIVO,false)));
-
+			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.PUNTO, new Transicion(Estado.ONCE, new AS_Continue()));
+			
 			// Ignorados
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.INICIAL));
 			matrizTransicion.setTransicion(Estado.INICIAL, TipoSimbolo.TABULACION, new Transicion(Estado.INICIAL));
@@ -245,8 +245,8 @@ public class AnalizadorLexico {
 			matrizTransicion.setDefault(Estado.DIEZ, new Transicion(Estado.INICIAL, new AS_Chain_Unexpected()));
 
 			// Estado 11
-			//matrizTransicion.setTransicion(Estado.ONCE, TipoSimbolo.PUNTO, new Transicion(Estado.FINAL,new ASDirecto(TipoToken.PUNTO_PUNTO,false)));
-			//matrizTransicion.setDefault(Estado.ONCE, new Transicion(Estado.INICIAL, new AS13()));
+			matrizTransicion.setTransicion(Estado.ONCE, TipoSimbolo.PUNTO, new Transicion(Estado.FINAL,new ASDirecto(TipoToken.PUNTO_PUNTO,false)));
+			matrizTransicion.setDefault(Estado.ONCE, new Transicion(Estado.INICIAL, new AS_Dot_Expected()));
 
 			// Estado 13
 			// Sigue token

@@ -17,9 +17,9 @@ public class AnalizadorSintactico {
 		int salida = parser.yyparse();
 	
 		if (salida == 0){
-			ConsolaManager.getInstance().escribirInfo("Sintáctico: Todo Resultó Bien.");
+			ConsolaManager.getInstance().escribirInfo("Sintáctico: Se completó la lectura del programa.");
 		}else{
-			ConsolaManager.getInstance().escribirInfo("Sintáctico: Error Sintáctico.");
+			ConsolaManager.getInstance().escribirInfo("Sintáctico: No se pudo completar la lectura del programa.");
 		}
 			
 	}
