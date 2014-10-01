@@ -1,5 +1,6 @@
 entero z;
-vec[1.3] vector de entero;
+vec[1.
+3] vector de entero;
 d := 12;
 c := -12;
 a := -12;

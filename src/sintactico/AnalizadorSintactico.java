@@ -6,14 +6,13 @@ import proyecto.Proyecto;
 public class AnalizadorSintactico {
 
 	public static void ejecutar(Proyecto proyecto) {
-		/*int t;
-		do {
-			t = AnalizadorLexico.yylex();
-		} while (t!=0);*/
 				
 		Parser parser = new Parser(proyecto);
 		
+		//Se comienza a parsear
 		parser.yyparse();
+		
+		//Se cuenta la cantidad de errores
 		int salida = parser.getCantidadErrores();
 	
 		if (salida == 0){

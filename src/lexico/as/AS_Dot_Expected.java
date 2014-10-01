@@ -4,7 +4,6 @@ import gui.ConsolaManager;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
 import proyecto.Token;
-import proyecto.Simbolo.TipoSimbolo;
 
 public class AS_Dot_Expected extends AccionSemantica {
 	

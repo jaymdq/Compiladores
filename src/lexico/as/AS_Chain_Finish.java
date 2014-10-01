@@ -1,10 +1,8 @@
 package lexico.as;
 
-import lexico.AnalizadorLexico;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
 import proyecto.Token;
-import sintactico.ParserVal;
 
 public class AS_Chain_Finish extends AccionSemantica {
 

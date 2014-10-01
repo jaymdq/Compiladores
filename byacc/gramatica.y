@@ -63,22 +63,20 @@ sentencia 	:  sentencia_valida
 			|  declaracion { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }  
 			;
 			
-sentencia_invalida	: error ';' { escribirError("Sentencia inválida."); }  
+sentencia_invalida	:  error ';' { escribirError("Sentencia inválida."); } 
 					;
 
-seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque	 %prec INFERIOR_A_SINO								
+seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque	 %prec INFERIOR_A_SINO					
 			| PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO bloque	
 			| seleccion_invalida
 			;
 			
 seleccion_invalida	: PR_SI {escribirError("Falta '(' en sentencia si.");} condicion ')' PR_ENTONCES bloque 
-					| PR_SI '(' error ')' {escribirError("Condición inválida en la sentencia si.");} PR_ENTONCES bloque 
-					/*| PR_SI '(' error ')' PR_ENTONCES bloque PR_SINO bloque*/
-					
-					/*| PR_SI condicion ')' PR_ENTONCES  bloque PR_SINO  bloque 
-					| PR_SI '(' ')' error  {escribirError("Falta condición en sentencia si.");}
-					| PR_SI '(' condicion PR_ENTONCES error 	{escribirError("Falta ')' en sentencia si.");}
-					| PR_SI '(' condicion ')' bloque {escribirError("Falta la palabra reservada \"entonces\".");}*/
+					| PR_SI '(' condicion {escribirError("Falta ')' en sentencia si.");} PR_ENTONCES bloque 
+					| PR_SI '(' error ')' PR_ENTONCES bloque  %prec INFERIOR_A_SINO {escribirError("Condición inválida en la sentencia si.");}
+					| PR_SI '(' error ')' PR_ENTONCES bloque PR_SINO bloque  		{escribirError("Condición inválida en la sentencia si.");}
+					| PR_SI '(' condicion ')' error bloque {escribirError("Sentencia si inválida.");}
+					| PR_SI error bloque {escribirError("Sentencia si inválida.");}
 					;
 			
 iteracion	: PR_ITERAR bloque PR_HASTA condicion ';'
@@ -138,7 +136,7 @@ t	: t '*' f
 	
 f	: valor
 	| '-' ENTERO %prec NEG	{ chequearNegativo(); }
-	| '-' ENTERO_LSS %prec NEG { escribirError("Operación unaria no admitida con tipo entero largo sin signo.");}
+	| '-' ENTERO_LSS %prec NEG { escribirError("Constante negativa fuera de rango.");}
 	| FUERA_RANGO {escribirError("Constante fuera de rango");}
 	;
 
@@ -159,7 +157,7 @@ private Proyecto proyecto;
 private int errores = 0;
 
 private void yyerror(String string) {
-	System.out.println(string);	
+	//System.out.println(string);	
 }
 
 private int yylex(){

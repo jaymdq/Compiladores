@@ -11,7 +11,6 @@ import java.util.Vector;
 
 import lexico.AnalizadorLexico;
 import sintactico.AnalizadorSintactico;
-import sintactico.ParserVal;
 
 public class Proyecto extends Observable {
 	
