@@ -1,12 +1,20 @@
-'Esto es una
-   	+ cadena multi -
-  + linea'
-** Esto es un comentario
-* asterisco
-entero valor;
-valor := 78;
-si 56 <= valor entonces 
-	imprimir(hola);
-sino
-	imprimir(chau);
-vector arreglo de entero [67];
+entero a;
+er[1..3] asd,,a;
+;
+a := -- a;
+
+entro  b;
+
+si () entonces
+	imprimir('a');
+
+iterar{
+	imprimir('a');
+} hasta a >  1;
+
+
+iterar{
+	imprimir('a');
+} hasta  >  1
+
+imprimir ('b');

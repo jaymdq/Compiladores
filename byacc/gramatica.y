@@ -11,8 +11,12 @@ import proyecto.Token;
 %token IDENTIFICADOR ENTERO ENTERO_LSS CADENA_MULTILINEA PR_SI PR_ENTONCES PR_SINO PR_IMPRIMIR PR_ENTERO PR_ENTERO_LSS	PR_ITERAR PR_HASTA PR_VECTOR PR_DE COMP_MAYOR_IGUAL COMP_MENOR_IGUAL COMP_DISTINTO ASIGNACION PUNTO_PUNTO FUERA_RANGO
 	
 %left NEG
+/*
 %right PR_ENTONCES
 %right PR_SINO
+*/
+%nonassoc INFERIOR_A_SINO
+%nonassoc PR_SINO
 %left IDENTIFICADOR
 
 %%
@@ -28,11 +32,14 @@ sent_declarativa 	: sent_declarativa declaracion
 
 declaracion 	: tipo_dato lista_variables ';' { indicarSentencia("Declaración de tipo básico"); } 
 				| IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';' { indicarSentencia("Declaración de tipo vector"); }
-				| tipo_dato error ';' { escribirError("Sintaxis de declaración de tipo básico incorrecta."); }
-				| IDENTIFICADOR error ';' { escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
-				
+				| declaracion_invalida
 				;
 			
+declaracion_invalida	: tipo_dato error ';' { escribirError("Sintaxis de declaración de tipo básico incorrecta."); }
+						| IDENTIFICADOR '[' error ']' { escribirError("Sintaxis de declaración de tipo vector incorrecta."); } PR_VECTOR PR_DE tipo_dato ';' 
+						| IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' error ';' { escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
+						;
+				
 lista_variables	: IDENTIFICADOR
 				| lista_variables ',' IDENTIFICADOR 
 				;
@@ -49,27 +56,39 @@ sentencia_valida	:  { indicarSentencia("Selección");} seleccion
 					|  { indicarSentencia("Iteración");} iteracion 				
 					|  { indicarSentencia("Impresión");} impresion 				
 					|  asignacion 
+					|  sentencia_invalida
 					;
 
 sentencia 	:  sentencia_valida
 			|  declaracion { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }  
 			;
 			
-seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque									
+sentencia_invalida	: error ';' { escribirError("Sentencia inválida."); }  
+					;
+
+seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque	 %prec INFERIOR_A_SINO								
 			| PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO bloque	
 			| seleccion_invalida
 			;
 			
 seleccion_invalida	: PR_SI {escribirError("Falta '(' en sentencia si.");} condicion ')' PR_ENTONCES bloque 
-					/*| PR_SI condicion ')' PR_ENTONCES  bloque PR_SINO  bloque 
+					| PR_SI '(' error ')' {escribirError("Condición inválida en la sentencia si.");} PR_ENTONCES bloque 
+					/*| PR_SI '(' error ')' PR_ENTONCES bloque PR_SINO bloque*/
 					
+					/*| PR_SI condicion ')' PR_ENTONCES  bloque PR_SINO  bloque 
 					| PR_SI '(' ')' error  {escribirError("Falta condición en sentencia si.");}
 					| PR_SI '(' condicion PR_ENTONCES error 	{escribirError("Falta ')' en sentencia si.");}
 					| PR_SI '(' condicion ')' bloque {escribirError("Falta la palabra reservada \"entonces\".");}*/
 					;
 			
 iteracion	: PR_ITERAR bloque PR_HASTA condicion ';'
+			| iteracion_invalida
 			;
+			
+iteracion_invalida	: PR_ITERAR { escribirError("No se especificó un bloque a iterar."); } PR_HASTA condicion ';' 
+					| PR_ITERAR bloque condicion ';' { escribirError("No se especificó la palabra reservada hasta en la iteración."); }
+					| PR_ITERAR bloque PR_HASTA error ';' { escribirError("Condición inválida en la sentencia iterar."); }
+					;
 			
 impresion	: PR_IMPRIMIR  '(' CADENA_MULTILINEA ')' ';'
 			| impresion_invalida
@@ -78,13 +97,18 @@ impresion	: PR_IMPRIMIR  '(' CADENA_MULTILINEA ')' ';'
 impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '('.");} CADENA_MULTILINEA error';'
 					| PR_IMPRIMIR '(' ')' {escribirError("No se especificó una cadena multilínea.");} ';'
 					| PR_IMPRIMIR '(' CADENA_MULTILINEA {escribirError("Falta ')'.");} ';' 
-					| PR_IMPRIMIR error ';' {escribirError("Impresión Inválida cerca del ';'.");}
-					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" cerca del ';'.");}
+					| PR_IMPRIMIR '(' error ')' ';' {escribirError("Impresión Inválida.");}
+					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
 			
-asignacion	: asignable { indicarSentencia("Asignación");} ASIGNACION e ';'
+asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación");}
+			| asignacion_invalida
 			;
 
+asignacion_invalida	: asignable ASIGNACION error ';' { escribirError("Asignación inválida.");}
+					| ASIGNACION error ';'		{ escribirError("Asignación inválida.");}
+					;
+			
 bloque		: sentencia
 			| '{' sent_ejecutable '}'
 			| '{' declaracion { escribirError("No se pueden declarar variables dentro de un bloque."); } sent_declarativa sent_ejecutable '}'
@@ -92,9 +116,8 @@ bloque		: sentencia
 			;
 					
 condicion	: e comparador e
-			/*| error  ';'  		{escribirError("Condición inválida.");}*/
 			;
-			
+		
 comparador	: '>'
 			| COMP_MAYOR_IGUAL
 			| '<'
@@ -115,7 +138,7 @@ t	: t '*' f
 	
 f	: valor
 	| '-' ENTERO %prec NEG	{ chequearNegativo(); }
-	| '-' ENTERO_LSS %prec NEG { escribirError("Operación unaria no admitida.");}
+	| '-' ENTERO_LSS %prec NEG { escribirError("Operación unaria no admitida con tipo entero largo sin signo.");}
 	| FUERA_RANGO {escribirError("Constante fuera de rango");}
 	;
 

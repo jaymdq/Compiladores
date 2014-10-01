@@ -13,6 +13,7 @@ public class AS_Dot_Expected extends AccionSemantica {
 		t.setTipo(null);
 		t.setLexema("");
 		
+		p.back();
 		ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] Se esperaba un '..'.");
 		
 	}

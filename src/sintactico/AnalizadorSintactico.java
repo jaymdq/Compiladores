@@ -1,6 +1,5 @@
 package sintactico;
 
-import lexico.AnalizadorLexico;
 import gui.ConsolaManager;
 import proyecto.Proyecto;
 
@@ -20,7 +19,7 @@ public class AnalizadorSintactico {
 		if (salida == 0){
 			ConsolaManager.getInstance().escribirInfo("Sintáctico: El programa se parseo correctamente.");
 		}else{
-			ConsolaManager.getInstance().escribirInfo("Sintáctico: No se pudo completar la lectura del programa: "+ salida +" errores.");
+			ConsolaManager.getInstance().escribirError("Sintáctico: No se pudo completar la lectura del programa: "+ salida +" errores.");
 		}
 			
 	}
