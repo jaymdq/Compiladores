@@ -1,5 +1,6 @@
 package lexico.as;
 
+import lexico.AnalizadorLexico;
 import gui.ConsolaManager;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
@@ -14,7 +15,7 @@ public class AS_Caret_Unexpected extends AccionSemantica {
 		p.back();
 		
 		ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] No se especificó al caracter \"=\" luego del \"^\".");
-
+		AnalizadorLexico.cantErrores ++;
 	}
 
 }

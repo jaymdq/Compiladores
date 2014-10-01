@@ -1,5 +1,6 @@
 package lexico.as;
 
+import lexico.AnalizadorLexico;
 import gui.ConsolaManager;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
@@ -17,6 +18,8 @@ public class AS_Chain_Unexpected extends AccionSemantica {
 			ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] No se especificó el fin de la cadena multilínea.");
 		else
 		ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] No se especificó al caracter \"+\" en la cadena multilínea.");
+		
+		AnalizadorLexico.cantErrores ++;
 	}
 
 }

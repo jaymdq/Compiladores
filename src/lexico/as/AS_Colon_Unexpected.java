@@ -1,5 +1,6 @@
 package lexico.as;
 
+import lexico.AnalizadorLexico;
 import gui.ConsolaManager;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
@@ -13,6 +14,8 @@ public class AS_Colon_Unexpected extends AccionSemantica {
 		t.setTipo(null);		
 		p.back();
 		ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] No se especificó al caracter \"=\" luego del \":\".");
+		
+		AnalizadorLexico.cantErrores ++;
 	}
 
 }

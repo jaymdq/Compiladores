@@ -11,13 +11,10 @@ import proyecto.Token;
 %token IDENTIFICADOR ENTERO ENTERO_LSS CADENA_MULTILINEA PR_SI PR_ENTONCES PR_SINO PR_IMPRIMIR PR_ENTERO PR_ENTERO_LSS	PR_ITERAR PR_HASTA PR_VECTOR PR_DE COMP_MAYOR_IGUAL COMP_MENOR_IGUAL COMP_DISTINTO ASIGNACION PUNTO_PUNTO FUERA_RANGO
 	
 %left NEG
-/*
-%right PR_ENTONCES
-%right PR_SINO
-*/
+%left IDENTIFICADOR
 %nonassoc INFERIOR_A_SINO
 %nonassoc PR_SINO
-%left IDENTIFICADOR
+
 
 %%
 
@@ -56,15 +53,12 @@ sentencia_valida	:  { indicarSentencia("Selección");} seleccion
 					|  { indicarSentencia("Iteración");} iteracion 				
 					|  { indicarSentencia("Impresión");} impresion 				
 					|  asignacion 
-					|  sentencia_invalida
+					|  error ';' { escribirError("Sentencia inválida."); }
 					;
 
 sentencia 	:  sentencia_valida
 			|  declaracion { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }  
 			;
-			
-sentencia_invalida	:  error ';' { escribirError("Sentencia inválida."); } 
-					;
 
 seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque	 %prec INFERIOR_A_SINO					
 			| PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO bloque	
@@ -92,9 +86,9 @@ impresion	: PR_IMPRIMIR  '(' CADENA_MULTILINEA ')' ';'
 			| impresion_invalida
 			;
 			
-impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '('.");} CADENA_MULTILINEA error';'
-					| PR_IMPRIMIR '(' ')' {escribirError("No se especificó una cadena multilínea.");} ';'
-					| PR_IMPRIMIR '(' CADENA_MULTILINEA {escribirError("Falta ')'.");} ';' 
+impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impresión.");} CADENA_MULTILINEA error';'
+					| PR_IMPRIMIR '(' ')' {escribirError("No se especificó una cadena multilínea en sentencia de impresión.");} ';'
+					| PR_IMPRIMIR '(' CADENA_MULTILINEA {escribirError("Falta ')' en sentencia de impresión.");} ';' 
 					| PR_IMPRIMIR '(' error ')' ';' {escribirError("Impresión Inválida.");}
 					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
@@ -104,7 +98,7 @@ asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación");}
 			;
 
 asignacion_invalida	: asignable ASIGNACION error ';' { escribirError("Asignación inválida.");}
-					| ASIGNACION error ';'		{ escribirError("Asignación inválida.");}
+					| ASIGNACION error ';'			{ escribirError("Asignación inválida.");}
 					;
 			
 bloque		: sentencia

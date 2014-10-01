@@ -1,5 +1,6 @@
 package lexico.as;
 
+import lexico.AnalizadorLexico;
 import gui.ConsolaManager;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
@@ -24,12 +25,14 @@ public class AS_CTE_Finish extends AccionSemantica {
 		if (t.getLexema().length() > 11){
 			ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] La constante entera \"" + t.getLexema() + "\" no se encuentra dentro del rango 0 y 2^32 -1.");
 			t.setTipo(Token.TipoToken.FUERA_RANGO);
+			AnalizadorLexico.cantErrores ++;
 			return;
 		}
 		
 		Long a = new Long(t.getLexema());
 		if (a.compareTo(4294967295L) > 0){
 			ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] La constante entera \"" + t.getLexema() + "\" no se encuentra dentro del rango 0 y 2^32 -1.");
+			AnalizadorLexico.cantErrores ++;
 			//Devuelvo que está fuera de rango.
 			t.setTipo(Token.TipoToken.FUERA_RANGO);
 		}else if ( a > 32768){

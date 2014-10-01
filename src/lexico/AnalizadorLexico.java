@@ -29,7 +29,7 @@ public class AnalizadorLexico {
 	private static MatrizTransicion matrizTransicion = null;
 	private static HashMap<String,TipoToken> palabrasReservadas = new HashMap<String,TipoToken>();
 	private static Proyecto proyecto;
-
+	public static int cantErrores = 0;
 	public static ParserVal yylval = null;
 
 	public static int yylex(){

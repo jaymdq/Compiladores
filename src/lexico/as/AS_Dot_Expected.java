@@ -1,5 +1,6 @@
 package lexico.as;
 
+import lexico.AnalizadorLexico;
 import gui.ConsolaManager;
 import proyecto.Proyecto;
 import proyecto.Simbolo;
@@ -21,6 +22,7 @@ public class AS_Dot_Expected extends AccionSemantica {
 		if (back)
 			p.back();
 		ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] Se esperaba un '..'.");
+		AnalizadorLexico.cantErrores ++;
 		
 	}
 

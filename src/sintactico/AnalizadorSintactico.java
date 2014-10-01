@@ -1,5 +1,6 @@
 package sintactico;
 
+import lexico.AnalizadorLexico;
 import gui.ConsolaManager;
 import proyecto.Proyecto;
 
@@ -10,17 +11,19 @@ public class AnalizadorSintactico {
 		Parser parser = new Parser(proyecto);
 		
 		//Se comienza a parsear
-		parser.yyparse();
+		int salida = parser.yyparse();
 		
 		//Se cuenta la cantidad de errores
-		int salida = parser.getCantidadErrores();
+		int errores = parser.getCantidadErrores();
 	
-		if (salida == 0){
-			ConsolaManager.getInstance().escribirInfo("Sintáctico: El programa se parseo correctamente.");
+		if (salida == 0 && errores == 0){
+			ConsolaManager.getInstance().escribirInfo("Sintáctico: El programa se parseó correctamente.");
 		}else{
-			ConsolaManager.getInstance().escribirError("Sintáctico: No se pudo completar la lectura del programa: "+ salida +" errores.");
+			ConsolaManager.getInstance().escribirError("Léxico    :  Errores: "+ AnalizadorLexico.cantErrores +".");	
+			ConsolaManager.getInstance().escribirError("Sintáctico:  Errores: "+ errores +".");
 		}
 			
+		AnalizadorLexico.cantErrores = 0;
 	}
 	
 

@@ -1,0 +1,104 @@
+** Sentencias declarativas
+** Un programa sin sentencias declarativas es correcto. (Por ejemplo, que sólo imprima por pantalla)
+entero a,b;
+entero_lss c;
+vec[1..5] vector de entero;
+veclss[1..10] vector de entero_lss;
+
+** Sentencias de ejecución
+
+**Asignaciones -----------------------------------------------------------------------------------------------
+a := 1;
+a := 1 + 2;
+a := 1 - 3;
+a := 1 * 4;
+a := 1 / 5;
+a := a + 3 - 4 * 5 * 4 / 4 + c;
+a := a * -5;  **
+a := -3;
+a := b;
+a := c;
+c := a;
+c := c;
+a := 32768;    ** El léxico interpreta a 32768 como entero y luego el sintáctico lo cambia a entero_lss.
+c := 4000000;
+a := -32768;   ** Es el límite inferior de los tipos enteros.
+
+
+**Impresiones -----------------------------------------------------------------------------------------------
+imprimir(' Hola Mundo ');
+imprimir(' Hola
++ Mundo 
+	+ como
+    + va
++');
+
+
+**Iteraciones -----------------------------------------------------------------------------------------------
+iterar
+	imprimir(' Hola Mundo ');
+hasta a > 1;
+
+iterar{
+	a := a - 1;
+} hasta a >= 1;
+
+iterar{
+	a := a - 1;
+	a := a + 2;
+	imprimir(' Hola ');
+	a := a - 1;
+
+} hasta a = 1;
+
+iterar{
+	iterar{
+	a := a - 1;
+		iterar{
+		a := a - 1;
+		a := a + 2;
+		imprimir(' Hola ');
+		a := a - 1;
+		} hasta a < 1;
+	} hasta a <= 1;
+} hasta a ^= 1;
+
+
+**Selecciones
+si (a>1) entonces
+	imprimir('Bien');
+
+si (a>1) entonces{
+	imprimir('Bien');
+}
+
+si (a>1) entonces
+	imprimir('Bien');
+sino
+	imprimir('Mal');
+
+si (a>1) entonces
+	imprimir('Bien');
+sino
+	{
+	imprimir('Mal');
+}
+
+
+si (a>1) entonces
+	si (a < 10) entonces
+		imprimir('Bien');
+	sino
+		imprimir('Mal');	**El sino pertenece a la sentencia si interior.
+
+si (a > 1) entonces{
+	iterar{
+		a := 1 + a;
+		si (a = 15) entonces
+			a := 17;
+	} hasta a > 20;
+	imprimir ('Bien');
+}sino
+	a := -25;
+
+
