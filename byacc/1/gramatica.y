@@ -26,15 +26,12 @@ sent_declarativa 	: sent_declarativa declaracion
 					| /* Sentencia declarativa vacía */
 					; 
 
-declaracion 	: tipo_dato lista_variables ';' { indicarSentencia("Declaración de tipo básico"); } 
+declaracion 	: tipo_dato lista_variables ';' 												{ indicarSentencia("Declaración de tipo básico"); } 
 				| IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';' { indicarSentencia("Declaración de tipo vector"); }
-				| tipo_dato error ';' { escribirError("Sintaxis de declaración de tipo básico incorrecta."); }
-				| IDENTIFICADOR error ';' { escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
-				
 				;
 			
 lista_variables	: IDENTIFICADOR
-				| lista_variables ',' IDENTIFICADOR 
+				| lista_variables ',' IDENTIFICADOR
 				;
 			
 tipo_dato	: PR_ENTERO
@@ -52,21 +49,16 @@ sentencia_valida	:  { indicarSentencia("Selección");} seleccion
 					;
 
 sentencia 	:  sentencia_valida
-			|  declaracion { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }  
+			| declaracion { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }  
 			;
 			
 seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque									
 			| PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO bloque	
-			| seleccion_invalida
-			;
-			
-seleccion_invalida	: PR_SI {escribirError("Falta '(' en sentencia si.");} condicion ')' PR_ENTONCES bloque 
-					/*| PR_SI condicion ')' PR_ENTONCES  bloque PR_SINO  bloque 
-					
-					| PR_SI '(' ')' error  {escribirError("Falta condición en sentencia si.");}
-					| PR_SI '(' condicion PR_ENTONCES error 	{escribirError("Falta ')' en sentencia si.");}
-					| PR_SI '(' condicion ')' bloque {escribirError("Falta la palabra reservada \"entonces\".");}*/
-					;
+			/*| PR_SI {escribirError("Falta '(' en sentencia si.");} condicion ')' error ';'										
+			| PR_SI '(' ')' error ';'												{escribirError("Falta condición en sentencia si.");}
+			| PR_SI '(' condicion PR_ENTONCES error ';'								{escribirError("Falta ')' en sentencia si.");}
+			| error ';'																{escribirError("Sentencia si mal escrita.");}
+			*/;
 			
 iteracion	: PR_ITERAR bloque PR_HASTA condicion ';'
 			;
@@ -92,7 +84,8 @@ bloque		: sentencia
 			;
 					
 condicion	: e comparador e
-			/*| error  ';'  		{escribirError("Condición inválida.");}*/
+			/*| error PR_ENTONCES {escribirError("Condición inválida.");}
+			| error  ';'  		{escribirError("Condición inválida.");}*/
 			;
 			
 comparador	: '>'
@@ -115,12 +108,12 @@ t	: t '*' f
 	
 f	: valor
 	| '-' ENTERO %prec NEG	{ chequearNegativo(); }
-	| '-' ENTERO_LSS %prec NEG { escribirError("Operación unaria no admitida.");}
-	| FUERA_RANGO {escribirError("Constante fuera de rango");}
+	| '-' ENTERO_LSS %prec NEG { escribirError("Negativo malo");}
+	/*| FUERA_RANGO error ';' {escribirError("Fuera Rango");} */ /*No lo ponemos acá porque tira un par de errores..*/
 	;
 
 valor	: asignable
-		| ENTERO { chequearRango(); }
+		| ENTERO		{ chequearRango(); }
 		| ENTERO_LSS
 		;
 
@@ -143,7 +136,7 @@ private int yylex(){
 	int salida = AnalizadorLexico.yylex();
 	if (AnalizadorLexico.yylval != null){
 		yylval = AnalizadorLexico.yylval;
-		//AnalizadorLexico.yylval = null;
+		AnalizadorLexico.yylval = null;
 	}else{
 		yylval = new ParserVal(); 
 	}

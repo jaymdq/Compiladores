@@ -100,7 +100,7 @@ public class Proyecto extends Observable {
 	public Token addTokenToTable(Token to) {
 		this.addTokenToList(to);
 		Token salida = this.tablaSimbolos.add(to);
-		AnalizadorLexico.yylval = new ParserVal(this.tablaSimbolos.getPos(salida.getLexema()));
+		//AnalizadorLexico.yylval = new ParserVal(this.tablaSimbolos.getPos(salida.getLexema()));  <--- no sabemos porque esta.. la tabla de simbolos ya hace todo
 		return salida;
 	}
 	

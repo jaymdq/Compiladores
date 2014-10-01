@@ -46,6 +46,7 @@ public class TablaDeSimbolos extends Observable {
 	
 	public Token add(Token to) {
 		if (this.containsToken(to.getLexema())){
+			AnalizadorLexico.yylval = new ParserVal(this.getPos(to.getLexema()));
 			this.tabla.elementAt(this.getPos(to.getLexema())).aumentarContador();
 			return this.tabla.elementAt(this.getPos(to.getLexema()));
 		}
@@ -53,7 +54,6 @@ public class TablaDeSimbolos extends Observable {
 		this.tabla.add(to);
 		this.setChanged();
 		this.notifyObservers(to);
-		
 		AnalizadorLexico.yylval = new ParserVal(tabla.size() - 1);
 		return to;
 	}

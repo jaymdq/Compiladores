@@ -1,11 +1,8 @@
 %{
-
-/* Imports necesarios en la clase Parser */
 import gui.ConsolaManager;
 import lexico.AnalizadorLexico;
 import proyecto.Proyecto;
 import proyecto.Token;
-
 %}
 
 %token IDENTIFICADOR ENTERO ENTERO_LSS CADENA_MULTILINEA PR_SI PR_ENTONCES PR_SINO PR_IMPRIMIR PR_ENTERO PR_ENTERO_LSS	PR_ITERAR PR_HASTA PR_VECTOR PR_DE COMP_MAYOR_IGUAL COMP_MENOR_IGUAL COMP_DISTINTO ASIGNACION PUNTO_PUNTO FUERA_RANGO
@@ -16,9 +13,6 @@ import proyecto.Token;
 %left IDENTIFICADOR
 
 %%
-
-/* Gramática */
-
 programa	: sent_declarativa sent_ejecutable
 			;
 		
@@ -28,45 +22,33 @@ sent_declarativa 	: sent_declarativa declaracion
 
 declaracion 	: tipo_dato lista_variables ';' { indicarSentencia("Declaración de tipo básico"); } 
 				| IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';' { indicarSentencia("Declaración de tipo vector"); }
-				| tipo_dato error ';' { escribirError("Sintaxis de declaración de tipo básico incorrecta."); }
-				| IDENTIFICADOR error ';' { escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
-				
 				;
 			
 lista_variables	: IDENTIFICADOR
-				| lista_variables ',' IDENTIFICADOR 
+				| lista_variables ',' IDENTIFICADOR
 				;
 			
 tipo_dato	: PR_ENTERO
 			| PR_ENTERO_LSS
 			;
 			
-sent_ejecutable	: sentencia_valida
+sent_ejecutable	: sentencia
 				| sent_ejecutable sentencia 
 				;
 					
-sentencia_valida	:  { indicarSentencia("Selección");} seleccion
-					|  { indicarSentencia("Iteración");} iteracion 				
-					|  { indicarSentencia("Impresión");} impresion 				
-					|  asignacion 
-					;
-
-sentencia 	:  sentencia_valida
-			|  declaracion { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }  
+sentencia	:  { indicarSentencia("Selección");} seleccion
+			|  { indicarSentencia("Iteración");} iteracion  				
+			|  { indicarSentencia("Impresión");} impresion  				
+			|  asignacion 
 			;
 			
 seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque									
 			| PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO bloque	
-			| seleccion_invalida
-			;
-			
-seleccion_invalida	: PR_SI {escribirError("Falta '(' en sentencia si.");} condicion ')' PR_ENTONCES bloque 
-					/*| PR_SI condicion ')' PR_ENTONCES  bloque PR_SINO  bloque 
-					
-					| PR_SI '(' ')' error  {escribirError("Falta condición en sentencia si.");}
-					| PR_SI '(' condicion PR_ENTONCES error 	{escribirError("Falta ')' en sentencia si.");}
-					| PR_SI '(' condicion ')' bloque {escribirError("Falta la palabra reservada \"entonces\".");}*/
-					;
+			/*| PR_SI condicion ')' error ';'										{escribirError("Falta '(' en sentencia si.");}
+			| PR_SI '(' ')' error ';'												{escribirError("Falta condición en sentencia si.");}
+			| PR_SI '(' condicion PR_ENTONCES error ';'								{escribirError("Falta ')' en sentencia si.");}
+			| error ';'																{escribirError("Sentencia si mal escrita.");}
+			*/;
 			
 iteracion	: PR_ITERAR bloque PR_HASTA condicion ';'
 			;
@@ -83,16 +65,16 @@ impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '('.");} CADENA_MULTILIN
 					;
 			
 asignacion	: asignable { indicarSentencia("Asignación");} ASIGNACION e ';'
+			| error ';' { escribirError("Asignación inválida.");}
 			;
 
 bloque		: sentencia
 			| '{' sent_ejecutable '}'
-			| '{' declaracion { escribirError("No se pueden declarar variables dentro de un bloque."); } sent_declarativa sent_ejecutable '}'
-			| '{' '}'  { escribirError("Bloque de sentencias vacío."); }
 			;
 					
 condicion	: e comparador e
-			/*| error  ';'  		{escribirError("Condición inválida.");}*/
+			/*| error PR_ENTONCES {escribirError("Condición inválida.");}
+			| error  ';'  		{escribirError("Condición inválida.");}*/
 			;
 			
 comparador	: '>'
@@ -103,24 +85,24 @@ comparador	: '>'
 			| COMP_DISTINTO
 			;
 			
-e	: e '+' t
-	| e '-' t
+e	: e '+' t			{ $$ = new ParserVal($1.ival + $3.ival); }
+	| e '-' t			{ $$ = new ParserVal($1.ival - $3.ival); }
 	| t					
 	;
 	
-t	: t '*' f
-	| t "/" f
+t	: t '*' f			{ $$ = new ParserVal($1.ival * $3.ival); }
+	| t "/" f			{ $$ = new ParserVal($1.ival / $3.ival); }
 	| f					
 	;
 	
 f	: valor
 	| '-' ENTERO %prec NEG	{ chequearNegativo(); }
-	| '-' ENTERO_LSS %prec NEG { escribirError("Operación unaria no admitida.");}
-	| FUERA_RANGO {escribirError("Constante fuera de rango");}
+	| '-' ENTERO_LSS %prec NEG { escribirError("Negativo malo");}
+	/*| FUERA_RANGO error ';' {escribirError("Fuera Rango");} */ /*No lo ponemos acá porque tira un par de errores..*/
 	;
 
 valor	: asignable
-		| ENTERO { chequearRango(); }
+		| ENTERO		{ chequearRango(); $$ = new ParserVal(getValor($1.ival)); }
 		| ENTERO_LSS
 		;
 
@@ -130,10 +112,7 @@ asignable	: IDENTIFICADOR
 			
 %%
 
-/* Código */
-
 private Proyecto proyecto;
-private int errores = 0;
 
 private void yyerror(String string) {
 	System.out.println(string);	
@@ -143,7 +122,7 @@ private int yylex(){
 	int salida = AnalizadorLexico.yylex();
 	if (AnalizadorLexico.yylval != null){
 		yylval = AnalizadorLexico.yylval;
-		//AnalizadorLexico.yylval = null;
+		AnalizadorLexico.yylval = null;
 	}else{
 		yylval = new ParserVal(); 
 	}
@@ -155,7 +134,6 @@ private int lineaActual(){
 }
 
 private void escribirError(String s){
-	errores++;
 	ConsolaManager.getInstance().escribirError("Sintáctico [Línea " + lineaActual() + "] "+ s);
 }
 
@@ -210,6 +188,11 @@ public void actualizarTablaDeSimbolos(){
 	}
 }
 
-public int getCantidadErrores(){
-	return errores;
+public int getValor(int pos){
+	return Integer.parseInt(proyecto.getTablaDeSimbolos().getToken(pos).getLexema());
+}
+
+public void setValor(int pos, Integer valorNuevo){
+	//
+	
 }

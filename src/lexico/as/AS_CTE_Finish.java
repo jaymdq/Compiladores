@@ -22,6 +22,7 @@ public class AS_CTE_Finish extends AccionSemantica {
 		
 		//0 a 2^32-1 = 4294967295L
 		if (t.getLexema().length() > 11){
+			ConsolaManager.getInstance().escribirError("Léxico [Línea "+p.getLineaActual()+"] La constante entera \"" + t.getLexema() + "\" no se encuentra dentro del rango 0 y 2^32 -1.");
 			t.setTipo(Token.TipoToken.FUERA_RANGO);
 			return;
 		}

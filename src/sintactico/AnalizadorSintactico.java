@@ -14,12 +14,13 @@ public class AnalizadorSintactico {
 				
 		Parser parser = new Parser(proyecto);
 		
-		int salida = parser.yyparse();
+		parser.yyparse();
+		int salida = parser.getCantidadErrores();
 	
 		if (salida == 0){
-			ConsolaManager.getInstance().escribirInfo("Sintáctico: Se completó la lectura del programa.");
+			ConsolaManager.getInstance().escribirInfo("Sintáctico: El programa se parseo correctamente.");
 		}else{
-			ConsolaManager.getInstance().escribirInfo("Sintáctico: No se pudo completar la lectura del programa.");
+			ConsolaManager.getInstance().escribirInfo("Sintáctico: No se pudo completar la lectura del programa: "+ salida +" errores.");
 		}
 			
 	}
