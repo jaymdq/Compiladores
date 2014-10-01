@@ -246,7 +246,13 @@ public class AnalizadorLexico {
 
 			// Estado 11
 			matrizTransicion.setTransicion(Estado.ONCE, TipoSimbolo.PUNTO, new Transicion(Estado.FINAL,new ASDirecto(TipoToken.PUNTO_PUNTO,false)));
-			matrizTransicion.setDefault(Estado.ONCE, new Transicion(Estado.INICIAL, new AS_Dot_Expected()));
+			// Descartados de blancos
+			matrizTransicion.setTransicion(Estado.ONCE, TipoSimbolo.BLANCO, new Transicion(Estado.INICIAL, new AS_Dot_Expected(false) ));
+			matrizTransicion.setTransicion(Estado.ONCE, TipoSimbolo.TABULACION, new Transicion(Estado.INICIAL, new AS_Dot_Expected(false)));
+			matrizTransicion.setTransicion(Estado.ONCE, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.INICIAL, new AS_Dot_Expected(false)));
+			matrizTransicion.setTransicion(Estado.ONCE, TipoSimbolo.RETORNO, new Transicion(Estado.INICIAL, new AS_Dot_Expected(false)));
+			// Default
+			matrizTransicion.setDefault(Estado.ONCE, new Transicion(Estado.INICIAL, new AS_Dot_Expected(true)));
 
 			// Estado 13
 			// Sigue token
