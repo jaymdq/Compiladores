@@ -62,7 +62,7 @@ import javax.swing.text.BadLocationException;
 import proyecto.Proyecto;
 import proyecto.Token;
 
-public class MainWindow {
+public class CompiladorCVR {
 	private JFrame frame;
 	private JScrollPane scrollConsola;
 	private JTextPane Consola;
@@ -98,7 +98,7 @@ public class MainWindow {
 					
 					proyecto = new Proyecto();
 					
-					MainWindow window = new MainWindow();
+					CompiladorCVR window = new CompiladorCVR();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -110,7 +110,7 @@ public class MainWindow {
 	/**
 	 * Create the application.
 	 */
-	public MainWindow() {
+	public CompiladorCVR() {
 		initialize();
 	}
 
@@ -119,7 +119,7 @@ public class MainWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame(titulo );
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/icono.png")));
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(CompiladorCVR.class.getResource("/images/icono.png")));
 		frame.setBounds(0,0,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
 		frame.setLocationRelativeTo(null);
 		frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
@@ -137,11 +137,11 @@ public class MainWindow {
 				nuevoArchivo();
 			}
 		});
-		mntmNuevo.setIcon(new ImageIcon(MainWindow.class.getResource("/images/nuevo.gif")));
+		mntmNuevo.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/nuevo.gif")));
 		mnArchivo.add(mntmNuevo);
 
 		mntmAbrir = new JMenuItem("Abrir");
-		mntmAbrir.setIcon(new ImageIcon(MainWindow.class.getResource("/images/open.png")));
+		mntmAbrir.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/open.png")));
 		mntmAbrir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cargarArchivo();
@@ -156,7 +156,7 @@ public class MainWindow {
 				guardar();
 			}
 		});
-		mntmGuardar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/save.png")));
+		mntmGuardar.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/save.png")));
 		mnArchivo.add(mntmGuardar);
 
 		mntmGuardarComo = new JMenuItem("Guardar Como..");
@@ -166,7 +166,7 @@ public class MainWindow {
 				guardarComo();
 			}
 		});
-		mntmGuardarComo.setIcon(new ImageIcon(MainWindow.class.getResource("/images/saveall.png")));
+		mntmGuardarComo.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/saveall.png")));
 		mnArchivo.add(mntmGuardarComo);
 
 		JSeparator separator = new JSeparator();
@@ -189,7 +189,7 @@ public class MainWindow {
 				compilar();
 			}
 		});
-		mntmEjecutar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/run.gif")));
+		mntmEjecutar.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/run.gif")));
 		mnEjecutar.add(mntmEjecutar);
 
 		JToolBar toolBar = new JToolBar();
@@ -202,7 +202,7 @@ public class MainWindow {
 				nuevoArchivo();
 			}
 		});
-		botonNuevo.setIcon(new ImageIcon(MainWindow.class.getResource("/images/nuevo.gif")));
+		botonNuevo.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/nuevo.gif")));
 		botonNuevo.setToolTipText("Nuevo archivo .cvr");
 		toolBar.add(botonNuevo);
 
@@ -213,7 +213,7 @@ public class MainWindow {
 				cargarArchivo();				
 			}
 		});
-		botonCargar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/open.png")));
+		botonCargar.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/open.png")));
 		botonCargar.setToolTipText("Abrir archivo .cvr");
 		toolBar.add(botonCargar);
 
@@ -224,7 +224,7 @@ public class MainWindow {
 				guardar();
 			}
 		});
-		botonGuardar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/save.png")));
+		botonGuardar.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/save.png")));
 		botonGuardar.setToolTipText("Guardar");
 		toolBar.add(botonGuardar);
 
@@ -235,7 +235,7 @@ public class MainWindow {
 				guardarComo();
 			}
 		});
-		botonGuardarComo.setIcon(new ImageIcon(MainWindow.class.getResource("/images/saveall.png")));
+		botonGuardarComo.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/saveall.png")));
 		botonGuardarComo.setToolTipText("Guardar como..");
 		toolBar.add(botonGuardarComo);
 
@@ -247,7 +247,7 @@ public class MainWindow {
 				compilar();
 			}
 		});
-		botonEjecutar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/run.gif")));
+		botonEjecutar.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/run.gif")));
 		botonEjecutar.setToolTipText("Ejecutar");
 		toolBar.add(botonEjecutar);
 
@@ -304,7 +304,7 @@ public class MainWindow {
 
 		//Label que dice CONSOLA
 		JLabel Cons = new JLabel("Consola   ");
-		Cons.setIcon(new ImageIcon(MainWindow.class.getResource("/images/monitor_obj.gif")));
+		Cons.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/monitor_obj.gif")));
 		Cons.setHorizontalAlignment(SwingConstants.LEFT);
 		Cons.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		GridBagConstraints gbc_Cons = new GridBagConstraints();
@@ -313,8 +313,8 @@ public class MainWindow {
 		gbc_Cons.gridx = 0;
 		gbc_Cons.gridy = 0;
 		PanelConsola.add(Cons, gbc_Cons);
-		Borrar.setSelectedIcon(new ImageIcon(MainWindow.class.getResource("/images/borrar_consola.png")));
-		Borrar.setIcon(new ImageIcon(MainWindow.class.getResource("/images/borrar_consola.png")));
+		Borrar.setSelectedIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/borrar_consola.png")));
+		Borrar.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/borrar_consola.png")));
 		Borrar.setPreferredSize(new Dimension(19, 18));
 		Borrar.setMargin(new Insets(0, 0, 0, 0));
 		Borrar.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -381,7 +381,7 @@ public class MainWindow {
 		Min.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		Min.setPreferredSize(new Dimension(19, 18));
 		Min.setMargin(new Insets(0, 0, 0, 0));
-		Min.setIcon(new ImageIcon(MainWindow.class.getResource("/images/minimizar.png")));
+		Min.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/minimizar.png")));
 		GridBagConstraints gbc_Min = new GridBagConstraints();
 		gbc_Min.insets = new Insets(0, 0, 0, 5);
 		gbc_Min.gridx = 2;
@@ -394,7 +394,7 @@ public class MainWindow {
 		Max.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		Max.setPreferredSize(new Dimension(19, 18));
 		Max.setMargin(new Insets(0, 0, 0, 0));
-		Max.setIcon(new ImageIcon(MainWindow.class.getResource("/images/maximizar.png")));
+		Max.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/maximizar.png")));
 		GridBagConstraints gbc_Max = new GridBagConstraints();
 		gbc_Max.gridx = 3;
 		gbc_Max.gridy = 0;
