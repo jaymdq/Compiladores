@@ -53,6 +53,7 @@ sentencia_valida	:  { indicarSentencia("Selección");} seleccion
 					|  { indicarSentencia("Iteración");} iteracion 				
 					|  { indicarSentencia("Impresión");} impresion 				
 					|  asignacion 
+					|  PR_SINO bloque { escribirError("No se esperaba la palabra reservada \"sino\"."); }	
 					|  error ';' { escribirError("Sentencia inválida."); }
 					;
 
@@ -67,8 +68,7 @@ seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque	 %prec INFERIOR_A_SINO
 			
 seleccion_invalida	: PR_SI {escribirError("Falta '(' en sentencia si.");} condicion ')' PR_ENTONCES bloque 
 					| PR_SI '(' condicion {escribirError("Falta ')' en sentencia si.");} PR_ENTONCES bloque 
-					| PR_SI '(' error ')' PR_ENTONCES bloque  %prec INFERIOR_A_SINO {escribirError("Condición inválida en la sentencia si.");}
-					| PR_SI '(' error ')' PR_ENTONCES bloque PR_SINO bloque  		{escribirError("Condición inválida en la sentencia si.");}
+					| PR_SI '(' error ')' {escribirError("Condición inválida en la sentencia si.");} PR_ENTONCES bloque  
 					| PR_SI '(' condicion ')' error bloque {escribirError("Sentencia si inválida.");}
 					| PR_SI error bloque {escribirError("Sentencia si inválida.");}
 					;
@@ -86,7 +86,7 @@ impresion	: PR_IMPRIMIR  '(' CADENA_MULTILINEA ')' ';'
 			| impresion_invalida
 			;
 			
-impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impresión.");} CADENA_MULTILINEA error';'
+impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impresión.");} CADENA_MULTILINEA error ';'
 					| PR_IMPRIMIR '(' ')' {escribirError("No se especificó una cadena multilínea en sentencia de impresión.");} ';'
 					| PR_IMPRIMIR '(' CADENA_MULTILINEA {escribirError("Falta ')' en sentencia de impresión.");} ';' 
 					| PR_IMPRIMIR '(' error ')' ';' {escribirError("Impresión Inválida.");}

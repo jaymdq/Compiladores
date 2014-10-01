@@ -575,7 +575,7 @@ public class MainWindow {
 	}
 
 	private void guardarComo() {
-		WebFileChooser guardador = new WebFileChooser();
+		WebFileChooser guardador = new WebFileChooser("sources");
 		guardador.setFileFilter(new FiltroCvr());
 		guardador.setFileSelectionMode(JFileChooser.FILES_ONLY);  
 		guardador.setMultiSelectionEnabled ( false );
@@ -617,7 +617,7 @@ public class MainWindow {
 			}
 		}
 		//Pasamos a cargar el archivo
-		WebFileChooser fileChooser = new WebFileChooser("sample");
+		WebFileChooser fileChooser = new WebFileChooser("sources");
 		fileChooser.setFileFilter(new FiltroCvr());
 		fileChooser.setMultiSelectionEnabled ( false );
 		fileChooser.setDialogTitle("Abrir archivo CVR");

@@ -1,0 +1,115 @@
+**Sentencias declarativas
+**En un programa pueden no existir sentencias declarativas
+
+**Sentencias de ejecución
+
+** CTE fuera de rango--------------------------------------------------------------------------------------
+a:= -32769;		**error
+a:= -400000;		**error
+a:= 10000000000;	**error
+a:= -32768;		**Válido
+a:= 32767;		**Válido
+a:= 4294967295;		**Válido
+a:= 4294967296;		**error
+
+** Asignaciones--------------------------------------------------------------------------------------------
+a:= ' ';		**error
+:= ' ';			**error
+a:= -a;			**error
+a:= --a;		**error
+a : 3;			**error
+a = 10000;		**error
+a := a */ 3;		**error
+a := a +++++++++++++++++++++++++++++++ 3 ; **error
+a := a			**error Al no tener ';' esta sentencia, el modo pánico matchea tokens hasta tener un nuevo ';' (se informa el error).
+a := 1;			**error Esta sentencia que era correcta no pudo ser analizada debido a la sentencia anterior.
+
+** Impresiones--------------------------------------------------------------------------------------------
+imprimir'como');	**error
+imprimir();		**error
+imprimir('va';		**error
+imprimir(a);		**error
+imprimir(3);
+imprimir(a
+;
+imprimir(a)		**error Al no tener ';' esta sentencia, el modo pánico matchea tokens hasta tener un nuevo ';' (se informa el error).
+imprimir('Correcto');	**error Esta sentencia que era correcta no pudo ser analizada debido a la sentencia anterior.
+
+** Iteraciones--------------------------------------------------------------------------------------------
+iterar
+	imprimir('Hola');
+hasta a > ;			**error
+
+iterar
+	imprimir('Hola');
+hasta a  ;			**error
+
+iterar
+	imprimir('Hola');
+hasta < a  ;			**error
+
+iterar
+	imprimir('a';		**error
+hasta  a>1  ;			
+
+iterar
+	imprimir('a');		**error
+  a>1  ;	
+
+iterar {
+	imprimir('a');		
+ hasta  a>1  ;			**error Al no poder matchear un bloque se toma como que la sentencia es inválida
+
+iterar {
+	imprimir('a');		
+ hasta  a>1 		**error Al no tener ';' esta sentencia, el modo pánico matchea tokens hasta tener un nuevo ';' (se informa el error).
+a:=1;			**error Esta sentencia que era correcta no pudo ser analizada debido a la sentencia anterior.
+
+** Selecciones--------------------------------------------------------------------------------------------
+si () entonces			**error
+	a := 1;
+sino				**error Se descartó la primera parte del si por si no seguía la palabra reservada sino. 
+	a := 1;			**error Luego se descarta sino ya que no es una sentencia válida por si sola.
+
+si (a) entonces			**error
+	a := 1;
+
+si (a>) entonces		**error
+	a := 1;
+
+si a>a) entonces		**error
+	a := 1;
+
+si (a>a entonces		**error
+	a := 1;
+
+si (a=a) 			**error
+	a := 1;
+
+si (a=a) entonces{
+	si (a>1) entonces{
+		si () entonces			**error Se especifíca la línea correcta.
+			imprimir(' Hola ');
+	}
+}			
+
+
+si (a=a) entonces{
+	si (a>1) entonces{
+				**error
+	}
+}	
+
+
+si (a=a) entonces{
+	si (a>1) entonces{
+		iterar{
+			imprimir('SI');
+		}hasta 1;			**error Se especifíca la línea correcta.
+	}
+}	
+
+
+**Sentencias vacías -------------------------------------------------------------------------------------
+
+;;;
