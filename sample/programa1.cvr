@@ -1,8 +1,0 @@
-** Sentencias de declaración.
-ENTERO a,b,suma;
-valores[1..5] vector de entero;
-
-** Sentencias de ejecución.
-a := 1;
-b := 3;
-suma := a + b;

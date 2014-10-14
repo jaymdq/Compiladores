@@ -183,8 +183,7 @@ public final static short COMP_DISTINTO=273;
 public final static short ASIGNACION=274;
 public final static short PUNTO_PUNTO=275;
 public final static short FUERA_RANGO=276;
-public final static short NEG=277;
-public final static short INFERIOR_A_SINO=278;
+public final static short INFERIOR_A_SINO=277;
 public final static short YYERRCODE=256;
 final static short yylhs[] = {                           -1,
     0,    1,    1,    3,    3,    3,    6,    7,    6,    6,
@@ -366,7 +365,7 @@ yycheck = new short[] {                         40,
 };
 }
 final static short YYFINAL=1;
-final static short YYMAXTOKEN=278;
+final static short YYMAXTOKEN=277;
 final static String yyname[] = {
 "end-of-file",null,null,null,null,null,null,null,null,null,null,null,null,null,
 null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
@@ -388,7 +387,7 @@ null,null,null,null,null,null,null,null,"IDENTIFICADOR","ENTERO","ENTERO_LSS",
 "CADENA_MULTILINEA","PR_SI","PR_ENTONCES","PR_SINO","PR_IMPRIMIR","PR_ENTERO",
 "PR_ENTERO_LSS","PR_ITERAR","PR_HASTA","PR_VECTOR","PR_DE","COMP_MAYOR_IGUAL",
 "COMP_MENOR_IGUAL","COMP_DISTINTO","ASIGNACION","PUNTO_PUNTO","FUERA_RANGO",
-"NEG","INFERIOR_A_SINO",
+"INFERIOR_A_SINO",
 };
 final static String yyrule[] = {
 "$accept : programa",
@@ -479,7 +478,7 @@ final static String yyrule[] = {
 "asignable : IDENTIFICADOR '[' e ']'",
 };
 
-//#line 147 "gramatica.y"
+//#line 144 "gramatica.y"
 
 /* Código */
 
@@ -561,10 +560,21 @@ public void actualizarTablaDeSimbolos(){
 	}
 }
 
+public void borrarFueraRango(){
+	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
+	if (t.getContador() > 1){
+		t.disminuirContador();
+	}else{
+		proyecto.getTablaDeSimbolos().remove(t.getLexema());
+	}
+	//Se actualiza la tabla de simbolos visualmente.
+	actualizarTablaDeSimbolos();
+}
+
 public int getCantidadErrores(){
 	return errores;
 }
-//#line 495 "Parser.java"
+//#line 505 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -719,138 +729,138 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 4:
-//#line 30 "gramatica.y"
+//#line 27 "gramatica.y"
 { indicarSentencia("Declaración de tipo básico"); }
 break;
 case 5:
-//#line 31 "gramatica.y"
+//#line 28 "gramatica.y"
 { indicarSentencia("Declaración de tipo vector"); }
 break;
 case 7:
-//#line 35 "gramatica.y"
+//#line 32 "gramatica.y"
 { escribirError("Sintaxis de declaración de tipo básico incorrecta."); }
 break;
 case 8:
-//#line 36 "gramatica.y"
+//#line 33 "gramatica.y"
 { escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
 break;
 case 10:
-//#line 37 "gramatica.y"
+//#line 34 "gramatica.y"
 { escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
 break;
 case 17:
-//#line 52 "gramatica.y"
+//#line 49 "gramatica.y"
 { indicarSentencia("Selección");}
 break;
 case 19:
-//#line 53 "gramatica.y"
+//#line 50 "gramatica.y"
 { indicarSentencia("Iteración");}
 break;
 case 21:
-//#line 54 "gramatica.y"
+//#line 51 "gramatica.y"
 { indicarSentencia("Impresión");}
 break;
 case 24:
-//#line 56 "gramatica.y"
+//#line 53 "gramatica.y"
 { escribirError("No se esperaba la palabra reservada \"sino\"."); }
 break;
 case 25:
-//#line 57 "gramatica.y"
+//#line 54 "gramatica.y"
 { escribirError("Sentencia inválida."); }
 break;
 case 27:
-//#line 61 "gramatica.y"
+//#line 58 "gramatica.y"
 { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }
 break;
 case 31:
-//#line 69 "gramatica.y"
+//#line 66 "gramatica.y"
 {escribirError("Falta '(' en sentencia si.");}
 break;
 case 33:
-//#line 70 "gramatica.y"
+//#line 67 "gramatica.y"
 {escribirError("Falta ')' en sentencia si.");}
 break;
 case 35:
-//#line 71 "gramatica.y"
+//#line 68 "gramatica.y"
 {escribirError("Condición inválida en la sentencia si.");}
 break;
 case 37:
-//#line 72 "gramatica.y"
+//#line 69 "gramatica.y"
 {escribirError("Sentencia si inválida.");}
 break;
 case 38:
-//#line 73 "gramatica.y"
+//#line 70 "gramatica.y"
 {escribirError("Sentencia si inválida.");}
 break;
 case 41:
-//#line 80 "gramatica.y"
+//#line 77 "gramatica.y"
 { escribirError("No se especificó un bloque a iterar."); }
 break;
 case 43:
-//#line 81 "gramatica.y"
-{ escribirError("No se especificó la palabra reservada hasta en la iteración."); }
+//#line 78 "gramatica.y"
+{ escribirError("No se especificó la palabra reservada \"hasta\" en la iteración."); }
 break;
 case 44:
-//#line 82 "gramatica.y"
+//#line 79 "gramatica.y"
 { escribirError("Condición inválida en la sentencia iterar."); }
 break;
 case 47:
-//#line 89 "gramatica.y"
+//#line 86 "gramatica.y"
 {escribirError("Falta '(' en sentencia de impresión.");}
 break;
 case 49:
-//#line 90 "gramatica.y"
+//#line 87 "gramatica.y"
 {escribirError("No se especificó una cadena multilínea en sentencia de impresión.");}
 break;
 case 51:
-//#line 91 "gramatica.y"
+//#line 88 "gramatica.y"
 {escribirError("Falta ')' en sentencia de impresión.");}
 break;
 case 53:
-//#line 92 "gramatica.y"
+//#line 89 "gramatica.y"
 {escribirError("Impresión Inválida.");}
 break;
 case 54:
-//#line 93 "gramatica.y"
+//#line 90 "gramatica.y"
 {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 break;
 case 55:
-//#line 96 "gramatica.y"
+//#line 93 "gramatica.y"
 { indicarSentencia("Asignación");}
 break;
 case 57:
-//#line 100 "gramatica.y"
+//#line 97 "gramatica.y"
 { escribirError("Asignación inválida.");}
 break;
 case 58:
-//#line 101 "gramatica.y"
+//#line 98 "gramatica.y"
 { escribirError("Asignación inválida.");}
 break;
 case 61:
-//#line 106 "gramatica.y"
+//#line 103 "gramatica.y"
 { escribirError("No se pueden declarar variables dentro de un bloque."); }
 break;
 case 63:
-//#line 107 "gramatica.y"
+//#line 104 "gramatica.y"
 { escribirError("Bloque de sentencias vacío."); }
 break;
 case 78:
-//#line 132 "gramatica.y"
+//#line 129 "gramatica.y"
 { chequearNegativo(); }
 break;
 case 79:
-//#line 133 "gramatica.y"
-{ escribirError("Constante negativa fuera de rango.");}
+//#line 130 "gramatica.y"
+{ escribirError("Constante negativa fuera de rango."); borrarFueraRango(); }
 break;
 case 80:
-//#line 134 "gramatica.y"
-{escribirError("Constante fuera de rango");}
+//#line 131 "gramatica.y"
+{ escribirError("Constante fuera de rango"); }
 break;
 case 82:
-//#line 138 "gramatica.y"
+//#line 135 "gramatica.y"
 { chequearRango(); }
 break;
-//#line 776 "Parser.java"
+//#line 786 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

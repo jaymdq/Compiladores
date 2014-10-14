@@ -100,5 +100,3 @@ si (a > 1) entonces{
 	imprimir ('Bien');
 }sino
 	a := -25;
-
-
