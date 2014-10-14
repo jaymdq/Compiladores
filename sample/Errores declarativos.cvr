@@ -1,0 +1,34 @@
+**Sentencias declarativas
+entero a,;		**error
+entero ,a;		**error
+entero a,,;		**error
+entero a,,b;		**error
+entero_lss a,;		**error
+entero_lss ,a;		**error
+entero_lss a,,;		**error
+entero_lss a,,b;	**error
+entero ;		**error
+entero_lss ;		**error
+
+vec[] vector de entero;		**error
+vec[1.3] vector de entero;	**error
+vec[1..] vector de entero;	**error
+vec[..3] vector de entero;	**error
+vec[1..4] veor de entero;	**error
+vec[1..4] vector entero;	**error
+vec[1..4] vector de ;		**error
+vec[4] vector de entero;	**error.
+
+**Sentencias de ejecución
+** Se debe especificar por lo menos una sentencia de ejecución para que el programa sea válido.
+imprimir ('a');
+
+**No se pueden declarar variables luego de existir una sentencia de ejecución.
+
+entero b;	**error
+
+iterar{
+	entero b;		**error
+	imprimir('Hola');
+	entero c;		**error
+} hasta a>2;
