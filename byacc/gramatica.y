@@ -128,18 +128,18 @@ t	: t '*' f
 	;
 	
 f	: valor
-	| '-' ENTERO		{ chequearNegativo(); }
+	| '-' ENTERO		{ chequearNegativo(); lista.add(true);}
 	| '-' ENTERO_LSS 	{ escribirError("Constante negativa fuera de rango."); borrarFueraRango(); }
 	| FUERA_RANGO 		{ escribirError("Constante fuera de rango"); }
 	;
 
 valor	: asignable
-		| ENTERO 		{ chequearRango();}
-		| ENTERO_LSS 	{ tratarConstante($1,"entero_lss"); expresionEntera=false; }
+		| ENTERO 		{ chequearRango(); chequearEntero(true); lista.add(true);}
+		| ENTERO_LSS 	{ tratarConstante($1,"entero_lss"); chequearEntero(false);  lista.add(false);}
 		;
 
-asignable	: IDENTIFICADOR				{ tratarNodeclaraciones($1); verificarEntero($1); }
-			| IDENTIFICADOR '[' e ']'   { tratarNodeclaraciones($1); verificarEntero($1); verificarExpresionEntera();}
+asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1); }
+			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);}
 			;
 			
 %%
@@ -149,7 +149,11 @@ asignable	: IDENTIFICADOR				{ tratarNodeclaraciones($1); verificarEntero($1); }
 private Proyecto proyecto;
 private int errores = 0;
 private Vector<Token> declaracionesAux = new Vector<Token>();
-private boolean expresionEntera = true;
+private Vector<Vector<Boolean>> listaExpEnt = new Vector<Vector<Boolean>>();
+private int profundidad = 0;
+
+private Vector<Boolean> lista = new Vector<Boolean>();
+
 
 private void yyerror(String string) {
 	//System.out.println(string);	
@@ -358,15 +362,45 @@ public void tratarNodeclaraciones(ParserVal pos){
 		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado");
 }
 
-public void verificarExpresionEntera(){
-	if (! expresionEntera )
-		escribirErrorDeGeneracion("Tipo de subíndice inválido");
-		
-	expresionEntera = true;
+public void chequearEntero(boolean valor){
+	if (profundidad > 0)
+		listaExpEnt.lastElement().add(valor);		
 }
 
-public void verificarExpresion(ParserVal pos){
-	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
-	if (elemento.getTipo() == ElementoTS.TIPOS.ENTERO_LSS && elemento.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO_LSS)
-		expresionEntera = false;
+public void nuevaProfundidad(){
+	listaExpEnt.add(new Vector<Boolean>());
+	profundidad++;
+}
+
+public void chequeoSubindice(ParserVal pos){
+	
+	boolean correcto = true;
+	for ( Boolean b : listaExpEnt.lastElement()){
+		if (!b)
+			correcto = false;
+	}
+	
+	decrementarProfundidad();
+	
+	if ( ! correcto ){
+		ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+		escribirErrorDeGeneracion("Subíndice del vector \""+ elemento.getToken().getLexema() +"\" inválido");
+		listaExpEnt.lastElement().add(false);
+	}
+	
+}
+
+public void decrementarProfundidad(){
+	profundidad--;
+	listaExpEnt.remove(profundidad);
+}
+
+public void chequearVariableEntera(ParserVal pos){
+	if (profundidad > 0){
+		ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+		if (elemento.getTipo() == ElementoTS.TIPOS.ENTERO || elemento.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO )
+			listaExpEnt.lastElement().add(true);
+		else
+			listaExpEnt.lastElement().add(false);
+	}
 }

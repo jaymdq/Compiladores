@@ -1,0 +1,17 @@
+** Sentencias Declarativas
+entero a,b,c;
+entero_lss z;
+vec[1..10] vector de entero;
+vec1[1..9] vector de entero_lss;
+entero h,a,b;
+vec[1..10] vector de entero;
+
+** Sentencias de Ejecución
+a := 3;
+a := -3;
+b := 32768;
+d := a + x;
+vec2[2] := a;
+vec[201254] := 1;
+vec[a + z] := a;
+imprimir('Hola Mundo');

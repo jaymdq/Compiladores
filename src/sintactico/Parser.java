@@ -487,7 +487,8 @@ final static String yyrule[] = {
 private Proyecto proyecto;
 private int errores = 0;
 private Vector<Token> declaracionesAux = new Vector<Token>();
-private boolean expresionEntera = true;
+private Vector<Vector<Boolean>> listaExpEnt = new Vector<Vector<Boolean>>();
+private int profundidad = 0;
 
 private void yyerror(String string) {
 	//System.out.println(string);	
@@ -696,13 +697,49 @@ public void tratarNodeclaraciones(ParserVal pos){
 		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado");
 }
 
-public void verificarExpresionEntera(){
-	if (! expresionEntera )
-		escribirErrorDeGeneracion("Tipo de subíndica inválido");
-		
-	expresionEntera = true;
+public void chequearEntero(boolean valor){
+	if (profundidad > 0)
+		listaExpEnt.lastElement().add(valor);		
 }
-//#line 633 "Parser.java"
+
+public void nuevaProfundidad(){
+	listaExpEnt.add(new Vector<Boolean>());
+	profundidad++;
+}
+
+public void chequeoSubindice(ParserVal pos){
+	
+	boolean correcto = true;
+	for ( Boolean b : listaExpEnt.lastElement()){
+		if (!b)
+			correcto = false;
+	}
+	
+	decrementarProfundidad();
+	
+	if ( ! correcto ){
+		ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+		escribirErrorDeGeneracion("Subíndice del vector \""+ elemento.getToken().getLexema() +"\" inválido");
+		listaExpEnt.lastElement().add(false);
+	}
+	
+}
+
+public void decrementarProfundidad(){
+	profundidad--;
+	listaExpEnt.remove(profundidad);
+}
+
+public void chequearVariableEntera(ParserVal pos){
+	if (profundidad > 0){
+		ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+		if (elemento.getTipo() == ElementoTS.TIPOS.ENTERO || elemento.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO )
+			listaExpEnt.lastElement().add(true);
+		else
+			listaExpEnt.lastElement().add(false);
+	}
+}
+//#line 670 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1006,11 +1043,11 @@ case 80:
 break;
 case 82:
 //#line 137 "gramatica.y"
-{ chequearRango();}
+{ chequearRango(); chequearEntero(true);}
 break;
 case 83:
 //#line 138 "gramatica.y"
-{ tratarConstante(val_peek(0),"entero_lss"); expresionEntera=false; }
+{ tratarConstante(val_peek(0),"entero_lss"); chequearEntero(false); }
 break;
 case 84:
 //#line 141 "gramatica.y"
@@ -1018,9 +1055,9 @@ case 84:
 break;
 case 85:
 //#line 142 "gramatica.y"
-{ tratarNodeclaraciones(val_peek(3)); verificarExpresionEntera();}
+{ tratarNodeclaraciones(val_peek(3));}
 break;
-//#line 946 "Parser.java"
+//#line 983 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
