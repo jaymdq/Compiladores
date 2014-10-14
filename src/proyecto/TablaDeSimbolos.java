@@ -8,59 +8,66 @@ import lexico.AnalizadorLexico;
 
 public class TablaDeSimbolos extends Observable {
 
-	private Vector<Token> tabla;
+	//private Vector<Token> tabla;
+	
+	private Vector<ElementoTS> tabla;
 	
 	public TablaDeSimbolos(){
-		this.tabla = new Vector<Token>();
+		this.tabla = new Vector<ElementoTS>();
 	}
 
 	public Token getToken(String l) {
-		for (Token t : this.tabla) {
-			if (t.getLexema().equals(l))
-				return t;
+		for (ElementoTS t : this.tabla) {
+			if (t.getToken().getLexema().equals(l))
+				return t.getToken();
 		}
 		return null;
 	}
 	
 	public Token getToken(int p) {
 		if (p < this.tabla.size() )
-			return this.tabla.elementAt(p);
+			return this.tabla.elementAt(p).getToken();
 		return null;
 	}
 	
 	public int getPos(String l) {
 		for (int i = 0; i < this.tabla.size(); i++) {
-			if (this.tabla.elementAt(i).getLexema().equals(l))
+			if (this.tabla.elementAt(i).getToken().getLexema().equals(l))
 				return i;
 		}
 		return -1;
 	}
 	
+	public ElementoTS getElemento(int pos){
+		return this.tabla.elementAt(pos);
+	}
+	
+	
 	public boolean containsToken(String l) {
-		for (Token token : this.tabla) {
-			if (token.getLexema().equals(l))
-				return true;
-		}
-		return false;
+		return getToken(l) != null;
 	}
 	
 	public Token add(Token to) {
 		if (this.containsToken(to.getLexema())){
 			AnalizadorLexico.yylval = new ParserVal(this.getPos(to.getLexema()));
-			this.tabla.elementAt(this.getPos(to.getLexema())).aumentarContador();
-			return this.tabla.elementAt(this.getPos(to.getLexema()));
+			this.tabla.elementAt(this.getPos(to.getLexema())).getToken().aumentarContador();
+			return this.tabla.elementAt(this.getPos(to.getLexema())).getToken();
 		}
 			
-		this.tabla.add(to);
+		ElementoTS nuevoElemento = new ElementoTS(to);
+		//this.tabla.add(to);
+		this.tabla.add(nuevoElemento);
+		
 		this.setChanged();
-		this.notifyObservers(to);
+		//this.notifyObservers(to);
+		this.notifyObservers(nuevoElemento);
 		AnalizadorLexico.yylval = new ParserVal(tabla.size() - 1);
 		return to;
 	}
 	
 	public void remove(String lexema){
-		for (Token t : tabla){
-			if (t.getLexema().equals(lexema)){
+		for (ElementoTS t : tabla){
+			if (t.getToken().getLexema().equals(lexema)){
 				tabla.remove(t);
 				return;
 			}
@@ -73,7 +80,7 @@ public class TablaDeSimbolos extends Observable {
 		this.notifyObservers(null);
 	}
 
-	public Vector<Token> getList() {
+	public Vector<ElementoTS> getList() {
 		return tabla;
 	}
 

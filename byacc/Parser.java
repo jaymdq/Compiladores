@@ -24,8 +24,10 @@ import gui.ConsolaManager;
 import lexico.AnalizadorLexico;
 import proyecto.Proyecto;
 import proyecto.Token;
+import proyecto.ElementoTS;
+import java.util.Vector;
 
-//#line 25 "Parser.java"
+//#line 27 "Parser.java"
 
 
 
@@ -478,12 +480,14 @@ final static String yyrule[] = {
 "asignable : IDENTIFICADOR '[' e ']'",
 };
 
-//#line 144 "gramatica.y"
+//#line 146 "gramatica.y"
 
 /* Código */
 
 private Proyecto proyecto;
 private int errores = 0;
+private Vector<Token> declaracionesAux = new Vector<Token>();
+private boolean expresionEntera = true;
 
 private void yyerror(String string) {
 	//System.out.println(string);	
@@ -509,6 +513,10 @@ private void escribirError(String s){
 	ConsolaManager.getInstance().escribirError("Sintáctico [Línea " + lineaActual() + "] "+ s);
 }
 
+private void escribirErrorDeGeneracion(String s){
+	ConsolaManager.getInstance().escribirError("Gen. Cod. Int [Línea " + lineaActual() + "] "+ s);
+}
+
 private void indicarSentencia(String s){
 	proyecto.addSentenciaToList("Línea " +lineaActual()+ " -> " + s + ".");
 }
@@ -523,8 +531,10 @@ private void chequearNegativo(){
 	if ( t.getContador() == 1){
 		//Se pisa el token existente
 		Token tnuevo = new Token(Token.TipoToken.ENTERO,"-"+t.getLexema());
-		if (! proyecto.getTablaDeSimbolos().containsToken(tnuevo.getLexema()) )
+		if (! proyecto.getTablaDeSimbolos().containsToken(tnuevo.getLexema()) ){
 			t.setLexema("-"+t.getLexema());
+			tratarConstante(yylval,"entero");
+		}
 		else{
 			proyecto.getTablaDeSimbolos().getToken(tnuevo.getLexema()).aumentarContador();
 			proyecto.getTablaDeSimbolos().remove(t.getLexema());
@@ -534,10 +544,14 @@ private void chequearNegativo(){
 		t.disminuirContador();
 		
 		Token tnuevo = new Token(Token.TipoToken.ENTERO,"-"+t.getLexema());
-		if (! proyecto.getTablaDeSimbolos().containsToken(tnuevo.getLexema()) )
+		if (! proyecto.getTablaDeSimbolos().containsToken(tnuevo.getLexema()) ){
 			proyecto.getTablaDeSimbolos().add(tnuevo);
-		else
+			tratarConstante(new ParserVal(proyecto.getTablaDeSimbolos().getList().size()-1),"entero");
+		}
+		else{
 			proyecto.getTablaDeSimbolos().getToken(tnuevo.getLexema()).aumentarContador();
+			tratarConstante(new ParserVal(proyecto.getTablaDeSimbolos().getPos(tnuevo.getLexema())),"entero");
+		}
 	}
 	//Se actualiza la tabla de simbolos visualmente.
 	actualizarTablaDeSimbolos();
@@ -547,16 +561,19 @@ public void chequearRango(){
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
 	if (Integer.parseInt(t.getLexema()) == 32768){
 		t.setTipo(Token.TipoToken.ENTERO_LSS);
-	}
+		tratarConstante(yylval,"entero_lss");
+	}else
+		tratarConstante(yylval,"entero");
+	
 	actualizarTablaDeSimbolos();
 }
 
 public void actualizarTablaDeSimbolos(){
 	proyecto.getTablaDeSimbolos().setearCambios();
 	proyecto.getTablaDeSimbolos().notifyObservers();
-	for (Token tok : proyecto.getTablaDeSimbolos().getList()){
+	for (ElementoTS elemento : proyecto.getTablaDeSimbolos().getList()){
 		proyecto.getTablaDeSimbolos().setearCambios();
-		proyecto.getTablaDeSimbolos().notifyObservers(tok);
+		proyecto.getTablaDeSimbolos().notifyObservers(elemento);
 	}
 }
 
@@ -574,7 +591,118 @@ public void borrarFueraRango(){
 public int getCantidadErrores(){
 	return errores;
 }
-//#line 505 "Parser.java"
+
+public void agregar(){
+	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
+	declaracionesAux.add(t);
+}
+
+public void agregar(String tipo){
+	Token t = new Token();
+	t.setLexema(tipo);
+	declaracionesAux.add(t);
+}
+
+public void generarDeclaracionTipoBasico(){
+ElementoTS.TIPOS tipo;
+if (declaracionesAux.elementAt(0).getLexema().equals("entero"))
+	tipo = ElementoTS.TIPOS.ENTERO;
+else
+	tipo = ElementoTS.TIPOS.ENTERO_LSS;
+	
+	for (int i = 1; i < declaracionesAux.size();i++){
+		int pos = proyecto.getTablaDeSimbolos().getPos(declaracionesAux.elementAt(i).getLexema());
+		ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos);
+		elemento.setTipo(tipo);
+		elemento.setUso(ElementoTS.USOS.VARIABLE);
+	}
+	
+	actualizarTablaDeSimbolos();
+	declaracionesAux.clear();
+}
+
+public void generarDeclaracionTipoVector(ParserVal iden, ParserVal limInf, ParserVal limSup){
+ElementoTS.TIPOS tipo;
+if (declaracionesAux.elementAt(0).getLexema().equals("entero"))
+	tipo = ElementoTS.TIPOS.VECTOR_ENTERO;
+else
+	tipo = ElementoTS.TIPOS.VECTOR_ENTERO_LSS;
+	
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(iden.ival);
+	
+	Integer lim_i = Integer.parseInt(proyecto.getTablaDeSimbolos().getElemento(limInf.ival).getToken().getLexema());
+	
+	Integer lim_s = Integer.parseInt(proyecto.getTablaDeSimbolos().getElemento(limSup.ival).getToken().getLexema());
+	
+	//Chequear rangos
+	if (lim_i < 0)
+		escribirErrorDeGeneracion("Límite Inferior menor a 0");
+	if (lim_s < 0)
+		escribirErrorDeGeneracion("Límite Superior menor a 0");
+	if (lim_i > lim_s)
+		escribirErrorDeGeneracion("El límite inferior es mayor al superior");
+		
+	//----
+	
+	tratarConstante(limInf,"entero");
+	tratarConstante(limSup,"entero");
+	
+	elemento.setLim_inf(lim_i);
+	elemento.setLim_sup(lim_s);
+	elemento.setTipo(tipo);
+	elemento.setUso(ElementoTS.USOS.ARREGLO);
+	
+	actualizarTablaDeSimbolos();
+	declaracionesAux.clear();
+}
+
+public void tratarConstante(ParserVal pos,String tipoDado){
+	ElementoTS.TIPOS tipo;
+	if (tipoDado.equals("entero"))
+		tipo = ElementoTS.TIPOS.ENTERO;
+	else
+		tipo = ElementoTS.TIPOS.ENTERO_LSS;
+	
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+	
+	elemento.setTipo(tipo);
+	
+	elemento.setUso(ElementoTS.USOS.CONSTANTE);
+	
+	actualizarTablaDeSimbolos();
+	declaracionesAux.clear();
+}
+
+public void tratarCadenaMultilinea(ParserVal pos){
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+	
+	elemento.setTipo(ElementoTS.TIPOS.CADENA_MULTILINEA);
+	
+	elemento.setUso(ElementoTS.USOS.CONSTANTE);
+	
+	actualizarTablaDeSimbolos();
+	declaracionesAux.clear();
+}
+
+public void tratarRedeclaraciones(ParserVal pos){
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+	if (elemento.getToken().getContador() > 1)
+		escribirErrorDeGeneracion("Duplicación de identificador \"" + elemento.getToken().getLexema() + "\"");
+}
+
+public void tratarNodeclaraciones(ParserVal pos){
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+	if (elemento.getTipo() == null)
+		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado");
+}
+
+public void verificarExpresionEntera(){
+	if (! expresionEntera )
+		escribirErrorDeGeneracion("Tipo de subíndica inválido");
+		
+	expresionEntera = true;
+}
+//#line 633 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -729,138 +857,170 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 4:
-//#line 27 "gramatica.y"
-{ indicarSentencia("Declaración de tipo básico"); }
+//#line 29 "gramatica.y"
+{ indicarSentencia("Declaración de tipo básico"); generarDeclaracionTipoBasico(); }
 break;
 case 5:
-//#line 28 "gramatica.y"
-{ indicarSentencia("Declaración de tipo vector"); }
+//#line 30 "gramatica.y"
+{ indicarSentencia("Declaración de tipo vector"); generarDeclaracionTipoVector(val_peek(9),val_peek(7),val_peek(5)); tratarRedeclaraciones(val_peek(9));}
 break;
 case 7:
-//#line 32 "gramatica.y"
+//#line 34 "gramatica.y"
 { escribirError("Sintaxis de declaración de tipo básico incorrecta."); }
 break;
 case 8:
-//#line 33 "gramatica.y"
+//#line 35 "gramatica.y"
 { escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
 break;
 case 10:
-//#line 34 "gramatica.y"
+//#line 36 "gramatica.y"
 { escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
 break;
+case 11:
+//#line 39 "gramatica.y"
+{ tratarRedeclaraciones(val_peek(0)); agregar();}
+break;
+case 12:
+//#line 40 "gramatica.y"
+{ tratarRedeclaraciones(val_peek(0)); agregar();}
+break;
+case 13:
+//#line 43 "gramatica.y"
+{ agregar("entero");}
+break;
+case 14:
+//#line 44 "gramatica.y"
+{ agregar("entero_lss");}
+break;
 case 17:
-//#line 49 "gramatica.y"
+//#line 51 "gramatica.y"
 { indicarSentencia("Selección");}
 break;
 case 19:
-//#line 50 "gramatica.y"
+//#line 52 "gramatica.y"
 { indicarSentencia("Iteración");}
 break;
 case 21:
-//#line 51 "gramatica.y"
+//#line 53 "gramatica.y"
 { indicarSentencia("Impresión");}
 break;
 case 24:
-//#line 53 "gramatica.y"
+//#line 55 "gramatica.y"
 { escribirError("No se esperaba la palabra reservada \"sino\"."); }
 break;
 case 25:
-//#line 54 "gramatica.y"
+//#line 56 "gramatica.y"
 { escribirError("Sentencia inválida."); }
 break;
 case 27:
-//#line 58 "gramatica.y"
+//#line 60 "gramatica.y"
 { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }
 break;
 case 31:
-//#line 66 "gramatica.y"
+//#line 68 "gramatica.y"
 {escribirError("Falta '(' en sentencia si.");}
 break;
 case 33:
-//#line 67 "gramatica.y"
+//#line 69 "gramatica.y"
 {escribirError("Falta ')' en sentencia si.");}
 break;
 case 35:
-//#line 68 "gramatica.y"
+//#line 70 "gramatica.y"
 {escribirError("Condición inválida en la sentencia si.");}
 break;
 case 37:
-//#line 69 "gramatica.y"
+//#line 71 "gramatica.y"
 {escribirError("Sentencia si inválida.");}
 break;
 case 38:
-//#line 70 "gramatica.y"
+//#line 72 "gramatica.y"
 {escribirError("Sentencia si inválida.");}
 break;
 case 41:
-//#line 77 "gramatica.y"
+//#line 79 "gramatica.y"
 { escribirError("No se especificó un bloque a iterar."); }
 break;
 case 43:
-//#line 78 "gramatica.y"
+//#line 80 "gramatica.y"
 { escribirError("No se especificó la palabra reservada \"hasta\" en la iteración."); }
 break;
 case 44:
-//#line 79 "gramatica.y"
+//#line 81 "gramatica.y"
 { escribirError("Condición inválida en la sentencia iterar."); }
 break;
+case 45:
+//#line 84 "gramatica.y"
+{ tratarCadenaMultilinea(val_peek(2));}
+break;
 case 47:
-//#line 86 "gramatica.y"
+//#line 88 "gramatica.y"
 {escribirError("Falta '(' en sentencia de impresión.");}
 break;
 case 49:
-//#line 87 "gramatica.y"
+//#line 89 "gramatica.y"
 {escribirError("No se especificó una cadena multilínea en sentencia de impresión.");}
 break;
 case 51:
-//#line 88 "gramatica.y"
+//#line 90 "gramatica.y"
 {escribirError("Falta ')' en sentencia de impresión.");}
 break;
 case 53:
-//#line 89 "gramatica.y"
+//#line 91 "gramatica.y"
 {escribirError("Impresión Inválida.");}
 break;
 case 54:
-//#line 90 "gramatica.y"
+//#line 92 "gramatica.y"
 {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 break;
 case 55:
-//#line 93 "gramatica.y"
+//#line 95 "gramatica.y"
 { indicarSentencia("Asignación");}
 break;
 case 57:
-//#line 97 "gramatica.y"
+//#line 99 "gramatica.y"
 { escribirError("Asignación inválida.");}
 break;
 case 58:
-//#line 98 "gramatica.y"
+//#line 100 "gramatica.y"
 { escribirError("Asignación inválida.");}
 break;
 case 61:
-//#line 103 "gramatica.y"
+//#line 105 "gramatica.y"
 { escribirError("No se pueden declarar variables dentro de un bloque."); }
 break;
 case 63:
-//#line 104 "gramatica.y"
+//#line 106 "gramatica.y"
 { escribirError("Bloque de sentencias vacío."); }
 break;
 case 78:
-//#line 129 "gramatica.y"
+//#line 131 "gramatica.y"
 { chequearNegativo(); }
 break;
 case 79:
-//#line 130 "gramatica.y"
+//#line 132 "gramatica.y"
 { escribirError("Constante negativa fuera de rango."); borrarFueraRango(); }
 break;
 case 80:
-//#line 131 "gramatica.y"
+//#line 133 "gramatica.y"
 { escribirError("Constante fuera de rango"); }
 break;
 case 82:
-//#line 135 "gramatica.y"
-{ chequearRango(); }
+//#line 137 "gramatica.y"
+{ chequearRango();}
 break;
-//#line 786 "Parser.java"
+case 83:
+//#line 138 "gramatica.y"
+{ tratarConstante(val_peek(0),"entero_lss"); expresionEntera=false; }
+break;
+case 84:
+//#line 141 "gramatica.y"
+{ tratarNodeclaraciones(val_peek(0)); }
+break;
+case 85:
+//#line 142 "gramatica.y"
+{ tratarNodeclaraciones(val_peek(3)); verificarExpresionEntera();}
+break;
+//#line 946 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

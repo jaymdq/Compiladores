@@ -59,6 +59,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 
+import proyecto.ElementoTS;
 import proyecto.Proyecto;
 import proyecto.Token;
 
@@ -484,7 +485,7 @@ public class CompiladorCVR {
 				new Object[][] {
 				},
 				new String[] {
-						"Categoria", "Lexema"
+						"Categoria Token", "Lexema" , "Tipo", "Límite Inferior", "Límite Superior" , "Uso"
 				}
 				){
 			/**
@@ -507,9 +508,22 @@ public class CompiladorCVR {
 					
 				}	
 				else{
-					Token t = (Token) arg;
+					/*Token t = (Token) arg;
 					DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
-					modelo.addRow(new Object[] {t.getTipo(),t.getLexema()});
+					modelo.addRow(new Object[] {t.getTipo(),t.getLexema()});*/
+					
+					ElementoTS t = (ElementoTS) arg;
+					DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
+					
+					String tipoAux = "";
+					String usoAux = "";
+					if (t.getTipo() != null)
+						tipoAux = t.getTipo().toString();
+					if (t.getUso() != null)
+						usoAux = t.getUso().toString();
+					
+					modelo.addRow(new Object[] {t.getToken().getTipo(),t.getToken().getLexema(),tipoAux,t.getLim_inf(),t.getLim_sup(),usoAux});
+				
 				}
 			}
 		};
