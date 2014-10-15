@@ -9,9 +9,14 @@ vec[1..10] vector de entero;
 ** Sentencias de Ejecución
 a := 3;
 a := -3;
+
+b := 327 / 3;
 b := 32768;
-d := a + x;
+d := a + x ;
 vec2[2] := a;
+a:= vec[2];
 vec[201254] := 1;
 vec[a + z] := a;
+a := vec[1+2*8-vec1[3]];
+
 imprimir('Hola Mundo');

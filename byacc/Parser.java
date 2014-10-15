@@ -487,8 +487,8 @@ final static String yyrule[] = {
 private Proyecto proyecto;
 private int errores = 0;
 private Vector<Token> declaracionesAux = new Vector<Token>();
-private Vector<Vector<Boolean>> listaExpEnt = new Vector<Vector<Boolean>>();
-private int profundidad = 0;
+private boolean subindiceValido = true;
+
 
 private void yyerror(String string) {
 	//System.out.println(string);	
@@ -637,11 +637,11 @@ else
 	
 	//Chequear rangos
 	if (lim_i < 0)
-		escribirErrorDeGeneracion("Límite Inferior menor a 0");
+		escribirErrorDeGeneracion("Límite Inferior menor a 0.");
 	if (lim_s < 0)
-		escribirErrorDeGeneracion("Límite Superior menor a 0");
+		escribirErrorDeGeneracion("Límite Superior menor a 0.");
 	if (lim_i > lim_s)
-		escribirErrorDeGeneracion("El límite inferior es mayor al superior");
+		escribirErrorDeGeneracion("El límite inferior es mayor al superior.");
 		
 	//----
 	
@@ -688,58 +688,28 @@ public void tratarCadenaMultilinea(ParserVal pos){
 public void tratarRedeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getToken().getContador() > 1)
-		escribirErrorDeGeneracion("Duplicación de identificador \"" + elemento.getToken().getLexema() + "\"");
+		escribirErrorDeGeneracion("Duplicación de identificador \"" + elemento.getToken().getLexema() + "\".");
 }
 
 public void tratarNodeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getTipo() == null)
-		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado");
+		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado.");
 }
 
-public void chequearEntero(boolean valor){
-	if (profundidad > 0)
-		listaExpEnt.lastElement().add(valor);		
+public void chequearSubindice(){
+	if (!subindiceValido)
+		escribirErrorDeGeneracion("Subindice Inválido.");
+
+	subindiceValido = true;
 }
 
-public void nuevaProfundidad(){
-	listaExpEnt.add(new Vector<Boolean>());
-	profundidad++;
+public void chequearTipoParaSub(ParserVal pos){
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+		if (!(elemento.getTipo() == ElementoTS.TIPOS.ENTERO || elemento.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO || elemento.getTipo() == null))
+			subindiceValido = false;
 }
-
-public void chequeoSubindice(ParserVal pos){
-	
-	boolean correcto = true;
-	for ( Boolean b : listaExpEnt.lastElement()){
-		if (!b)
-			correcto = false;
-	}
-	
-	decrementarProfundidad();
-	
-	if ( ! correcto ){
-		ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
-		escribirErrorDeGeneracion("Subíndice del vector \""+ elemento.getToken().getLexema() +"\" inválido");
-		listaExpEnt.lastElement().add(false);
-	}
-	
-}
-
-public void decrementarProfundidad(){
-	profundidad--;
-	listaExpEnt.remove(profundidad);
-}
-
-public void chequearVariableEntera(ParserVal pos){
-	if (profundidad > 0){
-		ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
-		if (elemento.getTipo() == ElementoTS.TIPOS.ENTERO || elemento.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO )
-			listaExpEnt.lastElement().add(true);
-		else
-			listaExpEnt.lastElement().add(false);
-	}
-}
-//#line 670 "Parser.java"
+//#line 640 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1011,7 +981,7 @@ case 54:
 break;
 case 55:
 //#line 95 "gramatica.y"
-{ indicarSentencia("Asignación");}
+{ indicarSentencia("Asignación"); subindiceValido = true;}
 break;
 case 57:
 //#line 99 "gramatica.y"
@@ -1029,6 +999,10 @@ case 63:
 //#line 106 "gramatica.y"
 { escribirError("Bloque de sentencias vacío."); }
 break;
+case 64:
+//#line 109 "gramatica.y"
+{subindiceValido = true;}
+break;
 case 78:
 //#line 131 "gramatica.y"
 { chequearNegativo(); }
@@ -1043,21 +1017,21 @@ case 80:
 break;
 case 82:
 //#line 137 "gramatica.y"
-{ chequearRango(); chequearEntero(true);}
+{ chequearRango(); }
 break;
 case 83:
 //#line 138 "gramatica.y"
-{ tratarConstante(val_peek(0),"entero_lss"); chequearEntero(false); }
+{ tratarConstante(val_peek(0),"entero_lss");  subindiceValido = false;}
 break;
 case 84:
 //#line 141 "gramatica.y"
-{ tratarNodeclaraciones(val_peek(0)); }
+{ tratarNodeclaraciones(val_peek(0)); chequearTipoParaSub(val_peek(0));}
 break;
 case 85:
 //#line 142 "gramatica.y"
-{ tratarNodeclaraciones(val_peek(3));}
+{ tratarNodeclaraciones(val_peek(3)); chequearTipoParaSub(val_peek(3)); chequearSubindice();}
 break;
-//#line 983 "Parser.java"
+//#line 957 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

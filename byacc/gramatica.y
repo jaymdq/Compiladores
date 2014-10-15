@@ -92,7 +92,7 @@ impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impr
 					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
 			
-asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación");}
+asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación"); subindiceValido = true;}
 			| asignacion_invalida
 			;
 
@@ -106,7 +106,7 @@ bloque		: sentencia
 			| '{' '}'  { escribirError("Bloque de sentencias vacío."); }
 			;
 					
-condicion	: e comparador e
+condicion	: e comparador e {subindiceValido = true;}
 			;
 		
 comparador	: '>'
@@ -128,18 +128,18 @@ t	: t '*' f
 	;
 	
 f	: valor
-	| '-' ENTERO		{ chequearNegativo(); lista.add(true);}
+	| '-' ENTERO		{ chequearNegativo(); }
 	| '-' ENTERO_LSS 	{ escribirError("Constante negativa fuera de rango."); borrarFueraRango(); }
 	| FUERA_RANGO 		{ escribirError("Constante fuera de rango"); }
 	;
 
 valor	: asignable
-		| ENTERO 		{ chequearRango(); chequearEntero(true); lista.add(true);}
-		| ENTERO_LSS 	{ tratarConstante($1,"entero_lss"); chequearEntero(false);  lista.add(false);}
+		| ENTERO 		{ chequearRango(); }
+		| ENTERO_LSS 	{ tratarConstante($1,"entero_lss");  subindiceValido = false;}
 		;
 
-asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1); }
-			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);}
+asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1); chequearTipoParaSub($1);}
+			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1); chequearTipoParaSub($1); chequearSubindice();}
 			;
 			
 %%
@@ -149,10 +149,7 @@ asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1); }
 private Proyecto proyecto;
 private int errores = 0;
 private Vector<Token> declaracionesAux = new Vector<Token>();
-private Vector<Vector<Boolean>> listaExpEnt = new Vector<Vector<Boolean>>();
-private int profundidad = 0;
-
-private Vector<Boolean> lista = new Vector<Boolean>();
+private boolean subindiceValido = true;
 
 
 private void yyerror(String string) {
@@ -302,11 +299,11 @@ else
 	
 	//Chequear rangos
 	if (lim_i < 0)
-		escribirErrorDeGeneracion("Límite Inferior menor a 0");
+		escribirErrorDeGeneracion("Límite Inferior menor a 0.");
 	if (lim_s < 0)
-		escribirErrorDeGeneracion("Límite Superior menor a 0");
+		escribirErrorDeGeneracion("Límite Superior menor a 0.");
 	if (lim_i > lim_s)
-		escribirErrorDeGeneracion("El límite inferior es mayor al superior");
+		escribirErrorDeGeneracion("El límite inferior es mayor al superior.");
 		
 	//----
 	
@@ -353,54 +350,24 @@ public void tratarCadenaMultilinea(ParserVal pos){
 public void tratarRedeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getToken().getContador() > 1)
-		escribirErrorDeGeneracion("Duplicación de identificador \"" + elemento.getToken().getLexema() + "\"");
+		escribirErrorDeGeneracion("Duplicación de identificador \"" + elemento.getToken().getLexema() + "\".");
 }
 
 public void tratarNodeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getTipo() == null)
-		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado");
+		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado.");
 }
 
-public void chequearEntero(boolean valor){
-	if (profundidad > 0)
-		listaExpEnt.lastElement().add(valor);		
+public void chequearSubindice(){
+	if (!subindiceValido)
+		escribirErrorDeGeneracion("Subindice Inválido.");
+
+	subindiceValido = true;
 }
 
-public void nuevaProfundidad(){
-	listaExpEnt.add(new Vector<Boolean>());
-	profundidad++;
-}
-
-public void chequeoSubindice(ParserVal pos){
-	
-	boolean correcto = true;
-	for ( Boolean b : listaExpEnt.lastElement()){
-		if (!b)
-			correcto = false;
-	}
-	
-	decrementarProfundidad();
-	
-	if ( ! correcto ){
-		ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
-		escribirErrorDeGeneracion("Subíndice del vector \""+ elemento.getToken().getLexema() +"\" inválido");
-		listaExpEnt.lastElement().add(false);
-	}
-	
-}
-
-public void decrementarProfundidad(){
-	profundidad--;
-	listaExpEnt.remove(profundidad);
-}
-
-public void chequearVariableEntera(ParserVal pos){
-	if (profundidad > 0){
-		ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
-		if (elemento.getTipo() == ElementoTS.TIPOS.ENTERO || elemento.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO )
-			listaExpEnt.lastElement().add(true);
-		else
-			listaExpEnt.lastElement().add(false);
-	}
+public void chequearTipoParaSub(ParserVal pos){
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+		if (!(elemento.getTipo() == ElementoTS.TIPOS.ENTERO || elemento.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO || elemento.getTipo() == null))
+			subindiceValido = false;
 }
