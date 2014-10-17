@@ -92,7 +92,7 @@ impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impr
 					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
 			
-asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación"); }
+asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación"); subindiceValido = true;}
 			| asignacion_invalida
 			;
 
@@ -106,7 +106,7 @@ bloque		: sentencia
 			| '{' '}'  { escribirError("Bloque de sentencias vacío."); }
 			;
 					
-condicion	: e comparador e 
+condicion	: e comparador e {subindiceValido = true;}
 			;
 		
 comparador	: '>'
@@ -135,11 +135,11 @@ f	: valor
 
 valor	: asignable
 		| ENTERO 		{ chequearRango(); }
-		| ENTERO_LSS 	{ tratarConstante($1,"entero_lss");  }
+		| ENTERO_LSS 	{ tratarConstante($1,"entero_lss");  subindiceValido = false;}
 		;
 
-asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1); }
-			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1); }
+asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1); chequearTipoParaSub($1);}
+			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1); chequearTipoParaSub($1); chequearSubindice();}
 			;
 			
 %%
@@ -357,4 +357,17 @@ public void tratarNodeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getTipo() == null)
 		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado.");
+}
+
+public void chequearSubindice(){
+	if (!subindiceValido)
+		escribirErrorDeGeneracion("Subindice Inválido.");
+
+	subindiceValido = true;
+}
+
+public void chequearTipoParaSub(ParserVal pos){
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+		if (!(elemento.getTipo() == ElementoTS.TIPOS.ENTERO || elemento.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO || elemento.getTipo() == null))
+			subindiceValido = false;
 }
