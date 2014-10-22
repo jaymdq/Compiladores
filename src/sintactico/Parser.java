@@ -25,9 +25,7 @@ import lexico.AnalizadorLexico;
 import proyecto.Proyecto;
 import proyecto.Token;
 import proyecto.ElementoTS;
-
 import java.util.Vector;
-
 import arbol.sintactico.*;
 
 //#line 28 "Parser.java"
@@ -492,6 +490,7 @@ private int errores = 0;
 private Vector<Token> declaracionesAux = new Vector<Token>();
 //Ver esto en un futuro
 //private boolean subindiceValido = true;
+private Integer bloqueActivado = 0;
 private Vector<ArbolAbs> sentencias = new Vector<ArbolAbs>();
 private ArbolAbs SentenciaAsignacion;
 private ArbolAbs SentenciaImpresion;
@@ -510,7 +509,7 @@ private ArbolAbs E2;
 private ArbolAbs Bloque;
 private ArbolAbs Bloque1;
 private ArbolAbs Bloque2;
-private String UltimoComparador;
+private String UltimoComparador = "";
 
 private void yyerror(String string) {
 	//System.out.println(string);	
@@ -752,14 +751,18 @@ private void agregarBloque(ArbolAbs exp){
 }
 
 private void agregarSentenciaArbol(ArbolAbs sentencia){
-	if (SentenciasArbol == null){
-		SentenciasArbol = crear_nodo("Sentencia General",sentencia,null);
-		SentenciasArbolMasDerecho = null;
-	}else{
-		SentenciasArbolMasDerecho = crear_nodo("Sentencia General",sentencia,null);
+	if (bloqueActivado > 0){
+		if (SentenciasArbol == null){
+			SentenciasArbol = crear_nodo("Sentencia General",sentencia,null);
+			SentenciasArbolMasDerecho = SentenciasArbol;
+		}else{
+			ArbolAbs aux = crear_nodo("Sentencia General",sentencia,null);
+			((Arbol) SentenciasArbolMasDerecho).setDerecho(aux);
+			SentenciasArbolMasDerecho = aux;
+		}
 	}
 }
-//#line 688 "Parser.java"
+//#line 693 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -951,19 +954,19 @@ case 14:
 break;
 case 17:
 //#line 52 "gramatica.y"
-{ indicarSentencia("Selección");}
+{ indicarSentencia("Selección"); bloqueActivado++; }
 break;
 case 18:
 //#line 52 "gramatica.y"
-{ agregarSentenciaArbol(SentenciaSeleccion); }
+{ agregarSentenciaArbol(SentenciaSeleccion); bloqueActivado--; }
 break;
 case 19:
 //#line 53 "gramatica.y"
-{ indicarSentencia("Iteración");}
+{ indicarSentencia("Iteración"); bloqueActivado++; }
 break;
 case 20:
 //#line 53 "gramatica.y"
-{ agregarSentenciaArbol(SentenciaIteracion); }
+{ agregarSentenciaArbol(SentenciaIteracion); bloqueActivado--; }
 break;
 case 21:
 //#line 54 "gramatica.y"
@@ -991,7 +994,7 @@ case 27:
 break;
 case 28:
 //#line 64 "gramatica.y"
-{ Cuerpo = crear_nodo("Cuerpo",Bloque,null); SentenciaSeleccion = crear_nodo("Selección",Condicion,Cuerpo);}
+{ Cuerpo = crear_nodo("Cuerpo",SentenciasArbol,null); SentenciaSeleccion = crear_nodo("Selección",Condicion,Cuerpo);  System.out.println("HIHI"); System.out.println(SentenciaSeleccion); }
 break;
 case 29:
 //#line 65 "gramatica.y"
@@ -1031,7 +1034,7 @@ case 44:
 break;
 case 45:
 //#line 85 "gramatica.y"
-{ tratarCadenaMultilinea(val_peek(2)); SentenciaImpresion = crear_nodo("Impresión",crear_hoja(val_peek(2)),null); System.out.println(SentenciaImpresion);}
+{ tratarCadenaMultilinea(val_peek(2)); SentenciaImpresion = crear_nodo("Impresión",crear_hoja(val_peek(2)),null); /*System.out.println(SentenciaImpresion);*/ }
 break;
 case 47:
 //#line 89 "gramatica.y"
@@ -1055,7 +1058,7 @@ case 54:
 break;
 case 55:
 //#line 96 "gramatica.y"
-{ indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja(val_peek(3)),E); addSentencia(SentenciaAsignacion); System.out.println(SentenciaAsignacion); }
+{ indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja(val_peek(3)),E); addSentencia(SentenciaAsignacion); /*System.out.println(SentenciaAsignacion);*/ }
 break;
 case 57:
 //#line 100 "gramatica.y"
@@ -1157,7 +1160,7 @@ case 85:
 //#line 143 "gramatica.y"
 { tratarNodeclaraciones(val_peek(3));	HojaAux = crear_hoja(val_peek(3)); }
 break;
-//#line 1081 "Parser.java"
+//#line 1086 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

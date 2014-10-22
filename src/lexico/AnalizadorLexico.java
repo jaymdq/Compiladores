@@ -188,10 +188,10 @@ public class AnalizadorLexico {
 			// Finalizacion <=
 			matrizTransicion.setTransicion(Estado.CINCO, TipoSimbolo.IGUAL, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MENOR_IGUAL,false)));
 			// Finalizacion sin back	
-			matrizTransicion.setTransicion(Estado.CUATRO, TipoSimbolo.BLANCO, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MENOR,false)));
-			matrizTransicion.setTransicion(Estado.CUATRO, TipoSimbolo.TABULACION, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MENOR,false)));
-			matrizTransicion.setTransicion(Estado.CUATRO, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MENOR,false)));
-			matrizTransicion.setTransicion(Estado.CUATRO, TipoSimbolo.RETORNO, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MENOR,false)));
+			matrizTransicion.setTransicion(Estado.CINCO, TipoSimbolo.BLANCO, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MENOR,false)));
+			matrizTransicion.setTransicion(Estado.CINCO, TipoSimbolo.TABULACION, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MENOR,false)));
+			matrizTransicion.setTransicion(Estado.CINCO, TipoSimbolo.NUEVA_LINEA, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MENOR,false)));
+			matrizTransicion.setTransicion(Estado.CINCO, TipoSimbolo.RETORNO, new Transicion(Estado.FINAL, new ASDirecto(TipoToken.COMP_MENOR,false)));
 			// Finalizacion <
 			matrizTransicion.setDefault(Estado.CINCO, new Transicion(Estado.FINAL, new ASDirecto( TipoToken.COMP_MENOR, true)));
 

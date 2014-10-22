@@ -28,7 +28,10 @@ public class Arbol implements ArbolAbs {
 		for (int i = 0; i < espacios; i++){
 			aux+="  ";
 		}
-		return operacion + "\n"+aux+"IZQ-" + izquierdo.toString(espacios) + "\n"+aux+"DER-" + derecho.toString(espacios);
+		if (derecho != null)
+			return operacion + "\n"+aux+"IZQ-" + izquierdo.toString(espacios) + "\n"+aux+"DER-" + derecho.toString(espacios);
+		else
+			return operacion + "\n"+aux+"IZQ-" + izquierdo.toString(espacios) + "\n"+aux+"DER- NULL";
 	}
 
 	@Override
@@ -44,6 +47,18 @@ public class Arbol implements ArbolAbs {
 
 	public void setOperacion(String operacion) {
 		this.operacion = operacion;
+	}
+	
+	public ArbolAbs getIzquierdo(){
+		return this.izquierdo;
+	}
+	
+	public ArbolAbs getDerecho(){
+		return this.derecho;
+	}
+	
+	public void setDerecho(ArbolAbs arbol){
+		this.derecho = arbol;
 	}
 
 	public ArbolAbs clone(){
