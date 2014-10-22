@@ -1,4 +1,4 @@
-package Arbol2;
+package arbol.sintactico;
 
 import proyecto.ElementoTS;
 

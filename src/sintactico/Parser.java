@@ -25,8 +25,10 @@ import lexico.AnalizadorLexico;
 import proyecto.Proyecto;
 import proyecto.Token;
 import proyecto.ElementoTS;
+
 import java.util.Vector;
-import Arbol2.*;
+
+import arbol.sintactico.*;
 
 //#line 28 "Parser.java"
 
