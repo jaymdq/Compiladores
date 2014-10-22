@@ -82,6 +82,8 @@ public class CompiladorCVR {
 	private JTable tablaSimbolos;
 	private JEditorPane editorLexico;
 	private JEditorPane editorSintactico;
+	private JEditorPane arbolSintactico;
+	private JEditorPane codigoASM;
 	
 	private static Proyecto proyecto;
 	
@@ -474,6 +476,7 @@ public class CompiladorCVR {
 		};
 		proyecto.addObserver(obsSin);
 		
+			
 		//Agregamos el tab de la tabla de simbolos
 		JScrollPane scrollPaneTabla = new JScrollPane();
 		tabbedPane.addTab("Tabla de Símbolos", scrollPaneTabla);
@@ -541,6 +544,25 @@ public class CompiladorCVR {
 			}
 		};
 		proyecto.addObserver(obsTokens);
+		
+		//Árbol sintáctico
+		arbolSintactico = new JEditorPane();
+		arbolSintactico.setEditable(false);
+		arbolSintactico.setFont(new Font("Consolas", 0, 16));
+		JScrollPane scrollPaneArbolSintactico = new JScrollPane(arbolSintactico);
+
+		//Agregamos el tab del analizador sintáctico
+		tabbedPane.addTab("Árbol Sintáctico", scrollPaneArbolSintactico);
+
+		//Código ASM
+		codigoASM = new JEditorPane();
+		codigoASM.setEditable(false);
+		codigoASM.setFont(new Font("Consolas", 0, 16));
+		JScrollPane scrollPaneCodigoASM = new JScrollPane(codigoASM);
+
+		//Agregamos el tab del analizador sintáctico
+		tabbedPane.addTab("Código ASM", scrollPaneCodigoASM);
+		
 	}
 	
 	protected void agregarSentencia(String sentencia) {
