@@ -12,12 +12,21 @@ public class Hoja implements ArbolAbs {
 	
 	@Override
 	public String toString() {
-		return "[" + contenido.getToken().getLexema() + "," + contenido.getTipo().toString() +"]\n";
+		return "[" + contenido.getToken().getLexema() + "," + contenido.getTipo().toString() +"]";
+	}
+
+	public String toString(Integer espacios) {
+		return "[" + contenido.getToken().getLexema() + "," + contenido.getTipo().toString() +"]";
 	}
 
 	@Override
 	public String getTipo() {
 		return this.contenido.getTipo().toString();
+	}
+	
+	public ArbolAbs clone(){
+		Hoja salida = new Hoja(contenido);
+		return salida;
 	}
 
 }

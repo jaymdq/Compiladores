@@ -26,8 +26,9 @@ import proyecto.Proyecto;
 import proyecto.Token;
 import proyecto.ElementoTS;
 import java.util.Vector;
+import Arbol2.*;
 
-//#line 27 "Parser.java"
+//#line 28 "Parser.java"
 
 
 
@@ -480,15 +481,34 @@ final static String yyrule[] = {
 "asignable : IDENTIFICADOR '[' e ']'",
 };
 
-//#line 146 "gramatica.y"
+//#line 147 "gramatica.y"
 
 /* Código */
 
 private Proyecto proyecto;
 private int errores = 0;
 private Vector<Token> declaracionesAux = new Vector<Token>();
-private boolean subindiceValido = true;
-
+//Ver esto en un futuro
+//private boolean subindiceValido = true;
+private Vector<ArbolAbs> sentencias = new Vector<ArbolAbs>();
+private ArbolAbs SentenciaAsignacion;
+private ArbolAbs SentenciaImpresion;
+private ArbolAbs SentenciaSeleccion;
+private ArbolAbs SentenciaIteracion;
+private ArbolAbs SentenciasArbol = null;
+private ArbolAbs SentenciasArbolMasDerecho = null;
+private ArbolAbs E;
+private ArbolAbs T;
+private ArbolAbs F;
+private ArbolAbs HojaAux;
+private ArbolAbs Condicion;
+private ArbolAbs Cuerpo;
+private ArbolAbs E1;
+private ArbolAbs E2;
+private ArbolAbs Bloque;
+private ArbolAbs Bloque1;
+private ArbolAbs Bloque2;
+private String UltimoComparador;
 
 private void yyerror(String string) {
 	//System.out.println(string);	
@@ -558,7 +578,7 @@ private void chequearNegativo(){
 	actualizarTablaDeSimbolos();
 }
 
-public void chequearRango(){
+private void chequearRango(){
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
 	if (Integer.parseInt(t.getLexema()) == 32768){
 		t.setTipo(Token.TipoToken.ENTERO_LSS);
@@ -569,7 +589,7 @@ public void chequearRango(){
 	actualizarTablaDeSimbolos();
 }
 
-public void actualizarTablaDeSimbolos(){
+private void actualizarTablaDeSimbolos(){
 	proyecto.getTablaDeSimbolos().setearCambios();
 	proyecto.getTablaDeSimbolos().notifyObservers();
 	for (ElementoTS elemento : proyecto.getTablaDeSimbolos().getList()){
@@ -578,7 +598,7 @@ public void actualizarTablaDeSimbolos(){
 	}
 }
 
-public void borrarFueraRango(){
+private void borrarFueraRango(){
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
 	if (t.getContador() > 1){
 		t.disminuirContador();
@@ -593,18 +613,18 @@ public int getCantidadErrores(){
 	return errores;
 }
 
-public void agregar(){
+private void agregar(){
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
 	declaracionesAux.add(t);
 }
 
-public void agregar(String tipo){
+private void agregar(String tipo){
 	Token t = new Token();
 	t.setLexema(tipo);
 	declaracionesAux.add(t);
 }
 
-public void generarDeclaracionTipoBasico(){
+private void generarDeclaracionTipoBasico(){
 ElementoTS.TIPOS tipo;
 if (declaracionesAux.elementAt(0).getLexema().equals("entero"))
 	tipo = ElementoTS.TIPOS.ENTERO;
@@ -622,7 +642,7 @@ else
 	declaracionesAux.clear();
 }
 
-public void generarDeclaracionTipoVector(ParserVal iden, ParserVal limInf, ParserVal limSup){
+private void generarDeclaracionTipoVector(ParserVal iden, ParserVal limInf, ParserVal limSup){
 ElementoTS.TIPOS tipo;
 if (declaracionesAux.elementAt(0).getLexema().equals("entero"))
 	tipo = ElementoTS.TIPOS.VECTOR_ENTERO;
@@ -636,6 +656,7 @@ else
 	Integer lim_s = Integer.parseInt(proyecto.getTablaDeSimbolos().getElemento(limSup.ival).getToken().getLexema());
 	
 	//Chequear rangos
+	
 	if (lim_i < 0)
 		escribirErrorDeGeneracion("Límite Inferior menor a 0.");
 	if (lim_s < 0)
@@ -657,7 +678,7 @@ else
 	declaracionesAux.clear();
 }
 
-public void tratarConstante(ParserVal pos,String tipoDado){
+private void tratarConstante(ParserVal pos,String tipoDado){
 	ElementoTS.TIPOS tipo;
 	if (tipoDado.equals("entero"))
 		tipo = ElementoTS.TIPOS.ENTERO;
@@ -674,7 +695,7 @@ public void tratarConstante(ParserVal pos,String tipoDado){
 	declaracionesAux.clear();
 }
 
-public void tratarCadenaMultilinea(ParserVal pos){
+private void tratarCadenaMultilinea(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	
 	elemento.setTipo(ElementoTS.TIPOS.CADENA_MULTILINEA);
@@ -685,31 +706,58 @@ public void tratarCadenaMultilinea(ParserVal pos){
 	declaracionesAux.clear();
 }
 
-public void tratarRedeclaraciones(ParserVal pos){
+private void tratarRedeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getToken().getContador() > 1)
 		escribirErrorDeGeneracion("Duplicación de identificador \"" + elemento.getToken().getLexema() + "\".");
 }
 
-public void tratarNodeclaraciones(ParserVal pos){
+private void tratarNodeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getTipo() == null)
 		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado.");
 }
 
-public void chequearSubindice(){
-	if (!subindiceValido)
-		escribirErrorDeGeneracion("Subindice Inválido.");
-
-	subindiceValido = true;
-}
-
-public void chequearTipoParaSub(ParserVal pos){
+private ArbolAbs crear_hoja(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
-		if (!(elemento.getTipo() == ElementoTS.TIPOS.ENTERO || elemento.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO || elemento.getTipo() == null))
-			subindiceValido = false;
+	ArbolAbs salida = new Hoja(elemento);
+	return salida;
 }
-//#line 640 "Parser.java"
+
+private ArbolAbs crear_nodo(String Operacion,ArbolAbs arb_izq,ArbolAbs arb_der){
+	ArbolAbs salida = new Arbol(Operacion,arb_izq,arb_der);
+	return salida;
+}
+
+private void addSentencia(ArbolAbs sentencia){
+	sentencias.add(sentencia);
+}
+
+private void agregarExpresion(ArbolAbs exp){
+	if (E2 != null)
+		E1 = E2.clone();
+	else
+		E1 = exp;
+	E2 = exp;
+}
+
+private void agregarBloque(ArbolAbs exp){
+	if (Bloque2 != null)
+		Bloque1 = Bloque2.clone();
+	else
+		Bloque1 = exp;
+	Bloque2 = exp;
+}
+
+private void agregarSentenciaArbol(ArbolAbs sentencia){
+	if (SentenciasArbol == null){
+		SentenciasArbol = crear_nodo("Sentencia General",sentencia,null);
+		SentenciasArbolMasDerecho = null;
+	}else{
+		SentenciasArbolMasDerecho = crear_nodo("Sentencia General",sentencia,null);
+	}
+}
+//#line 688 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -864,174 +912,250 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 4:
-//#line 29 "gramatica.y"
+//#line 30 "gramatica.y"
 { indicarSentencia("Declaración de tipo básico"); generarDeclaracionTipoBasico(); }
 break;
 case 5:
-//#line 30 "gramatica.y"
+//#line 31 "gramatica.y"
 { indicarSentencia("Declaración de tipo vector"); generarDeclaracionTipoVector(val_peek(9),val_peek(7),val_peek(5)); tratarRedeclaraciones(val_peek(9));}
 break;
 case 7:
-//#line 34 "gramatica.y"
+//#line 35 "gramatica.y"
 { escribirError("Sintaxis de declaración de tipo básico incorrecta."); }
 break;
 case 8:
-//#line 35 "gramatica.y"
-{ escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
-break;
-case 10:
 //#line 36 "gramatica.y"
 { escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
 break;
-case 11:
-//#line 39 "gramatica.y"
-{ tratarRedeclaraciones(val_peek(0)); agregar();}
+case 10:
+//#line 37 "gramatica.y"
+{ escribirError("Sintaxis de declaración de tipo vector incorrecta."); }
 break;
-case 12:
+case 11:
 //#line 40 "gramatica.y"
 { tratarRedeclaraciones(val_peek(0)); agregar();}
 break;
+case 12:
+//#line 41 "gramatica.y"
+{ tratarRedeclaraciones(val_peek(0)); agregar();}
+break;
 case 13:
-//#line 43 "gramatica.y"
+//#line 44 "gramatica.y"
 { agregar("entero");}
 break;
 case 14:
-//#line 44 "gramatica.y"
+//#line 45 "gramatica.y"
 { agregar("entero_lss");}
 break;
 case 17:
-//#line 51 "gramatica.y"
+//#line 52 "gramatica.y"
 { indicarSentencia("Selección");}
 break;
-case 19:
+case 18:
 //#line 52 "gramatica.y"
+{ agregarSentenciaArbol(SentenciaSeleccion); }
+break;
+case 19:
+//#line 53 "gramatica.y"
 { indicarSentencia("Iteración");}
 break;
-case 21:
+case 20:
 //#line 53 "gramatica.y"
+{ agregarSentenciaArbol(SentenciaIteracion); }
+break;
+case 21:
+//#line 54 "gramatica.y"
 { indicarSentencia("Impresión");}
 break;
-case 24:
+case 22:
+//#line 54 "gramatica.y"
+{ agregarSentenciaArbol(SentenciaImpresion); }
+break;
+case 23:
 //#line 55 "gramatica.y"
+{ agregarSentenciaArbol(SentenciaAsignacion); }
+break;
+case 24:
+//#line 56 "gramatica.y"
 { escribirError("No se esperaba la palabra reservada \"sino\"."); }
 break;
 case 25:
-//#line 56 "gramatica.y"
+//#line 57 "gramatica.y"
 { escribirError("Sentencia inválida."); }
 break;
 case 27:
-//#line 60 "gramatica.y"
+//#line 61 "gramatica.y"
 { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }
 break;
+case 28:
+//#line 64 "gramatica.y"
+{ Cuerpo = crear_nodo("Cuerpo",Bloque,null); SentenciaSeleccion = crear_nodo("Selección",Condicion,Cuerpo);}
+break;
+case 29:
+//#line 65 "gramatica.y"
+{}
+break;
 case 31:
-//#line 68 "gramatica.y"
+//#line 69 "gramatica.y"
 {escribirError("Falta '(' en sentencia si.");}
 break;
 case 33:
-//#line 69 "gramatica.y"
+//#line 70 "gramatica.y"
 {escribirError("Falta ')' en sentencia si.");}
 break;
 case 35:
-//#line 70 "gramatica.y"
+//#line 71 "gramatica.y"
 {escribirError("Condición inválida en la sentencia si.");}
 break;
 case 37:
-//#line 71 "gramatica.y"
-{escribirError("Sentencia si inválida.");}
-break;
-case 38:
 //#line 72 "gramatica.y"
 {escribirError("Sentencia si inválida.");}
 break;
+case 38:
+//#line 73 "gramatica.y"
+{escribirError("Sentencia si inválida.");}
+break;
 case 41:
-//#line 79 "gramatica.y"
+//#line 80 "gramatica.y"
 { escribirError("No se especificó un bloque a iterar."); }
 break;
 case 43:
-//#line 80 "gramatica.y"
+//#line 81 "gramatica.y"
 { escribirError("No se especificó la palabra reservada \"hasta\" en la iteración."); }
 break;
 case 44:
-//#line 81 "gramatica.y"
+//#line 82 "gramatica.y"
 { escribirError("Condición inválida en la sentencia iterar."); }
 break;
 case 45:
-//#line 84 "gramatica.y"
-{ tratarCadenaMultilinea(val_peek(2));}
+//#line 85 "gramatica.y"
+{ tratarCadenaMultilinea(val_peek(2)); SentenciaImpresion = crear_nodo("Impresión",crear_hoja(val_peek(2)),null); System.out.println(SentenciaImpresion);}
 break;
 case 47:
-//#line 88 "gramatica.y"
+//#line 89 "gramatica.y"
 {escribirError("Falta '(' en sentencia de impresión.");}
 break;
 case 49:
-//#line 89 "gramatica.y"
+//#line 90 "gramatica.y"
 {escribirError("No se especificó una cadena multilínea en sentencia de impresión.");}
 break;
 case 51:
-//#line 90 "gramatica.y"
+//#line 91 "gramatica.y"
 {escribirError("Falta ')' en sentencia de impresión.");}
 break;
 case 53:
-//#line 91 "gramatica.y"
+//#line 92 "gramatica.y"
 {escribirError("Impresión Inválida.");}
 break;
 case 54:
-//#line 92 "gramatica.y"
+//#line 93 "gramatica.y"
 {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 break;
 case 55:
-//#line 95 "gramatica.y"
-{ indicarSentencia("Asignación"); subindiceValido = true;}
+//#line 96 "gramatica.y"
+{ indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja(val_peek(3)),E); addSentencia(SentenciaAsignacion); System.out.println(SentenciaAsignacion); }
 break;
 case 57:
-//#line 99 "gramatica.y"
-{ escribirError("Asignación inválida.");}
-break;
-case 58:
 //#line 100 "gramatica.y"
 { escribirError("Asignación inválida.");}
 break;
+case 58:
+//#line 101 "gramatica.y"
+{ escribirError("Asignación inválida.");}
+break;
 case 61:
-//#line 105 "gramatica.y"
+//#line 106 "gramatica.y"
 { escribirError("No se pueden declarar variables dentro de un bloque."); }
 break;
 case 63:
-//#line 106 "gramatica.y"
+//#line 107 "gramatica.y"
 { escribirError("Bloque de sentencias vacío."); }
 break;
 case 64:
-//#line 109 "gramatica.y"
-{subindiceValido = true;}
+//#line 110 "gramatica.y"
+{ Condicion = crear_nodo(UltimoComparador,E1,E2); }
+break;
+case 65:
+//#line 113 "gramatica.y"
+{ UltimoComparador = ">"; }
+break;
+case 66:
+//#line 114 "gramatica.y"
+{ UltimoComparador = ">="; }
+break;
+case 67:
+//#line 115 "gramatica.y"
+{ UltimoComparador = "<"; }
+break;
+case 68:
+//#line 116 "gramatica.y"
+{ UltimoComparador = "<="; }
+break;
+case 69:
+//#line 117 "gramatica.y"
+{ UltimoComparador = "="; }
+break;
+case 70:
+//#line 118 "gramatica.y"
+{ UltimoComparador = "^="; }
+break;
+case 71:
+//#line 121 "gramatica.y"
+{ E = crear_nodo("Suma \"+\"",E,T);  agregarExpresion(E); }
+break;
+case 72:
+//#line 122 "gramatica.y"
+{ E = crear_nodo("Resta \"-\"",E,T); agregarExpresion(E); }
+break;
+case 73:
+//#line 123 "gramatica.y"
+{ E = T; agregarExpresion(E); }
+break;
+case 74:
+//#line 126 "gramatica.y"
+{ T = crear_nodo("Multiplicación \"*\"",T,F); }
+break;
+case 75:
+//#line 127 "gramatica.y"
+{ T = crear_nodo("División \"/\"",T,F); }
+break;
+case 76:
+//#line 128 "gramatica.y"
+{ T = F; }
+break;
+case 77:
+//#line 131 "gramatica.y"
+{ F = HojaAux; }
 break;
 case 78:
-//#line 131 "gramatica.y"
+//#line 132 "gramatica.y"
 { chequearNegativo(); }
 break;
 case 79:
-//#line 132 "gramatica.y"
+//#line 133 "gramatica.y"
 { escribirError("Constante negativa fuera de rango."); borrarFueraRango(); }
 break;
 case 80:
-//#line 133 "gramatica.y"
+//#line 134 "gramatica.y"
 { escribirError("Constante fuera de rango"); }
 break;
 case 82:
-//#line 137 "gramatica.y"
-{ chequearRango(); }
+//#line 138 "gramatica.y"
+{ chequearRango();					HojaAux = crear_hoja(val_peek(0)); }
 break;
 case 83:
-//#line 138 "gramatica.y"
-{ tratarConstante(val_peek(0),"entero_lss");  subindiceValido = false;}
+//#line 139 "gramatica.y"
+{ tratarConstante(val_peek(0),"entero_lss");	HojaAux = crear_hoja(val_peek(0));  }
 break;
 case 84:
-//#line 141 "gramatica.y"
-{ tratarNodeclaraciones(val_peek(0)); chequearTipoParaSub(val_peek(0));}
+//#line 142 "gramatica.y"
+{ tratarNodeclaraciones(val_peek(0));	HojaAux = crear_hoja(val_peek(0));  }
 break;
 case 85:
-//#line 142 "gramatica.y"
-{ tratarNodeclaraciones(val_peek(3)); chequearTipoParaSub(val_peek(3)); chequearSubindice();}
+//#line 143 "gramatica.y"
+{ tratarNodeclaraciones(val_peek(3));	HojaAux = crear_hoja(val_peek(3)); }
 break;
-//#line 957 "Parser.java"
+//#line 1081 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

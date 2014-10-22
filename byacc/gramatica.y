@@ -7,6 +7,7 @@ import proyecto.Proyecto;
 import proyecto.Token;
 import proyecto.ElementoTS;
 import java.util.Vector;
+import Arbol2.*;
 
 %}
 
@@ -48,10 +49,10 @@ sent_ejecutable	: sentencia_valida
 				| sent_ejecutable sentencia 
 				;
 					
-sentencia_valida	:  { indicarSentencia("Selección");} seleccion
-					|  { indicarSentencia("Iteración");} iteracion 				
-					|  { indicarSentencia("Impresión");} impresion 				
-					|  asignacion 
+sentencia_valida	:  { indicarSentencia("Selección");} seleccion	{ agregarSentenciaArbol(SentenciaSeleccion); }
+					|  { indicarSentencia("Iteración");} iteracion 	{ agregarSentenciaArbol(SentenciaIteracion); }
+					|  { indicarSentencia("Impresión");} impresion 	{ agregarSentenciaArbol(SentenciaImpresion); }
+					|  asignacion 									{ agregarSentenciaArbol(SentenciaAsignacion); }
 					|  PR_SINO bloque { escribirError("No se esperaba la palabra reservada \"sino\"."); }	
 					|  error ';' { escribirError("Sentencia inválida."); }
 					;
@@ -60,8 +61,8 @@ sentencia 	:  sentencia_valida
 			|  declaracion { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }  
 			;
 
-seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque	 %prec INFERIOR_A_SINO					
-			| PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO bloque	
+seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque	 %prec INFERIOR_A_SINO	{ Cuerpo = crear_nodo("Cuerpo",Bloque,null); SentenciaSeleccion = crear_nodo("Selección",Condicion,Cuerpo);}			
+			| PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO bloque				{}
 			| seleccion_invalida
 			;
 			
@@ -81,7 +82,7 @@ iteracion_invalida	: PR_ITERAR { escribirError("No se especificó un bloque a ite
 					| PR_ITERAR bloque PR_HASTA error ';' { escribirError("Condición inválida en la sentencia iterar."); }
 					;
 			
-impresion	: PR_IMPRIMIR  '(' CADENA_MULTILINEA ')' ';' { tratarCadenaMultilinea($3);}
+impresion	: PR_IMPRIMIR  '(' CADENA_MULTILINEA ')' ';' { tratarCadenaMultilinea($3); SentenciaImpresion = crear_nodo("Impresión",crear_hoja($3),null); System.out.println(SentenciaImpresion);}
 			| impresion_invalida
 			;
 			
@@ -92,7 +93,7 @@ impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impr
 					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
 			
-asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación"); }
+asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja($1),E); addSentencia(SentenciaAsignacion); System.out.println(SentenciaAsignacion); }
 			| asignacion_invalida
 			;
 
@@ -100,46 +101,46 @@ asignacion_invalida	: asignable ASIGNACION error ';' { escribirError("Asignación
 					| ASIGNACION error ';'			 { escribirError("Asignación inválida.");}
 					;
 			
-bloque		: sentencia
+bloque		: sentencia	
 			| '{' sent_ejecutable '}'
 			| '{' declaracion { escribirError("No se pueden declarar variables dentro de un bloque."); } sent_declarativa sent_ejecutable '}'
 			| '{' '}'  { escribirError("Bloque de sentencias vacío."); }
 			;
 					
-condicion	: e comparador e 
+condicion	: e comparador e { Condicion = crear_nodo(UltimoComparador,E1,E2); }
 			;
 		
-comparador	: '>'
-			| COMP_MAYOR_IGUAL
-			| '<'
-			| COMP_MENOR_IGUAL
-			| '='
-			| COMP_DISTINTO
+comparador	: '>'				{ UltimoComparador = ">"; }
+			| COMP_MAYOR_IGUAL	{ UltimoComparador = ">="; }
+			| '<'				{ UltimoComparador = "<"; }
+			| COMP_MENOR_IGUAL	{ UltimoComparador = "<="; }
+			| '='				{ UltimoComparador = "="; }
+			| COMP_DISTINTO		{ UltimoComparador = "^="; }
 			;
 			
-e	: e '+' t
-	| e '-' t
-	| t					
+e	: e '+' t			{ E = crear_nodo("Suma \"+\"",E,T);  agregarExpresion(E); }
+	| e '-' t			{ E = crear_nodo("Resta \"-\"",E,T); agregarExpresion(E); }
+	| t					{ E = T; agregarExpresion(E); }
 	;
 	
-t	: t '*' f
-	| t "/" f
-	| f					
+t	: t '*' f			{ T = crear_nodo("Multiplicación \"*\"",T,F); }
+	| t '/' f			{ T = crear_nodo("División \"/\"",T,F); }
+	| f					{ T = F; }
 	;
 	
-f	: valor
+f	: valor				{ F = HojaAux; }
 	| '-' ENTERO		{ chequearNegativo(); }
 	| '-' ENTERO_LSS 	{ escribirError("Constante negativa fuera de rango."); borrarFueraRango(); }
 	| FUERA_RANGO 		{ escribirError("Constante fuera de rango"); }
 	;
 
 valor	: asignable
-		| ENTERO 		{ chequearRango(); }
-		| ENTERO_LSS 	{ tratarConstante($1,"entero_lss");  }
+		| ENTERO 		{ chequearRango();					HojaAux = crear_hoja($1); }
+		| ENTERO_LSS 	{ tratarConstante($1,"entero_lss");	HojaAux = crear_hoja($1);  }
 		;
 
-asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1); }
-			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1); }
+asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1);	HojaAux = crear_hoja($1);  }
+			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);	HojaAux = crear_hoja($1); }
 			;
 			
 %%
@@ -149,8 +150,27 @@ asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1); }
 private Proyecto proyecto;
 private int errores = 0;
 private Vector<Token> declaracionesAux = new Vector<Token>();
-private boolean subindiceValido = true;
-
+//Ver esto en un futuro
+//private boolean subindiceValido = true;
+private Vector<ArbolAbs> sentencias = new Vector<ArbolAbs>();
+private ArbolAbs SentenciaAsignacion;
+private ArbolAbs SentenciaImpresion;
+private ArbolAbs SentenciaSeleccion;
+private ArbolAbs SentenciaIteracion;
+private ArbolAbs SentenciasArbol = null;
+private ArbolAbs SentenciasArbolMasDerecho = null;
+private ArbolAbs E;
+private ArbolAbs T;
+private ArbolAbs F;
+private ArbolAbs HojaAux;
+private ArbolAbs Condicion;
+private ArbolAbs Cuerpo;
+private ArbolAbs E1;
+private ArbolAbs E2;
+private ArbolAbs Bloque;
+private ArbolAbs Bloque1;
+private ArbolAbs Bloque2;
+private String UltimoComparador;
 
 private void yyerror(String string) {
 	//System.out.println(string);	
@@ -220,7 +240,7 @@ private void chequearNegativo(){
 	actualizarTablaDeSimbolos();
 }
 
-public void chequearRango(){
+private void chequearRango(){
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
 	if (Integer.parseInt(t.getLexema()) == 32768){
 		t.setTipo(Token.TipoToken.ENTERO_LSS);
@@ -231,7 +251,7 @@ public void chequearRango(){
 	actualizarTablaDeSimbolos();
 }
 
-public void actualizarTablaDeSimbolos(){
+private void actualizarTablaDeSimbolos(){
 	proyecto.getTablaDeSimbolos().setearCambios();
 	proyecto.getTablaDeSimbolos().notifyObservers();
 	for (ElementoTS elemento : proyecto.getTablaDeSimbolos().getList()){
@@ -240,7 +260,7 @@ public void actualizarTablaDeSimbolos(){
 	}
 }
 
-public void borrarFueraRango(){
+private void borrarFueraRango(){
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
 	if (t.getContador() > 1){
 		t.disminuirContador();
@@ -255,18 +275,18 @@ public int getCantidadErrores(){
 	return errores;
 }
 
-public void agregar(){
+private void agregar(){
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
 	declaracionesAux.add(t);
 }
 
-public void agregar(String tipo){
+private void agregar(String tipo){
 	Token t = new Token();
 	t.setLexema(tipo);
 	declaracionesAux.add(t);
 }
 
-public void generarDeclaracionTipoBasico(){
+private void generarDeclaracionTipoBasico(){
 ElementoTS.TIPOS tipo;
 if (declaracionesAux.elementAt(0).getLexema().equals("entero"))
 	tipo = ElementoTS.TIPOS.ENTERO;
@@ -284,7 +304,7 @@ else
 	declaracionesAux.clear();
 }
 
-public void generarDeclaracionTipoVector(ParserVal iden, ParserVal limInf, ParserVal limSup){
+private void generarDeclaracionTipoVector(ParserVal iden, ParserVal limInf, ParserVal limSup){
 ElementoTS.TIPOS tipo;
 if (declaracionesAux.elementAt(0).getLexema().equals("entero"))
 	tipo = ElementoTS.TIPOS.VECTOR_ENTERO;
@@ -298,6 +318,7 @@ else
 	Integer lim_s = Integer.parseInt(proyecto.getTablaDeSimbolos().getElemento(limSup.ival).getToken().getLexema());
 	
 	//Chequear rangos
+	
 	if (lim_i < 0)
 		escribirErrorDeGeneracion("Límite Inferior menor a 0.");
 	if (lim_s < 0)
@@ -319,7 +340,7 @@ else
 	declaracionesAux.clear();
 }
 
-public void tratarConstante(ParserVal pos,String tipoDado){
+private void tratarConstante(ParserVal pos,String tipoDado){
 	ElementoTS.TIPOS tipo;
 	if (tipoDado.equals("entero"))
 		tipo = ElementoTS.TIPOS.ENTERO;
@@ -336,7 +357,7 @@ public void tratarConstante(ParserVal pos,String tipoDado){
 	declaracionesAux.clear();
 }
 
-public void tratarCadenaMultilinea(ParserVal pos){
+private void tratarCadenaMultilinea(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	
 	elemento.setTipo(ElementoTS.TIPOS.CADENA_MULTILINEA);
@@ -347,14 +368,54 @@ public void tratarCadenaMultilinea(ParserVal pos){
 	declaracionesAux.clear();
 }
 
-public void tratarRedeclaraciones(ParserVal pos){
+private void tratarRedeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getToken().getContador() > 1)
 		escribirErrorDeGeneracion("Duplicación de identificador \"" + elemento.getToken().getLexema() + "\".");
 }
 
-public void tratarNodeclaraciones(ParserVal pos){
+private void tratarNodeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getTipo() == null)
 		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado.");
+}
+
+private ArbolAbs crear_hoja(ParserVal pos){
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+	ArbolAbs salida = new Hoja(elemento);
+	return salida;
+}
+
+private ArbolAbs crear_nodo(String Operacion,ArbolAbs arb_izq,ArbolAbs arb_der){
+	ArbolAbs salida = new Arbol(Operacion,arb_izq,arb_der);
+	return salida;
+}
+
+private void addSentencia(ArbolAbs sentencia){
+	sentencias.add(sentencia);
+}
+
+private void agregarExpresion(ArbolAbs exp){
+	if (E2 != null)
+		E1 = E2.clone();
+	else
+		E1 = exp;
+	E2 = exp;
+}
+
+private void agregarBloque(ArbolAbs exp){
+	if (Bloque2 != null)
+		Bloque1 = Bloque2.clone();
+	else
+		Bloque1 = exp;
+	Bloque2 = exp;
+}
+
+private void agregarSentenciaArbol(ArbolAbs sentencia){
+	if (SentenciasArbol == null){
+		SentenciasArbol = crear_nodo("Sentencia General",sentencia,null);
+		SentenciasArbolMasDerecho = null;
+	}else{
+		SentenciasArbolMasDerecho = crear_nodo("Sentencia General",sentencia,null);
+	}
 }
