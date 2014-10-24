@@ -20,8 +20,8 @@ public class Hoja implements ArbolAbs {
 	}
 
 	@Override
-	public String getTipo() {
-		return this.contenido.getTipo().toString();
+	public ElementoTS.TIPOS getTipo() {
+		return this.contenido.getTipo();
 	}
 	
 	public ArbolAbs clone(){

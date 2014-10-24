@@ -6,10 +6,13 @@ a := 2 + 3 - 4 * 5 / 4;
 
 imprimir('Rocha fan matematica');
 
-si (a > 2) entonces {
+si (a > 1) entonces {
 	imprimir('Si');
 	imprimir('No');
-	si (a < 2) entonces{
+	si (a = 2) entonces{
 		imprimir('Tal vez');
+		si (a < 3)entonces
+			a := 3;
 	}
+	imprimir('Fin');
 }

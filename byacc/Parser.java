@@ -487,17 +487,23 @@ final static String yyrule[] = {
 
 private Proyecto proyecto;
 private int errores = 0;
+private int erroresGenCod = 0;
+
 private Vector<Token> declaracionesAux = new Vector<Token>();
 //Ver esto en un futuro
 //private boolean subindiceValido = true;
+
 private Integer bloqueActivado = 0;
+private ArbolAbs SentenciasArbol = null;
+private ArbolAbs SentenciasArbolMasDerecho = null;
+private Vector<ArbolAbs> pila = new Vector<ArbolAbs>();
+private Vector<ArbolAbs> pilaCondiciones = new Vector<ArbolAbs>();
+
 private Vector<ArbolAbs> sentencias = new Vector<ArbolAbs>();
 private ArbolAbs SentenciaAsignacion;
 private ArbolAbs SentenciaImpresion;
 private ArbolAbs SentenciaSeleccion;
 private ArbolAbs SentenciaIteracion;
-private ArbolAbs SentenciasArbol = null;
-private ArbolAbs SentenciasArbolMasDerecho = null;
 private ArbolAbs E;
 private ArbolAbs T;
 private ArbolAbs F;
@@ -509,10 +515,11 @@ private ArbolAbs E2;
 private ArbolAbs Bloque;
 private ArbolAbs Bloque1;
 private ArbolAbs Bloque2;
+
 private String UltimoComparador = "";
 
 private void yyerror(String string) {
-	//System.out.println(string);	
+	
 }
 
 private int yylex(){
@@ -536,6 +543,7 @@ private void escribirError(String s){
 }
 
 private void escribirErrorDeGeneracion(String s){
+	erroresGenCod++;
 	ConsolaManager.getInstance().escribirError("Gen. Cod. Int [Línea " + lineaActual() + "] "+ s);
 }
 
@@ -614,6 +622,9 @@ public int getCantidadErrores(){
 	return errores;
 }
 
+public int getCantidadErroresGenCod(){
+	return erroresGenCod;
+}
 private void agregar(){
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
 	declaracionesAux.add(t);
@@ -719,6 +730,15 @@ private void tratarNodeclaraciones(ParserVal pos){
 		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado.");
 }
 
+private void tratarIndiceInvalido(ParserVal pos){
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+	if (E.getTipo() == null){
+		escribirErrorDeGeneracion("Índice inválido en el vector \"" + elemento.getToken().getLexema() + "\", existen operaciones entre entero y entero_lss.");
+	}
+	if (E.getTipo() == ElementoTS.TIPOS.ENTERO_LSS){
+		escribirErrorDeGeneracion("Índice inválido en el vector \"" + elemento.getToken().getLexema() + "\", el subíndice no puede ser de tipo entero_lss.");
+	}
+}
 private ArbolAbs crear_hoja(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	ArbolAbs salida = new Hoja(elemento);
@@ -731,9 +751,15 @@ private ArbolAbs crear_nodo(String Operacion,ArbolAbs arb_izq,ArbolAbs arb_der){
 }
 
 private void addSentencia(ArbolAbs sentencia){
-	sentencias.add(sentencia);
+	//Vector de sentencias a devolver
+	if (bloqueActivado == 0)
+		sentencias.add(sentencia);
 }
 
+public Vector<ArbolAbs> getSentencias(){
+	//Vector de sentencias a devolver
+	return sentencias;
+}
 private void agregarExpresion(ArbolAbs exp){
 	if (E2 != null)
 		E1 = E2.clone();
@@ -743,26 +769,38 @@ private void agregarExpresion(ArbolAbs exp){
 }
 
 private void agregarBloque(ArbolAbs exp){
-	if (Bloque2 != null)
-		Bloque1 = Bloque2.clone();
-	else
-		Bloque1 = exp;
-	Bloque2 = exp;
+	ArbolAbs auxiliar = Bloque1;
+	Bloque1 = exp;
+	Bloque2 = auxiliar;
 }
 
-private void agregarSentenciaArbol(ArbolAbs sentencia){
+private void agregarCondicion(ArbolAbs exp){
+	pilaCondiciones.add(exp);
+}
+
+private ArbolAbs getUltimaCondicion(){
+	ArbolAbs salida = pilaCondiciones.lastElement();
+	pilaCondiciones.remove(pilaCondiciones.size() - 1);
+	return salida;
+}
+
+private void apilar(ArbolAbs exp){
 	if (bloqueActivado > 0){
-		if (SentenciasArbol == null){
-			SentenciasArbol = crear_nodo("Sentencia General",sentencia,null);
-			SentenciasArbolMasDerecho = SentenciasArbol;
-		}else{
-			ArbolAbs aux = crear_nodo("Sentencia General",sentencia,null);
-			((Arbol) SentenciasArbolMasDerecho).setDerecho(aux);
-			SentenciasArbolMasDerecho = aux;
-		}
+			if ( pila.size() < bloqueActivado ){
+				pila.add(crear_nodo("Sentencia General",exp,null));
+			}else{
+				//Buscar el mas derecho
+				SentenciasArbolMasDerecho = ((Arbol) pila.elementAt(bloqueActivado - 1));
+				while (((Arbol) SentenciasArbolMasDerecho).getDerecho() != null){
+					SentenciasArbolMasDerecho = ((Arbol) SentenciasArbolMasDerecho).getDerecho();
+				}
+				//Tengo al mas derecho
+				((Arbol) SentenciasArbolMasDerecho).setDerecho(crear_nodo("Sentencia General",exp,null));
+			}
+			Bloque = pila.elementAt(bloqueActivado - 1);
 	}
 }
-//#line 693 "Parser.java"
+//#line 731 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -958,27 +996,27 @@ case 17:
 break;
 case 18:
 //#line 52 "gramatica.y"
-{ agregarSentenciaArbol(SentenciaSeleccion); bloqueActivado--; }
+{ bloqueActivado--; apilar(SentenciaSeleccion); }
 break;
 case 19:
 //#line 53 "gramatica.y"
-{ indicarSentencia("Iteración"); bloqueActivado++; }
+{ indicarSentencia("Iteración"); }
 break;
 case 20:
 //#line 53 "gramatica.y"
-{ agregarSentenciaArbol(SentenciaIteracion); bloqueActivado--; }
+{ }
 break;
 case 21:
 //#line 54 "gramatica.y"
-{ indicarSentencia("Impresión");}
+{ indicarSentencia("Impresión"); }
 break;
 case 22:
 //#line 54 "gramatica.y"
-{ agregarSentenciaArbol(SentenciaImpresion); }
+{ apilar(SentenciaImpresion); }
 break;
 case 23:
 //#line 55 "gramatica.y"
-{ agregarSentenciaArbol(SentenciaAsignacion); }
+{ apilar(SentenciaAsignacion); }
 break;
 case 24:
 //#line 56 "gramatica.y"
@@ -994,11 +1032,7 @@ case 27:
 break;
 case 28:
 //#line 64 "gramatica.y"
-{ Cuerpo = crear_nodo("Cuerpo",SentenciasArbol,null); SentenciaSeleccion = crear_nodo("Selección",Condicion,Cuerpo);  System.out.println("HIHI"); System.out.println(SentenciaSeleccion); }
-break;
-case 29:
-//#line 65 "gramatica.y"
-{}
+{ Cuerpo = crear_nodo("Cuerpo",Bloque1,null);    SentenciaSeleccion = crear_nodo("Selección",getUltimaCondicion(),Cuerpo); System.out.println(SentenciaSeleccion); }
 break;
 case 31:
 //#line 69 "gramatica.y"
@@ -1034,7 +1068,7 @@ case 44:
 break;
 case 45:
 //#line 85 "gramatica.y"
-{ tratarCadenaMultilinea(val_peek(2)); SentenciaImpresion = crear_nodo("Impresión",crear_hoja(val_peek(2)),null); /*System.out.println(SentenciaImpresion);*/ }
+{ tratarCadenaMultilinea(val_peek(2)); SentenciaImpresion = crear_nodo("Impresión",crear_hoja(val_peek(2)),null); addSentencia(SentenciaImpresion); }
 break;
 case 47:
 //#line 89 "gramatica.y"
@@ -1058,7 +1092,7 @@ case 54:
 break;
 case 55:
 //#line 96 "gramatica.y"
-{ indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja(val_peek(3)),E); addSentencia(SentenciaAsignacion); /*System.out.println(SentenciaAsignacion);*/ }
+{ indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja(val_peek(3)),E); addSentencia(SentenciaAsignacion); }
 break;
 case 57:
 //#line 100 "gramatica.y"
@@ -1067,6 +1101,14 @@ break;
 case 58:
 //#line 101 "gramatica.y"
 { escribirError("Asignación inválida.");}
+break;
+case 59:
+//#line 104 "gramatica.y"
+{ agregarBloque(Bloque); }
+break;
+case 60:
+//#line 105 "gramatica.y"
+{ agregarBloque(Bloque); }
 break;
 case 61:
 //#line 106 "gramatica.y"
@@ -1078,31 +1120,31 @@ case 63:
 break;
 case 64:
 //#line 110 "gramatica.y"
-{ Condicion = crear_nodo(UltimoComparador,E1,E2); }
+{ Condicion = crear_nodo(UltimoComparador,E1,E2); agregarCondicion(Condicion); }
 break;
 case 65:
 //#line 113 "gramatica.y"
-{ UltimoComparador = ">"; }
+{ UltimoComparador = new String(">"); }
 break;
 case 66:
 //#line 114 "gramatica.y"
-{ UltimoComparador = ">="; }
+{ UltimoComparador = new String(">="); }
 break;
 case 67:
 //#line 115 "gramatica.y"
-{ UltimoComparador = "<"; }
+{ UltimoComparador = new String("<"); }
 break;
 case 68:
 //#line 116 "gramatica.y"
-{ UltimoComparador = "<="; }
+{ UltimoComparador = new String("<="); }
 break;
 case 69:
 //#line 117 "gramatica.y"
-{ UltimoComparador = "="; }
+{ UltimoComparador = new String("="); }
 break;
 case 70:
 //#line 118 "gramatica.y"
-{ UltimoComparador = "^="; }
+{ UltimoComparador = new String("^="); }
 break;
 case 71:
 //#line 121 "gramatica.y"
@@ -1158,9 +1200,9 @@ case 84:
 break;
 case 85:
 //#line 143 "gramatica.y"
-{ tratarNodeclaraciones(val_peek(3));	HojaAux = crear_hoja(val_peek(3)); }
+{ tratarNodeclaraciones(val_peek(3));	HojaAux = crear_hoja(val_peek(3)); tratarIndiceInvalido(val_peek(3)); }
 break;
-//#line 1086 "Parser.java"
+//#line 1128 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

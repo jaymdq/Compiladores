@@ -1,5 +1,8 @@
 package arbol.sintactico;
 
+import proyecto.ElementoTS;
+import proyecto.ElementoTS.TIPOS;
+
 public class Arbol implements ArbolAbs {
 
 	private ArbolAbs izquierdo;
@@ -16,9 +19,9 @@ public class Arbol implements ArbolAbs {
 	public String toString() {
 		Integer espacios = 1;
 		if (derecho != null)
-			return operacion + "\n  IZQ-" + izquierdo.toString(espacios) + "\n  DER-" + derecho.toString(espacios);
+			return operacion + "\n  IZQ " + izquierdo.toString(espacios) + "\n  DER " + derecho.toString(espacios);
 		else
-			return operacion + "\n  IZQ-" + izquierdo.toString(espacios) + "\n  DER- NULL";
+			return operacion + "\n  IZQ " + izquierdo.toString(espacios) + "\n  DER NULL";
 	}
 	
 	@Override
@@ -26,18 +29,18 @@ public class Arbol implements ArbolAbs {
 		espacios++;
 		String aux = "";
 		for (int i = 0; i < espacios; i++){
-			aux+="  ";
+			aux+="    ";
 		}
 		if (derecho != null)
-			return operacion + "\n"+aux+"IZQ-" + izquierdo.toString(espacios) + "\n"+aux+"DER-" + derecho.toString(espacios);
+			return operacion + "\n"+aux+"IZQ " + izquierdo.toString(espacios) + "\n"+aux+"DER " + derecho.toString(espacios);
 		else
-			return operacion + "\n"+aux+"IZQ-" + izquierdo.toString(espacios) + "\n"+aux+"DER- NULL";
+			return operacion + "\n"+aux+"IZQ " + izquierdo.toString(espacios) + "\n"+aux+"DER NULL";
 	}
 
 	@Override
-	public String getTipo() {
-		String tipo_izq = this.izquierdo.getTipo();
-		String tipo_der = this.derecho.getTipo();
+	public ElementoTS.TIPOS getTipo() {
+		ElementoTS.TIPOS tipo_izq = this.izquierdo.getTipo();
+		ElementoTS.TIPOS tipo_der = this.derecho.getTipo();
 		return (tipo_izq.equals(tipo_der) ? tipo_izq : null);
 	}
 

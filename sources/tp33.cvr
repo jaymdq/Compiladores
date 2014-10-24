@@ -1,0 +1,14 @@
+**Sentencias declarativas
+entero a;
+
+**Sentencias de Ejecución
+
+si (a > 1) entonces {
+	imprimir('Si');
+	imprimir('No');
+}sino{
+
+	a := 3;
+	si (a = 3) entonces
+		imprimir('GG');
+}

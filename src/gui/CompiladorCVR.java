@@ -12,6 +12,8 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
+import arbol.sintactico.ArbolAbs;
+
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.filechooser.WebFileChooser;
 import com.alee.laf.optionpane.WebOptionPane;
@@ -46,6 +48,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Vector;
 
 import javax.swing.JEditorPane;
 import javax.swing.border.BevelBorder;
@@ -84,9 +87,9 @@ public class CompiladorCVR {
 	private JEditorPane editorSintactico;
 	private JEditorPane arbolSintactico;
 	private JEditorPane codigoASM;
-	
+
 	private static Proyecto proyecto;
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -98,9 +101,9 @@ public class CompiladorCVR {
 					//Look and feel
 					LanguageManager.setDefaultLanguage(LanguageConstants.SPANISH);
 					WebLookAndFeel.install();
-					
+
 					proyecto = new Proyecto();
-					
+
 					CompiladorCVR window = new CompiladorCVR();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -456,7 +459,7 @@ public class CompiladorCVR {
 
 		//Agregamos el tab del analizador léxico
 		tabbedPane.addTab("Analizador Léxico", scrollPaneLexico);
-		
+
 		//Editor sintáctico
 		editorSintactico = new JEditorPane();
 		editorSintactico.setEditable(false);
@@ -471,12 +474,12 @@ public class CompiladorCVR {
 					editorSintactico.setText("");
 				else
 					if (arg instanceof String)
-					agregarSentencia( (String) arg );
+						agregarSentencia( (String) arg );
 			}
 		};
 		proyecto.addObserver(obsSin);
-		
-			
+
+
 		//Agregamos el tab de la tabla de simbolos
 		JScrollPane scrollPaneTabla = new JScrollPane();
 		tabbedPane.addTab("Tabla de Símbolos", scrollPaneTabla);
@@ -508,25 +511,25 @@ public class CompiladorCVR {
 			public void update(Observable o, Object arg) {
 				if (arg == null){
 					borrarTablaSimbolos();
-					
+
 				}	
 				else{
 					/*Token t = (Token) arg;
 					DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
 					modelo.addRow(new Object[] {t.getTipo(),t.getLexema()});*/
-					
+
 					ElementoTS t = (ElementoTS) arg;
 					DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
-					
+
 					String tipoAux = "";
 					String usoAux = "";
 					if (t.getTipo() != null)
 						tipoAux = t.getTipo().toString();
 					if (t.getUso() != null)
 						usoAux = t.getUso().toString();
-					
+
 					modelo.addRow(new Object[] {t.getToken().getTipo(),t.getToken().getLexema(),tipoAux,t.getLim_inf(),t.getLim_sup(),usoAux});
-				
+
 				}
 			}
 		};
@@ -540,11 +543,11 @@ public class CompiladorCVR {
 					editorLexico.setText("");
 				else
 					if (arg1 instanceof Token)
-					agregarToken( (Token) arg1);
+						agregarToken( (Token) arg1);
 			}
 		};
 		proyecto.addObserver(obsTokens);
-		
+
 		//Árbol sintáctico
 		arbolSintactico = new JEditorPane();
 		arbolSintactico.setEditable(false);
@@ -554,6 +557,22 @@ public class CompiladorCVR {
 		//Agregamos el tab del analizador sintáctico
 		tabbedPane.addTab("Árbol Sintáctico", scrollPaneArbolSintactico);
 
+		//Obervador del árbol
+		Observer obsArbol = new Observer(){
+			@Override
+			public void update(Observable arg0, Object arg1) {
+				if (arg1 instanceof Vector<?>){
+					Vector<ArbolAbs> arboles = (Vector<ArbolAbs>) arg1;
+					for (ArbolAbs a : arboles){
+						arbolSintactico.setText(arbolSintactico.getText() + a.toString() + "\n");
+					}
+				}
+					
+				
+			}
+		};
+		proyecto.addObserver(obsArbol);
+
 		//Código ASM
 		codigoASM = new JEditorPane();
 		codigoASM.setEditable(false);
@@ -562,9 +581,9 @@ public class CompiladorCVR {
 
 		//Agregamos el tab del analizador sintáctico
 		tabbedPane.addTab("Código ASM", scrollPaneCodigoASM);
-		
+
 	}
-	
+
 	protected void agregarSentencia(String sentencia) {
 		editorSintactico.setText(editorSintactico.getText() + sentencia + "\n");
 	}
@@ -669,7 +688,7 @@ public class CompiladorCVR {
 				tabbedPane.setSelectedIndex(0);
 				tabbedPane.setTitleAt(0, proyecto.getFile().getName());
 				setBotonesGuardar(false);
-		
+
 			} catch (IOException e) {} catch (BadLocationException e) {}
 		}
 	}

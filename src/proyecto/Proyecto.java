@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Vector;
 
+import arbol.sintactico.ArbolAbs;
 import lexico.AnalizadorLexico;
 import sintactico.AnalizadorSintactico;
 
@@ -129,6 +130,11 @@ public class Proyecto extends Observable {
 		this.listaSentencias.add(sentencia);
 		setChanged();
 		notifyObservers(sentencia);
+	}
+
+	public void setArbol(Vector<ArbolAbs> sentencias) {
+		setChanged();
+		notifyObservers(sentencias);
 	}
 
 }
