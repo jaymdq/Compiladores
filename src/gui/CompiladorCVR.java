@@ -564,7 +564,7 @@ public class CompiladorCVR {
 				if (arg1 instanceof Vector<?>){
 					Vector<ArbolAbs> arboles = (Vector<ArbolAbs>) arg1;
 					for (ArbolAbs a : arboles){
-						arbolSintactico.setText(arbolSintactico.getText() + a.toString() + "\n");
+						arbolSintactico.setText(arbolSintactico.getText() + a.toString() + "\n\n");
 					}
 				}
 					
@@ -604,6 +604,7 @@ public class CompiladorCVR {
 
 		if (proyecto.getFile() != null){
 			editorLexico.setText("");
+			arbolSintactico.setText("");
 			ConsolaManager.getInstance().borrar();
 			proyecto.compilar();
 		}
@@ -656,6 +657,8 @@ public class CompiladorCVR {
 		}
 		//Descartamos los cambios
 		editor.setText("");
+		arbolSintactico.setText("");
+		editorLexico.setText("");
 		proyecto.setFile(null);
 		frame.setTitle(titulo);
 		tabbedPane.setTitleAt(0, "Sin Título");
@@ -688,6 +691,8 @@ public class CompiladorCVR {
 				tabbedPane.setSelectedIndex(0);
 				tabbedPane.setTitleAt(0, proyecto.getFile().getName());
 				setBotonesGuardar(false);
+				arbolSintactico.setText("");
+				editorLexico.setText("");
 
 			} catch (IOException e) {} catch (BadLocationException e) {}
 		}

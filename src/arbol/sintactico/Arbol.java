@@ -70,4 +70,8 @@ public class Arbol implements ArbolAbs {
 		Arbol salida = new Arbol(operacion,izq,der);
 		return salida;
 	}
+	
+	public ArbolAbs dameMasDerecho(){
+		return (this.derecho == null) ? this : ((Arbol) this.derecho).dameMasDerecho();
+	}
 }

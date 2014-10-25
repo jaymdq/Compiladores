@@ -49,10 +49,10 @@ sent_ejecutable	: sentencia_valida
 				| sent_ejecutable sentencia 
 				;
 					
-sentencia_valida	:  { indicarSentencia("Selección"); aumentarNivel(); }  seleccion	{ apilar(SentenciaSeleccion); }
-					|  { indicarSentencia("Iteración"); aumentarNivel(); }  iteracion	{ apilar(SentenciaIteracion); }
-					|  { indicarSentencia("Impresión"); }  impresion 					{ apilar(SentenciaImpresion); }
-					|  asignacion 														{ apilar(SentenciaAsignacion); }
+sentencia_valida	:  { indicarSentencia("Selección"); if (esThen) bloqueActivado++; else bloqueActivado1++; }  seleccion	{ if (esThen) bloqueActivado++; else bloqueActivado1++; apilar(SentenciaSeleccion); }
+					|  { indicarSentencia("Iteración"); }  iteracion	{ }
+					|  { indicarSentencia("Impresión"); }  impresion 	{ apilar(SentenciaImpresion); }
+					|  asignacion 										{ apilar(SentenciaAsignacion); }
 					|  PR_SINO bloque 	{ escribirError("No se esperaba la palabra reservada \"sino\"."); }	
 					|  error ';' 		{ escribirError("Sentencia inválida."); }
 					;
@@ -61,8 +61,8 @@ sentencia 	:  sentencia_valida
 			|  declaracion { escribirError("No se pueden declarar variables luego de alguna sentencia ejecutable."); }  
 			;
 
-seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque	 %prec INFERIOR_A_SINO	{ Bloque = desapilar(); decrementarNivel(); Cuerpo = crear_nodo("Cuerpo",Bloque,null);    SentenciaSeleccion = crear_nodo("Selección",getUltimaCondicion(),Cuerpo); }			
-			| PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO { aumentarNivel(); } bloque {  Bloque2 = desapilar(); decrementarNivel(); Bloque1 = desapilar(); decrementarNivel(); Cuerpo = crear_nodo("Cuerpo",Bloque1,Bloque2); SentenciaSeleccion = crear_nodo("Selección",getUltimaCondicion(),Cuerpo); }			
+seleccion	: PR_SI '(' condicion ')' PR_ENTONCES bloque	 %prec INFERIOR_A_SINO				{ Cuerpo = crear_nodo("Cuerpo",getUltimoBloque(),null);    SentenciaSeleccion = crear_nodo("Selección",getUltimaCondicion(),Cuerpo); System.out.println(SentenciaSeleccion); }			
+			| PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO { esThen = false; bloqueActivado1++; } bloque 	{ bloqueActivado1--; esThen = true; Bloque1 = getUltimoBloque(); Bloque2 = getUltimoBloque() ; Cuerpo = crear_nodo("Cuerpo",Bloque1,Bloque2);    SentenciaSeleccion = crear_nodo("Selección",getUltimaCondicion(),Cuerpo); System.out.println(SentenciaSeleccion); }			
 			| seleccion_invalida
 			;
 			
@@ -73,7 +73,7 @@ seleccion_invalida	: PR_SI {escribirError("Falta '(' en sentencia si.");} condic
 					| PR_SI error bloque {escribirError("Sentencia si inválida.");}
 					;
 			
-iteracion	: PR_ITERAR bloque PR_HASTA condicion ';' { Bloque = desapilar(); decrementarNivel(); SentenciaIteracion = crear_nodo("Iteración",Bloque,getUltimaCondicion()); }
+iteracion	: PR_ITERAR bloque PR_HASTA condicion ';'
 			| iteracion_invalida
 			;
 			
@@ -82,7 +82,7 @@ iteracion_invalida	: PR_ITERAR { escribirError("No se especificó un bloque a ite
 					| PR_ITERAR bloque PR_HASTA error ';' { escribirError("Condición inválida en la sentencia iterar."); }
 					;
 			
-impresion	: PR_IMPRIMIR  '(' CADENA_MULTILINEA ')' ';' { tratarCadenaMultilinea($3); SentenciaImpresion = crear_nodo("Impresión",crear_hoja($3),null); }
+impresion	: PR_IMPRIMIR  '(' CADENA_MULTILINEA ')' ';' { tratarCadenaMultilinea($3); SentenciaImpresion = crear_nodo("Impresión",crear_hoja($3),null); addSentencia(SentenciaImpresion); }
 			| impresion_invalida
 			;
 			
@@ -93,7 +93,7 @@ impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impr
 					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
 			
-asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja($1),E);}
+asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja($1),E); addSentencia(SentenciaAsignacion); }
 			| asignacion_invalida
 			;
 
@@ -101,8 +101,8 @@ asignacion_invalida	: asignable ASIGNACION error ';' { escribirError("Asignación
 					| ASIGNACION error ';'			 { escribirError("Asignación inválida.");}
 					;
 			
-bloque		: sentencia
-			| '{' sent_ejecutable '}'
+bloque		: sentencia					{ agregarBloque(Bloque); }
+			| '{' sent_ejecutable '}'	{ agregarBloque(Bloque); }
 			| '{' declaracion { escribirError("No se pueden declarar variables dentro de un bloque."); } sent_declarativa sent_ejecutable '}'
 			| '{' '}'  { escribirError("Bloque de sentencias vacío."); }
 			;
@@ -152,13 +152,19 @@ private int errores = 0;
 private int erroresGenCod = 0;
 
 private Vector<Token> declaracionesAux = new Vector<Token>();
+//Ver esto en un futuro
+//private boolean subindiceValido = true;
 
-private Integer nivelActual = 0;
-private Vector<Integer>  pilaNivel = new Vector<Integer>();
+private boolean esThen = true;
+private Integer bloqueActivado = 0;
+private Integer bloqueActivado1 = 0;
+private ArbolAbs SentenciasArbol = null;
+private ArbolAbs SentenciasArbolMasDerecho = null;
+private Vector<ArbolAbs> pila = new Vector<ArbolAbs>();
+private Vector<ArbolAbs> pila1 = new Vector<ArbolAbs>();
 private Vector<ArbolAbs> pilaCondiciones = new Vector<ArbolAbs>();
 private Vector<ArbolAbs> pilaBloques = new Vector<ArbolAbs>();
 private Vector<ArbolAbs> sentencias = new Vector<ArbolAbs>();
-
 private ArbolAbs SentenciaAsignacion;
 private ArbolAbs SentenciaImpresion;
 private ArbolAbs SentenciaSeleccion;
@@ -411,7 +417,8 @@ private ArbolAbs crear_nodo(String Operacion,ArbolAbs arb_izq,ArbolAbs arb_der){
 
 private void addSentencia(ArbolAbs sentencia){
 	//Vector de sentencias a devolver
-	sentencias.add(sentencia);
+	if (bloqueActivado == 0)
+		sentencias.add(sentencia);
 }
 
 public Vector<ArbolAbs> getSentencias(){
@@ -424,6 +431,19 @@ private void agregarExpresion(ArbolAbs exp){
 	else
 		E1 = exp;
 	E2 = exp;
+}
+
+private void agregarBloque(ArbolAbs exp){
+	/*ArbolAbs auxiliar = Bloque1;
+	Bloque1 = exp;
+	Bloque2 = auxiliar;*/
+	pilaBloques.add(exp);
+}
+
+private ArbolAbs getUltimoBloque(){
+	ArbolAbs salida = pilaBloques.lastElement();
+	pilaBloques.remove(pilaBloques.size() - 1);
+	return salida;
 }
 
 private void agregarCondicion(ArbolAbs exp){
@@ -456,61 +476,37 @@ private void apilar(ArbolAbs exp){
 }
 */
 
-
-private void aumentarNivel(){
-	nivelActual++;
-}
-
-private void decrementarNivel(){
-	//Borramos todo lo referido a ese nivel
-	while( ! pilaNivel.isEmpty() && pilaNivel.lastElement() == nivelActual && ! pilaBloques.isEmpty()){
-		pilaBloques.remove(pilaBloques.size() - 1);
-		pilaNivel.remove(pilaNivel.size() - 1);
-	}
-	nivelActual--;
-}
-
 private void apilar(ArbolAbs exp){
-	if (nivelActual == 0){
-		//No estamos dentro de un bloque
-		addSentencia(exp);
-	}
-	pilaBloques.add(exp);
-	pilaNivel.add(nivelActual);
-}
-
-private ArbolAbs desapilar(){
-	ArbolAbs salida;
-	ArbolAbs intermedio;
-	Vector<ArbolAbs> objetivos = new Vector<ArbolAbs>();
-	
-	//Obtenemos los arboles a componer
-	for (int i = 0; i < pilaNivel.size(); i++){
-		if (pilaNivel.elementAt(i).equals(nivelActual)){
-			objetivos.add(pilaBloques.elementAt(i));
-			pilaBloques.setElementAt(null,i);
+	if (esThen){
+		if (bloqueActivado > 0){
+				if ( pila.size() < bloqueActivado ){
+					pila.add(crear_nodo("Sentencia General",exp,null));
+				}else{
+					//Buscar el mas derecho
+					SentenciasArbolMasDerecho = ((Arbol) pila.elementAt(bloqueActivado - 1));
+					while (((Arbol) SentenciasArbolMasDerecho).getDerecho() != null){
+						SentenciasArbolMasDerecho = ((Arbol) SentenciasArbolMasDerecho).getDerecho();
+					}
+					//Tengo al mas derecho
+					((Arbol) SentenciasArbolMasDerecho).setDerecho(crear_nodo("Sentencia General",exp,null));
+				}
+				Bloque = pila.elementAt(bloqueActivado - 1);
+		}
+	}else{
+	//Estamos parados construyendo un else
+		if (bloqueActivado1 > 0){
+				if ( pila1.size() < bloqueActivado1 ){
+					pila1.add(crear_nodo("Sentencia General",exp,null));
+				}else{
+					//Buscar el mas derecho
+					SentenciasArbolMasDerecho = ((Arbol) pila1.elementAt(bloqueActivado1 - 1));
+					while (((Arbol) SentenciasArbolMasDerecho).getDerecho() != null){
+						SentenciasArbolMasDerecho = ((Arbol) SentenciasArbolMasDerecho).getDerecho();
+					}
+					//Tengo al mas derecho
+					((Arbol) SentenciasArbolMasDerecho).setDerecho(crear_nodo("Sentencia General",exp,null));
+				}
+				Bloque = pila1.elementAt(bloqueActivado1 - 1);
 		}
 	}
-	//Desapilamos esos arboles
-	while( ! pilaBloques.isEmpty() && pilaBloques.lastElement() == null){
-		pilaBloques.remove(pilaBloques.size() - 1);
-		pilaNivel.remove(pilaNivel.size() - 1);
-	}
-
-	//Se crea la estructura compuesta
-	salida = crear_nodo("Sentencia General",objetivos.firstElement(),null);
-	intermedio = salida;
-	objetivos.remove(0);
-	for ( ArbolAbs arbol : objetivos ){
-		ArbolAbs aux = crear_nodo("Sentencia General",arbol,null);
-		((Arbol) ((Arbol) intermedio).dameMasDerecho()).setDerecho(aux);
-		intermedio = arbol;
-	}
-	
-	//Guardamos el arbol generado
-	pilaBloques.add(salida);
-	pilaNivel.add(nivelActual);
-	
-	return salida;
 }
-
