@@ -1,6 +1,7 @@
 package sintactico;
 
 import lexico.AnalizadorLexico;
+import generaciónASM.CodigoASMManager;
 import generaciónASM.GeneradorASM;
 import gui.ConsolaManager;
 import proyecto.Proyecto;
@@ -37,7 +38,9 @@ public class AnalizadorSintactico {
 			//Mostramos el árbol sintáctico obtenido
 			proyecto.setArbol(parser.getSentencias());
 			//Pasamos a generar el código
-			GeneradorASM generador = new GeneradorASM(parser.getSentencias());
+			GeneradorASM generador = new GeneradorASM(parser.getSentencias(),proyecto.getTablaDeSimbolos());
+			generador.generarCodigo();
+			CodigoASMManager.getInstance().setCodigo(generador.getCodigoGenerado());
 			
 		}
 	}

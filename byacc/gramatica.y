@@ -110,12 +110,12 @@ bloque		: sentencia
 condicion	: e comparador e { Condicion = crear_nodo(UltimoComparador,E1,E2); agregarCondicion(Condicion); }
 			;
 		
-comparador	: '>'				{ UltimoComparador = new String(">"); }
-			| COMP_MAYOR_IGUAL	{ UltimoComparador = new String(">="); }
-			| '<'				{ UltimoComparador = new String("<"); }
-			| COMP_MENOR_IGUAL	{ UltimoComparador = new String("<="); }
-			| '='				{ UltimoComparador = new String("="); }
-			| COMP_DISTINTO		{ UltimoComparador = new String("^="); }
+comparador	: '>'				{ UltimoComparador = new String("Comparador \">\""); }
+			| COMP_MAYOR_IGUAL	{ UltimoComparador = new String("Comparador \">=\""); }
+			| '<'				{ UltimoComparador = new String("Comparador \"<\""); }
+			| COMP_MENOR_IGUAL	{ UltimoComparador = new String("Comparador \"<=\""); }
+			| '='				{ UltimoComparador = new String("Comparador \"=\""); }
+			| COMP_DISTINTO		{ UltimoComparador = new String("Comparador \"^=\""); }
 			;
 			
 e	: e '+' t			{ E = crear_nodo("Suma \"+\"",E,T);  agregarExpresion(E); }
@@ -435,27 +435,6 @@ private ArbolAbs getUltimaCondicion(){
 	pilaCondiciones.remove(pilaCondiciones.size() - 1);
 	return salida;
 }
-
-//Esto funciona sin anidaciones
-/*
-private void apilar(ArbolAbs exp){
-	if (bloqueActivado > 0){
-			if ( pila.size() < bloqueActivado ){
-				pila.add(crear_nodo("Sentencia General",exp,null));
-			}else{
-				//Buscar el mas derecho
-				SentenciasArbolMasDerecho = ((Arbol) pila.elementAt(bloqueActivado - 1));
-				while (((Arbol) SentenciasArbolMasDerecho).getDerecho() != null){
-					SentenciasArbolMasDerecho = ((Arbol) SentenciasArbolMasDerecho).getDerecho();
-				}
-				//Tengo al mas derecho
-				((Arbol) SentenciasArbolMasDerecho).setDerecho(crear_nodo("Sentencia General",exp,null));
-			}
-			Bloque = pila.elementAt(bloqueActivado - 1);
-	}
-}
-*/
-
 
 private void aumentarNivel(){
 	nivelActual++;

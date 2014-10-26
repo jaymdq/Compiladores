@@ -8,4 +8,6 @@ public interface ArbolAbs {
 	public TIPOS getTipo();
 	public String toString(Integer espacios);
 	public ArbolAbs clone();
+	public boolean esHoja();
+	public ArbolAbs getArbolConHijosMasIzq();
 }

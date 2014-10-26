@@ -1,7 +1,6 @@
 package arbol.sintactico;
 
 import proyecto.ElementoTS;
-import proyecto.ElementoTS.TIPOS;
 
 public class Arbol implements ArbolAbs {
 
@@ -19,9 +18,9 @@ public class Arbol implements ArbolAbs {
 	public String toString() {
 		Integer espacios = 1;
 		if (derecho != null)
-			return operacion + "\n  IZQ " + izquierdo.toString(espacios) + "\n  DER " + derecho.toString(espacios);
+			return operacion +"\n¦   IZQ " + izquierdo.toString(espacios) + "\n¦   DER " + derecho.toString(espacios);
 		else
-			return operacion + "\n  IZQ " + izquierdo.toString(espacios) + "\n  DER NULL";
+			return operacion +"\n¦   IZQ " + izquierdo.toString(espacios) + "\n¦   DER NULL";
 	}
 	
 	@Override
@@ -29,7 +28,7 @@ public class Arbol implements ArbolAbs {
 		espacios++;
 		String aux = "";
 		for (int i = 0; i < espacios; i++){
-			aux+="    ";
+			aux+="¦   ";
 		}
 		if (derecho != null)
 			return operacion + "\n"+aux+"IZQ " + izquierdo.toString(espacios) + "\n"+aux+"DER " + derecho.toString(espacios);
@@ -73,5 +72,22 @@ public class Arbol implements ArbolAbs {
 	
 	public ArbolAbs dameMasDerecho(){
 		return (this.derecho == null) ? this : ((Arbol) this.derecho).dameMasDerecho();
+	}
+	
+	public ArbolAbs getArbolConHijosMasIzq(){
+		ArbolAbs salida = null;
+		if (this.izquierdo.esHoja() && this.derecho.esHoja())
+			salida = this;
+		else{
+			salida = this.izquierdo.getArbolConHijosMasIzq();
+			if (salida == null)
+				salida = this.derecho.getArbolConHijosMasIzq();
+		}
+		
+		return salida;
+	}
+	
+	public boolean esHoja(){
+		return false;
 	}
 }

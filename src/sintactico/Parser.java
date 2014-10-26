@@ -560,7 +560,7 @@ private void chequearNegativo(){
 		Token tnuevo = new Token(Token.TipoToken.ENTERO,"-"+t.getLexema());
 		if (! proyecto.getTablaDeSimbolos().containsToken(tnuevo.getLexema()) ){
 			proyecto.getTablaDeSimbolos().add(tnuevo);
-			tratarConstante(new ParserVal(proyecto.getTablaDeSimbolos().getList().size()-1),"entero");
+			tratarConstante(new ParserVal(proyecto.getTablaDeSimbolos().getLista().size()-1),"entero");
 		}
 		else{
 			proyecto.getTablaDeSimbolos().getToken(tnuevo.getLexema()).aumentarContador();
@@ -585,7 +585,7 @@ private void chequearRango(){
 private void actualizarTablaDeSimbolos(){
 	proyecto.getTablaDeSimbolos().setearCambios();
 	proyecto.getTablaDeSimbolos().notifyObservers();
-	for (ElementoTS elemento : proyecto.getTablaDeSimbolos().getList()){
+	for (ElementoTS elemento : proyecto.getTablaDeSimbolos().getLista()){
 		proyecto.getTablaDeSimbolos().setearCambios();
 		proyecto.getTablaDeSimbolos().notifyObservers(elemento);
 	}
@@ -761,27 +761,6 @@ private ArbolAbs getUltimaCondicion(){
 	return salida;
 }
 
-//Esto funciona sin anidaciones
-/*
-private void apilar(ArbolAbs exp){
-	if (bloqueActivado > 0){
-			if ( pila.size() < bloqueActivado ){
-				pila.add(crear_nodo("Sentencia General",exp,null));
-			}else{
-				//Buscar el mas derecho
-				SentenciasArbolMasDerecho = ((Arbol) pila.elementAt(bloqueActivado - 1));
-				while (((Arbol) SentenciasArbolMasDerecho).getDerecho() != null){
-					SentenciasArbolMasDerecho = ((Arbol) SentenciasArbolMasDerecho).getDerecho();
-				}
-				//Tengo al mas derecho
-				((Arbol) SentenciasArbolMasDerecho).setDerecho(crear_nodo("Sentencia General",exp,null));
-			}
-			Bloque = pila.elementAt(bloqueActivado - 1);
-	}
-}
-*/
-
-
 private void aumentarNivel(){
 	nivelActual++;
 }
@@ -839,7 +818,7 @@ private ArbolAbs desapilar(){
 	return salida;
 }
 
-//#line 770 "Parser.java"
+//#line 749 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1167,27 +1146,27 @@ case 65:
 break;
 case 66:
 //#line 113 "gramatica.y"
-{ UltimoComparador = new String(">"); }
+{ UltimoComparador = new String("Comparador \">\""); }
 break;
 case 67:
 //#line 114 "gramatica.y"
-{ UltimoComparador = new String(">="); }
+{ UltimoComparador = new String("Comparador \">=\""); }
 break;
 case 68:
 //#line 115 "gramatica.y"
-{ UltimoComparador = new String("<"); }
+{ UltimoComparador = new String("Comparador \"<\""); }
 break;
 case 69:
 //#line 116 "gramatica.y"
-{ UltimoComparador = new String("<="); }
+{ UltimoComparador = new String("Comparador \"<=\""); }
 break;
 case 70:
 //#line 117 "gramatica.y"
-{ UltimoComparador = new String("="); }
+{ UltimoComparador = new String("Comparador \"=\""); }
 break;
 case 71:
 //#line 118 "gramatica.y"
-{ UltimoComparador = new String("^="); }
+{ UltimoComparador = new String("Comparador \"^=\""); }
 break;
 case 72:
 //#line 121 "gramatica.y"
@@ -1245,7 +1224,7 @@ case 86:
 //#line 143 "gramatica.y"
 { tratarNodeclaraciones(val_peek(3));	HojaAux = crear_hoja(val_peek(3)); tratarIndiceInvalido(val_peek(3)); }
 break;
-//#line 1171 "Parser.java"
+//#line 1150 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

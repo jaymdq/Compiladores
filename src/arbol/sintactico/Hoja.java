@@ -29,4 +29,12 @@ public class Hoja implements ArbolAbs {
 		return salida;
 	}
 
+	public boolean esHoja(){
+		return true;
+	}
+
+	@Override
+	public ArbolAbs getArbolConHijosMasIzq() {
+		return null;
+	}
 }

@@ -21,6 +21,7 @@ import com.alee.managers.language.LanguageConstants;
 import com.alee.managers.language.LanguageManager;
 
 import filtro.FiltroCvr;
+import generaciónASM.CodigoASMManager;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -559,6 +560,7 @@ public class CompiladorCVR {
 
 		//Obervador del árbol
 		Observer obsArbol = new Observer(){
+			@SuppressWarnings("unchecked")
 			@Override
 			public void update(Observable arg0, Object arg1) {
 				if (arg1 instanceof Vector<?>){
@@ -567,8 +569,6 @@ public class CompiladorCVR {
 						arbolSintactico.setText(arbolSintactico.getText() + a.toString() + "\n\n");
 					}
 				}
-					
-				
 			}
 		};
 		proyecto.addObserver(obsArbol);
@@ -578,7 +578,10 @@ public class CompiladorCVR {
 		codigoASM.setEditable(false);
 		codigoASM.setFont(new Font("Consolas", 0, 16));
 		JScrollPane scrollPaneCodigoASM = new JScrollPane(codigoASM);
-
+		
+		//Seteamos el manager del codigo
+		CodigoASMManager.getInstance(codigoASM);
+		
 		//Agregamos el tab del analizador sintáctico
 		tabbedPane.addTab("Código ASM", scrollPaneCodigoASM);
 
@@ -598,7 +601,11 @@ public class CompiladorCVR {
 		else{
 			//Si presenta cambios, se guarda y se manda a compilar
 			if (tabbedPane.getTitleAt(0).endsWith("*")){
-				guardar();
+				//Aca preguntar si se quiere mandar sin guardar
+				if( WebOptionPane.showConfirmDialog ( null, "El archivo presenta cambios ¿Desea guardar y continuar?", "Archivo con cambios", WebOptionPane.YES_NO_OPTION,
+						WebOptionPane.QUESTION_MESSAGE ) == WebOptionPane.YES_OPTION){
+					guardar();
+				}
 			}
 		}
 
@@ -606,6 +613,7 @@ public class CompiladorCVR {
 			editorLexico.setText("");
 			arbolSintactico.setText("");
 			ConsolaManager.getInstance().borrar();
+			CodigoASMManager.getInstance().clearCodigo();
 			proyecto.compilar();
 		}
 	}
@@ -659,6 +667,7 @@ public class CompiladorCVR {
 		editor.setText("");
 		arbolSintactico.setText("");
 		editorLexico.setText("");
+		CodigoASMManager.getInstance().clearCodigo();
 		proyecto.setFile(null);
 		frame.setTitle(titulo);
 		tabbedPane.setTitleAt(0, "Sin Título");
@@ -693,7 +702,7 @@ public class CompiladorCVR {
 				setBotonesGuardar(false);
 				arbolSintactico.setText("");
 				editorLexico.setText("");
-
+				CodigoASMManager.getInstance().clearCodigo();
 			} catch (IOException e) {} catch (BadLocationException e) {}
 		}
 	}

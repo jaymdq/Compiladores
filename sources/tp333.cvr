@@ -4,12 +4,10 @@ entero a;
 **Sentencias de Ejecución
 
 a := 1;
+
 iterar{
 	a := a + 1;
-	imprimir('Hola');
-	si (a = 5) entonces
-		imprimir('Mundo');
 	iterar{
-		imprimir('GG');
-	} hasta a < 10;
+		imprimir('Si');
+	} hasta a < 5;
 } hasta a = 10;

@@ -80,7 +80,7 @@ public class TablaDeSimbolos extends Observable {
 		this.notifyObservers(null);
 	}
 
-	public Vector<ElementoTS> getList() {
+	public Vector<ElementoTS> getLista() {
 		return tabla;
 	}
 
