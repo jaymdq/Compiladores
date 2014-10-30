@@ -8,12 +8,12 @@ import arbol.sintactico.ArbolAbs;
 
 public class GeneradorASM {
 
-	private Vector<ArbolAbs> sentencias;
+	private ArbolAbs sentencias;
 	private TablaDeSimbolos tablaSimbolos;
 	private String codigoGenerado = "";
 	
 	
-	public GeneradorASM(Vector<ArbolAbs> sentencias,TablaDeSimbolos tablaSimbolos){
+	public GeneradorASM(ArbolAbs sentencias,TablaDeSimbolos tablaSimbolos){
 		this.sentencias = sentencias;
 		this.tablaSimbolos = tablaSimbolos;
 	}

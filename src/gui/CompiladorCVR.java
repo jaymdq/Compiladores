@@ -563,11 +563,11 @@ public class CompiladorCVR {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void update(Observable arg0, Object arg1) {
-				if (arg1 instanceof Vector<?>){
-					Vector<ArbolAbs> arboles = (Vector<ArbolAbs>) arg1;
-					for (ArbolAbs a : arboles){
-						arbolSintactico.setText(arbolSintactico.getText() + a.toString() + "\n\n");
-					}
+				if (arg1 instanceof ArbolAbs){
+					ArbolAbs arbol = (ArbolAbs) arg1;
+
+					arbolSintactico.setText(arbolSintactico.getText() + arbol.toString() + "\n\n");
+
 				}
 			}
 		};
@@ -578,10 +578,10 @@ public class CompiladorCVR {
 		codigoASM.setEditable(false);
 		codigoASM.setFont(new Font("Consolas", 0, 16));
 		JScrollPane scrollPaneCodigoASM = new JScrollPane(codigoASM);
-		
+
 		//Seteamos el manager del codigo
 		CodigoASMManager.getInstance(codigoASM);
-		
+
 		//Agregamos el tab del analizador sintáctico
 		tabbedPane.addTab("Código ASM", scrollPaneCodigoASM);
 

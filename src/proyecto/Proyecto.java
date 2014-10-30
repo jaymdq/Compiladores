@@ -133,7 +133,7 @@ public class Proyecto extends Observable {
 		notifyObservers(sentencia);
 	}
 
-	public void setArbol(Vector<ArbolAbs> sentencias) {
+	public void setArbol(ArbolAbs sentencias) {
 		setChanged();
 		notifyObservers(sentencias);
 	}

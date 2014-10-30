@@ -235,7 +235,7 @@ private void chequearNegativo(){
 		Token tnuevo = new Token(Token.TipoToken.ENTERO,"-"+t.getLexema());
 		if (! proyecto.getTablaDeSimbolos().containsToken(tnuevo.getLexema()) ){
 			proyecto.getTablaDeSimbolos().add(tnuevo);
-			tratarConstante(new ParserVal(proyecto.getTablaDeSimbolos().getList().size()-1),"entero");
+			tratarConstante(new ParserVal(proyecto.getTablaDeSimbolos().getLista().size()-1),"entero");
 		}
 		else{
 			proyecto.getTablaDeSimbolos().getToken(tnuevo.getLexema()).aumentarContador();
@@ -260,7 +260,7 @@ private void chequearRango(){
 private void actualizarTablaDeSimbolos(){
 	proyecto.getTablaDeSimbolos().setearCambios();
 	proyecto.getTablaDeSimbolos().notifyObservers();
-	for (ElementoTS elemento : proyecto.getTablaDeSimbolos().getList()){
+	for (ElementoTS elemento : proyecto.getTablaDeSimbolos().getLista()){
 		proyecto.getTablaDeSimbolos().setearCambios();
 		proyecto.getTablaDeSimbolos().notifyObservers(elemento);
 	}
@@ -410,13 +410,20 @@ private ArbolAbs crear_nodo(String Operacion,ArbolAbs arb_izq,ArbolAbs arb_der){
 }
 
 private void addSentencia(ArbolAbs sentencia){
-	//Vector de sentencias a devolver
+	
 	sentencias.add(sentencia);
 }
 
-public Vector<ArbolAbs> getSentencias(){
-	//Vector de sentencias a devolver
-	return sentencias;
+public ArbolAbs getSentencias(){
+	
+	ArbolAbs primeraSentencia = crear_nodo("Sentencia",sentencias.firstElement(),null);
+	ArbolAbs raiz = crear_nodo("Programa", primeraSentencia,null);
+	
+	for (int i = 1; i < sentencias.size(); i++){	
+		((Arbol) ((Arbol) primeraSentencia).dameMasDerecho()).setDerecho(crear_nodo("Sentencia", sentencias.elementAt(i),null));
+	}
+	
+	return raiz;
 }
 private void agregarExpresion(ArbolAbs exp){
 	if (E2 != null)
