@@ -19,6 +19,10 @@ public class Hoja implements ArbolAbs {
 		return "[" + contenido.getToken().getLexema() + "," + contenido.getTipo().toString() +"]";
 	}
 
+	public String getName(){
+		return "_" + contenido.getToken().getLexema();
+	}
+	
 	@Override
 	public ElementoTS.TIPOS getTipo() {
 		return this.contenido.getTipo();

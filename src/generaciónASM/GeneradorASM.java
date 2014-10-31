@@ -11,36 +11,23 @@ public class GeneradorASM {
 	private ArbolAbs sentencias;
 	private TablaDeSimbolos tablaSimbolos;
 	private String codigoGenerado = "";
-	
-	
+	private Vector<String> declaracionesSentencias;
+
 	public GeneradorASM(ArbolAbs sentencias,TablaDeSimbolos tablaSimbolos){
 		this.sentencias = sentencias;
 		this.tablaSimbolos = tablaSimbolos;
+		this.declaracionesSentencias = new Vector<String>();
 	}
-	
+
 	//Hay que hacer todo lo que genere ASM
 	public void generarCodigo(){
 		String codigo = "";
-		
-		//Se especifica el comienzo del programa declarando la memoria a utilizar
-		codigo += "\t\t.data\n";
-		
-		codigo += getVariables();
-		
-		
-		//Se especifican las instrucciones del programa
-		codigo += "\t\t.text\n";
-		codigo += "\t\t.global start";
-		codigo += "\nstart: \t";
-		
-		//Codigo de programa
-		
-		codigo += "\n";
-		
-		
-		//Finalización del programa
-		codigo += "\t\t ret";
-		
+
+		codigo += ".DATA\n";
+		tratarDeclaraciones();
+		for (String s : declaracionesSentencias)
+			codigo += s + "\n";
+
 		//Asignamos al final el resultado obtenido
 		codigoGenerado = codigo;
 	}
@@ -48,40 +35,69 @@ public class GeneradorASM {
 	public String getCodigoGenerado() {
 		return codigoGenerado;
 	}
-	
-	private String getVariables (){
-		String salida = "";
-		
+
+	private void tratarDeclaraciones (){
+
 		//Agregamos las variables de tipo entero
 		for (ElementoTS e : tablaSimbolos.getLista()){
 			if ( e.getTipo().toString().equals("Entero") && e.getUso().toString().equals("Variable")){
-				if (e.getToken().getLexema().length() >= 8)
-					salida += e.getToken().getLexema() + ":\t.int " + "[POSICION DE MEMORIA A DEFINIR]" + "\n";
+				String declaracion;
+				if (e.getToken().getLexema().length() > 6)
+					declaracion = "_" + e.getToken().getLexema() + "\t"   + "DW " + "?";
 				else
-					salida += e.getToken().getLexema() + ":\t\t.int " + "[POSICION DE MEMORIA A DEFINIR]" + "\n";
+					declaracion = "_" + e.getToken().getLexema() + "\t\t" + "DW " + "?";
+
+				//Se agrega
+				declaracionesSentencias.add(declaracion);
 			}
-			
 		}
-		
+
 		//Agregamos las variables de tipo entero_lss
 		for (ElementoTS e : tablaSimbolos.getLista()){
 			if ( e.getTipo().toString().equals("Entero LSS") && e.getUso().toString().equals("Variable")){
-				if (e.getToken().getLexema().length() >= 8)
-					salida += e.getToken().getLexema() + ":\t.int " + "[POSICION DE MEMORIA A DEFINIR ENTERO LSS]" + "\n";
+				String declaracion;
+				if (e.getToken().getLexema().length() > 6)
+					declaracion = "_" + e.getToken().getLexema() + "\t"   + "DD " + "?";
 				else
-					salida += e.getToken().getLexema() + ":\t\t.int " + "[POSICION DE MEMORIA A DEFINIR ENTERO LSS]" + "\n";
-			}
-			
+					declaracion = "_" + e.getToken().getLexema() + "\t\t" + "DD " + "?";
+
+				//Se agrega
+				declaracionesSentencias.add(declaracion);
+			}	
 		}
-		
-		return salida;
+
+		//Agregamos las variables de tipo vector entero
+		for (ElementoTS e : tablaSimbolos.getLista()){
+			if ( e.getTipo().toString().equals("Vector de enteros") && e.getUso().toString().equals("Arreglo")){
+				Integer cuenta = e.getLim_sup() - e.getLim_inf() + 1;
+				String declaracion;
+				if (e.getToken().getLexema().length() > 6)
+					declaracion = "_" + e.getToken().getLexema() + "\t"   + "DW " + cuenta + " DUP " + "0";
+				else
+					declaracion = "_" + e.getToken().getLexema() + "\t\t" + "DW " + cuenta + " DUP " + "0";
+
+				//Se agrega
+				declaracionesSentencias.add(declaracion);
+			}	
+		}
+
+		//Agregamos las variables de tipo vector entero_lss
+		for (ElementoTS e : tablaSimbolos.getLista()){
+			if ( e.getTipo().toString().equals("Vector de enteros lss") && e.getUso().toString().equals("Arreglo")){
+				Integer cuenta = e.getLim_sup() - e.getLim_inf() + 1;
+				String declaracion;
+				if (e.getToken().getLexema().length() > 6)
+					declaracion = "_" + e.getToken().getLexema() + "\t"   + "DD " + cuenta + " DUP " + "0";
+				else
+					declaracion = "_" + e.getToken().getLexema() + "\t\t" + "DD " + cuenta + " DUP " + "0";
+
+				//Se agrega
+				declaracionesSentencias.add(declaracion);
+			}	
+		}
+
+
 	}
-	
-	
-	
-	private String sumar(){
-		String salida = "";
-		
-		return salida;
-	}
+
+
 }

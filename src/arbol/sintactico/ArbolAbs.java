@@ -10,4 +10,5 @@ public interface ArbolAbs {
 	public ArbolAbs clone();
 	public boolean esHoja();
 	public ArbolAbs getArbolConHijosMasIzq();
+	public String getName();
 }

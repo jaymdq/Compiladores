@@ -19,8 +19,8 @@ public class AS_ID_Finish extends AccionSemantica {
 	
 		// Verificar que tiene menos de 12 caracteres un identificador o truncarlo
 		if (t.getLexema().length() > 12){
-			ConsolaManager.getInstance().escribirWarning("Léxico [Línea "+p.getLineaActual()+"] Se excedió la cantidad de carácteres del identificador \"" + t.getLexema()+"\" y se remplazo por '" + t.getLexema().substring(0, 11) + "'");
-			t.setLexema(t.getLexema().substring(0, 11));
+			ConsolaManager.getInstance().escribirWarning("Léxico [Línea "+p.getLineaActual()+"] Se excedió la cantidad de carácteres del identificador \"" + t.getLexema()+"\" y se remplazo por '" + t.getLexema().substring(0, 12) + "'");
+			t.setLexema(t.getLexema().substring(0, 12));
 		}
 			
 		// Verificamos si en realidad es una palabra reservada. Y en caso de serlo, seteamos su tipo.

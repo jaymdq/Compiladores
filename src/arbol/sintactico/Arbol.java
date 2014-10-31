@@ -90,4 +90,9 @@ public class Arbol implements ArbolAbs {
 	public boolean esHoja(){
 		return false;
 	}
+
+	@Override
+	public String getName() {
+		return "intermedio";
+	}
 }
