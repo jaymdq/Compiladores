@@ -727,7 +727,7 @@ private void tratarIndiceInvalido(ParserVal pos){
 private void tratarEsArreglo(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getUso() != ElementoTS.USOS.ARREGLO){
-		escribirErrorDeGeneracion("El identificador \"" + elemento.getToken().getLexema() + "\" no se encuentra declarado como un arrego.");
+		escribirErrorDeGeneracion("El identificador \"" + elemento.getToken().getLexema() + "\" no se encuentra declarado como un arreglo.");
 	}
 }
 
