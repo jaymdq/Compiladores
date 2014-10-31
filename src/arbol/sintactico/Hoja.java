@@ -1,5 +1,6 @@
 package arbol.sintactico;
 
+import generaciónASM.CodigoAssembler;
 import proyecto.ElementoTS;
 
 public class Hoja implements ArbolAbs {
@@ -40,5 +41,10 @@ public class Hoja implements ArbolAbs {
 	@Override
 	public ArbolAbs getArbolConHijosMasIzq() {
 		return null;
+	}
+
+	@Override
+	public void generarAssembler(CodigoAssembler codigo) {
+		// TODO Auto-generated method stub
 	}
 }

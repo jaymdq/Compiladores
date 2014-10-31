@@ -1,5 +1,6 @@
 package arbol.sintactico;
 
+import generaciónASM.CodigoAssembler;
 import proyecto.ElementoTS.TIPOS;
 
 public interface ArbolAbs {
@@ -11,4 +12,6 @@ public interface ArbolAbs {
 	public boolean esHoja();
 	public ArbolAbs getArbolConHijosMasIzq();
 	public String getName();
+	
+	public void generarAssembler(CodigoAssembler codigo);
 }

@@ -1,5 +1,7 @@
 package arbol.sintactico;
 
+import generaciónASM.CodigoAssembler;
+import generaciónASM.Registro;
 import proyecto.ElementoTS;
 
 public class Arbol implements ArbolAbs {
@@ -94,5 +96,21 @@ public class Arbol implements ArbolAbs {
 	@Override
 	public String getName() {
 		return "intermedio";
+	}
+
+	@Override
+	public void generarAssembler(CodigoAssembler codigo) {
+		if (izquierdo != null)
+			izquierdo.generarAssembler(codigo);
+		
+		if (derecho != null)
+			derecho.generarAssembler(codigo);
+		
+		// TODO Auto-generated method stub
+		if (operacion != null && operacion.equals("Suma \"+\"")){
+			System.out.println("[ARBOL] Crear Suma");
+			Registro r = codigo.getRegManager().getRegistroLibre(izquierdo);
+			codigo.agregarSentencia("ADD", r.getName(), derecho.getName());
+		}
 	}
 }

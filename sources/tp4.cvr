@@ -1,0 +1,9 @@
+**Sentencias declarativas
+entero a, b, c;
+**Sentencias de Ejecución
+
+b := 5;
+c := 7;
+a := b + c;
+
+imprimir('Rocha fan matematica');
