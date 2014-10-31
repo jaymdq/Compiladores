@@ -68,7 +68,9 @@ public class Arbol implements ArbolAbs {
 
 	public ArbolAbs clone(){
 		ArbolAbs izq = izquierdo.clone();
-		ArbolAbs der = derecho.clone();
+		ArbolAbs der = null;
+		if (derecho != null)
+			derecho.clone();
 		Arbol salida = new Arbol(operacion,izq,der);
 		return salida;
 	}
