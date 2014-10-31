@@ -1,6 +1,7 @@
 package arbol.sintactico;
 
 import generaciónASM.CodigoAssembler;
+import generaciónASM.RegisterManager;
 import generaciónASM.Registro;
 import proyecto.ElementoTS;
 
@@ -107,10 +108,72 @@ public class Arbol implements ArbolAbs {
 			derecho.generarAssembler(codigo);
 		
 		// TODO Auto-generated method stub
-		if (operacion != null && operacion.equals("Suma \"+\"")){
+		String oper = null;
+		boolean conmutativa = false;
+		int bits = 16;
+		//if ()
+		
+		if (operacion.equals("Suma \"+\"")){
+			conmutativa = true;
+			oper = "ADD";
 			System.out.println("[ARBOL] Crear Suma");
-			Registro r = codigo.getRegManager().getRegistroLibre(izquierdo);
-			codigo.agregarSentencia("ADD", r.getName(), derecho.getName());
+		}else if (operacion.equals("Resta \"-\"")){
+			conmutativa = false;
+			oper = "SUB";
+			System.out.println("[ARBOL] Crear Resta");
+		}else {
+			return;
 		}
+		
+		/* ---------------------------------------------------------------------------------- */
+		
+		RegisterManager regManager = codigo.getRegManager();
+		Registro regIzq = regManager.findRegistro(izquierdo);
+		Registro regDer = regManager.findRegistro(derecho);
+		
+		String op1, op2;
+		Registro r;
+		
+		if (regIzq == null &&  regDer == null){
+			// Situacion 1:	Operacion entre 2 variables y/o constantes
+			System.out.println("Situacion 1: Operacion entre 2 variables y/o constantes");
+			
+			r = regManager.getRegistroLibre(izquierdo);							// Obtener registro libre
+			op1 = r.getName(); op2 = derecho.getName();							// Setear operandos
+		}else if (regIzq != null && regDer == null){
+			// Situacion 2: Operacion entre un registro y una variable o constante
+			System.out.println("Situacion 2: Operacion entre un registro y una variable o constante");
+
+			r = regIzq;
+			op1 = regIzq.getName(); op2 = derecho.getName();
+		}else if (regIzq != null && regDer != null){
+			// Situacion 3: Operacion entre dos registros
+			System.out.println("Situacion 3: Operacion entre dos registros");
+
+			r = regIzq;
+			op1 = regIzq.getName(); op2 = regDer.getName();
+			regDer.liberar();
+		}else if (conmutativa){
+			// Situacion 4.a: Operacion conmutativa entre una variable (o constante) y un registro
+			System.out.println("Situacion 4.a: Operacion conmutativa entre una variable (o constante) y un registro");
+			
+			r = regDer;
+			op1 = regDer.getName(); op2 = izquierdo.getName();
+		}else{
+			// Situacion 4.b: Operacion no conmutativa entre una variable (o constante) y un registro
+			System.out.println("Situacion 4.b: Operacion no conmutativa entre una variable (o constante) y un registro");
+			
+			r = regManager.getRegistroLibre(izquierdo);							// Obtener registro libre
+			op1 = r.getName(); op2 = regDer.getName();							// Setear operandos
+			regDer.liberar();
+		}
+
+		/* ---------------------------------------------------------------------------------- */
+		
+		codigo.agregarSentencia(oper, op1, op2);								// Realizar operacion
+		r.setOperando(this);													// Actualizar referencia al resultado
+		
+		//Verificar Overflow + Entero/Entero sin signo + distintos tipos
+
 	}
 }

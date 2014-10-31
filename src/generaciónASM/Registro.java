@@ -16,6 +16,14 @@ public class Registro {
 		return operando == null;
 	}
 	
+	public void liberar(){
+		operando = null;
+	}
+	
+	public void setOperando(ArbolAbs operando) {
+		this.operando = operando;
+	}
+
 	public ArbolAbs getOperando(){
 		return operando;
 	}

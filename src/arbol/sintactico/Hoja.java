@@ -2,6 +2,7 @@ package arbol.sintactico;
 
 import generaciónASM.CodigoAssembler;
 import proyecto.ElementoTS;
+import proyecto.ElementoTS.USOS;
 
 public class Hoja implements ArbolAbs {
 
@@ -21,7 +22,15 @@ public class Hoja implements ArbolAbs {
 	}
 
 	public String getName(){
-		return "_" + contenido.getToken().getLexema();
+		if (contenido.getUso() == USOS.VARIABLE) 
+			return "_" + contenido.getToken().getLexema();
+		
+		if (contenido.getUso() == USOS.CONSTANTE)
+			return contenido.getToken().getLexema();
+		
+		//if (contenido.getUso() == USOS.
+				
+				return null;
 	}
 	
 	@Override
