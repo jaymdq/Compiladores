@@ -140,7 +140,7 @@ valor	: asignable
 		;
 
 asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1);	HojaAux = crear_hoja($1);  }
-			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);	HojaAux = crear_hoja($1); tratarIndiceInvalido($1); }
+			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);	HojaAux = crear_nodo("Índice",E,null); tratarIndiceInvalido($1); }
 			;
 			
 %%

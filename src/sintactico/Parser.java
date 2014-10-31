@@ -1229,7 +1229,7 @@ case 85:
 break;
 case 86:
 //#line 143 "gramatica.y"
-{ tratarNodeclaraciones(val_peek(3));	HojaAux = crear_hoja(val_peek(3)); tratarIndiceInvalido(val_peek(3)); }
+{ tratarNodeclaraciones(val_peek(3));	HojaAux = crear_nodo("Índice",E,null); tratarIndiceInvalido(val_peek(3)); }
 break;
 //#line 1157 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
