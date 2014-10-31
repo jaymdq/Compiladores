@@ -140,7 +140,7 @@ valor	: asignable
 		;
 
 asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1);	HojaAux = crear_hoja($1);  }
-			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);	HojaAux = crear_nodo("Índice",E,null); tratarIndiceInvalido($1); }
+			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);	tratarEsArreglo($1); HojaAux = crear_nodo("Índice",E,null); tratarIndiceInvalido($1); }
 			;
 			
 %%
@@ -398,6 +398,15 @@ private void tratarIndiceInvalido(ParserVal pos){
 		escribirErrorDeGeneracion("Índice inválido en el vector \"" + elemento.getToken().getLexema() + "\", el subíndice no puede ser de tipo entero_lss.");
 	}
 }
+
+private void tratarEsArreglo(ParserVal pos){
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+	if (elemento.getUso() != ElementoTS.USOS.ARREGLO){
+		escribirErrorDeGeneracion("El identificador \"" + elemento.getToken().getLexema() + "\" no se encuentra declarado como un arrego.");
+	}
+}
+
+
 private ArbolAbs crear_hoja(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	ArbolAbs salida = new Hoja(elemento);

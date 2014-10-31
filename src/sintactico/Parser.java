@@ -723,6 +723,15 @@ private void tratarIndiceInvalido(ParserVal pos){
 		escribirErrorDeGeneracion("Índice inválido en el vector \"" + elemento.getToken().getLexema() + "\", el subíndice no puede ser de tipo entero_lss.");
 	}
 }
+
+private void tratarEsArreglo(ParserVal pos){
+	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
+	if (elemento.getUso() != ElementoTS.USOS.ARREGLO){
+		escribirErrorDeGeneracion("El identificador \"" + elemento.getToken().getLexema() + "\" no se encuentra declarado como un arrego.");
+	}
+}
+
+
 private ArbolAbs crear_hoja(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	ArbolAbs salida = new Hoja(elemento);
@@ -825,7 +834,7 @@ private ArbolAbs desapilar(){
 	return salida;
 }
 
-//#line 756 "Parser.java"
+//#line 765 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1229,9 +1238,9 @@ case 85:
 break;
 case 86:
 //#line 143 "gramatica.y"
-{ tratarNodeclaraciones(val_peek(3));	HojaAux = crear_nodo("Índice",E,null); tratarIndiceInvalido(val_peek(3)); }
+{ tratarNodeclaraciones(val_peek(3));	tratarEsArreglo(val_peek(3)); HojaAux = crear_nodo("Índice",E,null); tratarIndiceInvalido(val_peek(3)); }
 break;
-//#line 1157 "Parser.java"
+//#line 1166 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
