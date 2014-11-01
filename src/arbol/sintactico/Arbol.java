@@ -123,6 +123,14 @@ public class Arbol implements ArbolAbs {
 			conmutativa = false;
 			oper = "SUB";
 			System.out.println("[ARBOL] Crear Resta");
+		}else if (operacion.equals("Multiplicación \"*\"")){
+			conmutativa = true;
+			oper = "MUL";
+			System.out.println("[ARBOL] Crear Multiplicacion");
+		}else if (operacion.equals("División \"/\"")){
+			conmutativa = false;
+			oper = "DIV";
+			System.out.println("[ARBOL] Crear Division");
 		}else {
 			return;
 		}
