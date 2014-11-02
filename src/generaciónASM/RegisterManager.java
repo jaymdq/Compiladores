@@ -1,5 +1,6 @@
 package generaciónASM;
 
+import generaciónASM.CodigoAssembler.Operacion;
 import arbol.sintactico.ArbolAbs;
 
 public class RegisterManager {
@@ -10,20 +11,38 @@ public class RegisterManager {
 	public RegisterManager(CodigoAssembler codigo){
 		// Se ordenan EBX y ECX primero para postergar el uso de registros específicos
 		// (Sirven para mas operaciones)
-		registros[0] = new Registro("EBX");
-		registros[1] = new Registro("ECX");
-		registros[2] = new Registro("EAX");
-		registros[3] = new Registro("EDX");
+		registros[0] = new Registro("EBX", "BX");
+		registros[1] = new Registro("ECX", "CX");
+		registros[2] = new Registro("EAX", "AX");
+		registros[3] = new Registro("EDX", "DX");
 		
 		this.codigo = codigo;
 	}
 	
-	public Registro getRegistroLibre(ArbolAbs operando){
+	// Mover desde memoria a un registro libre. Devuelve el registro
+	public Registro ocuparRegistroLibre(ArbolAbs operando, boolean n16bits){
 		for (Registro r : registros){
 			if (r.isLibre()){
-				System.out.println("Registro libre encontrado: agregar MOV");
+				System.out.println("Registro libre encontrado: agregar MOV R1, Variable");
 				r.setOperando(operando);
-				codigo.agregarSentencia("MOV", r.getName(), operando.getName());
+				codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), operando.getName());
+				return r;
+			}
+		}
+		
+		// TODO
+		System.out.println("ERROR: Todos los registros usados");
+		return null;
+	}
+	
+	// Mover de un registro a otro
+	public Registro ocuparRegistroLibre(Registro registro){
+		for (Registro r : registros){
+			if (r.isLibre()){
+				System.out.println("Registro libre encontrado: agregar MOV R1, R2");
+				r.setOperando(registro.getOperando());
+				registro.liberar();
+				codigo.agregarSentencia(Operacion.MOV, r.getName(false), registro.getName(false));
 				return r;
 			}
 		}
@@ -43,16 +62,24 @@ public class RegisterManager {
 		return null;
 	}
 
-	/*public void setRegistroOcupado(Registro registro, ArbolAbs arbol) {
+	public Registro ocuparRegistro(Registro registro, ArbolAbs operando, boolean n16bits) {
 		for (Registro r : registros){
 			if (r.equals(registro)){
-				System.out.println("Registro " + r.getName() + " actualizado");
-				r.setOperando(arbol);
-			}else if (r.getOperando().equals(arbol)){
-				System.out.println("Liberar");
-				r.liberar();
+				if (!r.isLibre()){
+					// Mover valor COMPLETO a otro registro
+					ocuparRegistroLibre(r);
+				}
+				r.setOperando(operando); // TODO Verificar si es null
+				if (operando == null){
+					codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), "0"); // TODO Verificar constante
+				}else{
+					codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), operando.getName());
+				}
+				return r;
 			}
 		}
-	}*/
+		
+		return null;
+	}
 	
 }

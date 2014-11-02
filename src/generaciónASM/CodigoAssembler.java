@@ -3,6 +3,8 @@ package generaciónASM;
 import java.util.HashMap;
 
 public class CodigoAssembler {
+	
+	public enum Operacion { ADD, SUB, MUL, IMUL, DIV, IDIV, MOV};
 
 	String sentencias = new String();
 	RegisterManager regManager = new RegisterManager(this);
@@ -13,8 +15,14 @@ public class CodigoAssembler {
 		mapeoString.put(cadena, "__str" + mapeoString.size());
 	}
 	
-	public void agregarSentencia(String operacion, String op1, String op2){
+	public void agregarSentencia(Operacion operacion, String op1, String op2){
 		String sent = operacion + " " + op1 + ", " + op2;
+		System.out.println("Agregar: " + sent);
+		sentencias.concat(sent + "\n");
+	}
+	
+	public void agregarSentencia(Operacion operacion, Registro r1, Registro r2){
+		String sent = operacion + " " + r1 + ", " + r2;
 		System.out.println("Agregar: " + sent);
 		sentencias.concat(sent + "\n");
 	}
