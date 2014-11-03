@@ -10,10 +10,10 @@ public class Registro {
 	private ArbolAbs operando;
 	private boolean inmediato = false;
 	
-	public Registro(String nombre16, String nombre32) {
+	public Registro(String nombre32, String nombre16) {
 		super();
-		this.nombre16 = nombre16;
 		this.nombre32 = nombre32;
+		this.nombre16 = nombre16;
 	}
 	
 	public void setInmediato(){ inmediato = true; }
