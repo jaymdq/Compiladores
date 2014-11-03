@@ -45,6 +45,18 @@ public class Arbol implements ArbolAbs {
 	public ElementoTS.TIPOS getTipo() {
 		ElementoTS.TIPOS tipo_izq = this.izquierdo.getTipo();
 		ElementoTS.TIPOS tipo_der = this.derecho.getTipo();
+
+		if (tipo_izq == ElementoTS.TIPOS.VECTOR_ENTERO )
+			tipo_izq = ElementoTS.TIPOS.ENTERO;
+		if (tipo_izq == ElementoTS.TIPOS.VECTOR_ENTERO_LSS )
+			tipo_izq = ElementoTS.TIPOS.ENTERO_LSS;
+		if (tipo_der == ElementoTS.TIPOS.VECTOR_ENTERO )
+			tipo_der = ElementoTS.TIPOS.ENTERO;
+		if (tipo_der == ElementoTS.TIPOS.VECTOR_ENTERO_LSS )
+			tipo_der = ElementoTS.TIPOS.ENTERO_LSS;
+		
+		
+		
 		return (tipo_izq.equals(tipo_der) ? tipo_izq : null);
 	}
 

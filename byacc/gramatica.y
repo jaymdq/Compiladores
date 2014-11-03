@@ -93,7 +93,7 @@ impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impr
 					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
 			
-asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja($1),getUltimaExpresion());}
+asignacion	: asignable  ASIGNACION { guardarExpresion();} e ';' { indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja($1); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); }
 			| asignacion_invalida
 			;
 
@@ -540,19 +540,16 @@ private ArbolAbs desapilar(){
 	return salida;
 }
 
-private ArbolAbs tratarAsignacionVectores(ArbolAbs hojaNueva){
-	if (hojaNueva.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO || hojaNueva.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO_LSS){
-		hojaNueva = AuxVec;
-	}
-	return hojaNueva;
+private void guardarExpresion(){
+	if (HojaAux instanceof Arbol)
+		AuxVec = ((Arbol) HojaAux).getDerecho();
 }
 
 
-private void guardarArbolVec(ArbolAbs hojaNueva){
+private boolean esAsignacionVector(ArbolAbs hojaNueva){
 	if (hojaNueva.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO || hojaNueva.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO_LSS){
-		AuxVec = HojaAux.clone();
-	}else{
-		AuxVec = hojaNueva;
+		return true;
 	}
+	return false;
 }
 
