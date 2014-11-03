@@ -19,6 +19,21 @@ public class RegisterManager {
 		this.codigo = codigo;
 	}
 	
+	public Registro getRegistro(Registro registro){
+		for (Registro r : registros){
+			// Encontrar registro
+			if (r.equals(registro)){
+				// Si no esta vacio, mover valor COMPLETO a otro registro
+				if (!r.isLibre()){
+					ocuparRegistroLibre(r);
+				}
+				return r;
+			}
+		}
+		
+		return null;
+	}
+	
 	// Mover desde memoria a un registro libre. Devuelve el registro
 	public Registro ocuparRegistroLibre(ArbolAbs operando, boolean n16bits){
 		for (Registro r : registros){
@@ -35,7 +50,7 @@ public class RegisterManager {
 		return null;
 	}
 	
-	// Mover de un registro a otro
+	// Mover de un registro a otro. Devuelve el registro
 	public Registro ocuparRegistroLibre(Registro registro){
 		for (Registro r : registros){
 			if (r.isLibre()){
@@ -62,24 +77,30 @@ public class RegisterManager {
 		return null;
 	}
 
+	// Almacenar en un registro determinado una variable
 	public Registro ocuparRegistro(Registro registro, ArbolAbs operando, boolean n16bits) {
-		for (Registro r : registros){
-			if (r.equals(registro)){
-				if (!r.isLibre()){
-					// Mover valor COMPLETO a otro registro
-					ocuparRegistroLibre(r);
-				}
-				r.setOperando(operando); // TODO Verificar si es null
-				if (operando == null){
-					codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), "0"); // TODO Verificar constante
-				}else{
-					codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), operando.getName());
-				}
-				return r;
-			}
-		}
+		Registro r = getRegistro(registro);
 		
-		return null;
+		if (r == null)
+			return null;
+		
+		codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), operando.getName());
+		r.setOperando(operando); // TODO Verificar si es null
+
+		return r;
+	}
+	
+	// Almacenar en un registro determinado un valor inmediato
+	public Registro ocuparRegistro(Registro registro, int inmediato, boolean n16bits){
+		Registro r = getRegistro(registro);
+		
+		if (r == null)
+			return null;
+		
+		codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), "" + inmediato);
+		r.setInmediato();
+
+		return r;
 	}
 	
 }

@@ -8,19 +8,23 @@ public class Registro {
 	private String nombre16;
 	private String nombre32;
 	private ArbolAbs operando;
+	private boolean inmediato = false;
 	
 	public Registro(String nombre16, String nombre32) {
 		super();
 		this.nombre16 = nombre16;
 		this.nombre32 = nombre32;
 	}
+	
+	public void setInmediato(){ inmediato = true; }
 
 	public boolean isLibre(){
-		return operando == null;
+		return operando == null && !inmediato;
 	}
 	
 	public void liberar(){
 		operando = null;
+		inmediato = false;
 	}
 	
 	public void setOperando(ArbolAbs operando) {

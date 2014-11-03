@@ -129,6 +129,7 @@ public class Arbol implements ArbolAbs {
 		}else if (operacion.equals("Multiplicación \"*\"")){
 			System.out.println("[ARBOL] Crear Multiplicacion");
 			conmutativa = true;
+			destFijo = true;
 			if (getTipo().equals(TIPOS.ENTERO_LSS)){
 				oper = Operacion.MUL;
 				n16bits = false;
@@ -138,6 +139,7 @@ public class Arbol implements ArbolAbs {
 		}else if (operacion.equals("División \"/\"")){
 			System.out.println("[ARBOL] Crear Division");
 			conmutativa = false;
+			destFijo = true;
 			if (getTipo().equals(TIPOS.ENTERO_LSS)){
 				oper = Operacion.DIV;
 				n16bits = false;
@@ -157,11 +159,17 @@ public class Arbol implements ArbolAbs {
 		String op1, op2;
 		Registro r;
 		
-		if (destFijo){
-			op1=""; op2="";r=null;
-			regManager.ocuparRegistro(new Registro("EAX", "AX"), izquierdo, n16bits); // TODO sacar null
-			regManager.ocuparRegistro(new Registro("EDX", "DX"), null, n16bits);
-		}else{
+		if (oper.equals(Operacion.MUL) || oper.equals(Operacion.IMUL)){
+			r = regManager.ocuparRegistro(new Registro("EAX", "AX"), izquierdo, n16bits); 		// Parte baja: operando1
+			Registro r2 = regManager.ocuparRegistro(new Registro("EDX", "DX"), 0, n16bits); 	// Parte alta: 0 (evitar perdida de datos)
+			op1 = r.getName(n16bits);
+			op2 = derecho.getName();
+			
+			codigo.agregarSentencia(oper, op1, op2);											// Realizar operacion
+			r.setOperando(this);
+			r2.liberar();																		// Liberar segundo registro
+			// Verificar overflow
+		}else if (oper.equals(Operacion.ADD) || oper.equals(Operacion.SUB)){
 			if (regIzq == null &&  regDer == null){
 				// Situacion 1:	Operacion entre 2 variables y/o constantes
 				System.out.println("Situacion 1: Operacion entre 2 variables y/o constantes");
@@ -195,14 +203,12 @@ public class Arbol implements ArbolAbs {
 				op1 = r.getName(n16bits); op2 = regDer.getName(n16bits);							// Setear operandos
 				regDer.liberar();
 			}
-		}
 		
-		/* ---------------------------------------------------------------------------------- */
-		
-		codigo.agregarSentencia(oper, op1, op2);								// Realizar operacion
-		r.setOperando(this);													// Actualizar referencia al resultado
-		
-		//Verificar Overflow + Entero/Entero sin signo + distintos tipos
+			/* ---------------------------------------------------------------------------------- */
+			
+			codigo.agregarSentencia(oper, op1, op2);								// Realizar operacion
+			r.setOperando(this);													// Actualizar referencia al resultado
 
+		}
 	}
 }
