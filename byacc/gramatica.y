@@ -93,7 +93,7 @@ impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impr
 					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
 			
-asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja($1),E);}
+asignacion	: asignable  ASIGNACION e ';' { indicarSentencia("Asignación"); SentenciaAsignacion = crear_nodo("Asignación",crear_hoja($1),getUltimaExpresion());}
 			| asignacion_invalida
 			;
 
@@ -107,7 +107,7 @@ bloque		: sentencia
 			| '{' '}'  { escribirError("Bloque de sentencias vacío."); }
 			;
 					
-condicion	: e comparador e { Condicion = crear_nodo(UltimoComparador,E1,E2); agregarCondicion(Condicion); }
+condicion	: e comparador e { E2 = getUltimaExpresion(); E1 = getUltimaExpresion(); Condicion = crear_nodo(UltimoComparador,E1,E2); agregarCondicion(Condicion); }
 			;
 		
 comparador	: '>'				{ UltimoComparador = new String("Comparador \">\""); }
@@ -118,18 +118,18 @@ comparador	: '>'				{ UltimoComparador = new String("Comparador \">\""); }
 			| COMP_DISTINTO		{ UltimoComparador = new String("Comparador \"^=\""); }
 			;
 			
-e	: e '+' t			{ E = crear_nodo("Suma \"+\"",E,T);  agregarExpresion(E); }
-	| e '-' t			{ E = crear_nodo("Resta \"-\"",E,T); agregarExpresion(E); }
-	| t					{ E = T; agregarExpresion(E); }
+e	: e '+' t			{ E = crear_nodo("Suma \"+\"",getUltimaExpresion(),getUltimoTermino());  agregarExpresion(E); }
+	| e '-' t			{ E = crear_nodo("Resta \"-\"",getUltimaExpresion(),getUltimoTermino()); agregarExpresion(E); }
+	| t					{ E = getUltimoTermino(); agregarExpresion(E); }
 	;
 	
-t	: t '*' f			{ T = crear_nodo("Multiplicación \"*\"",T,F); }
-	| t '/' f			{ T = crear_nodo("División \"/\"",T,F); }
-	| f					{ T = F; }
+t	: t '*' f			{ T = crear_nodo("Multiplicación \"*\"",getUltimoTermino(),getUltimoFactor()); agregarTermino(T);}
+	| t '/' f			{ T = crear_nodo("División \"/\"",getUltimoTermino(),getUltimoFactor()); agregarTermino(T);}
+	| f					{ T = getUltimoFactor(); agregarTermino(T);}
 	;
 	
-f	: valor				{ F = HojaAux; }
-	| '-' ENTERO		{ chequearNegativo(); }
+f	: valor				{ F = HojaAux; agregarFactor(F);}
+	| '-' ENTERO		{ int pos = chequearNegativo(); F = crear_hoja(new ParserVal(pos)); agregarFactor(F);}
 	| '-' ENTERO_LSS 	{ escribirError("Constante negativa fuera de rango."); borrarFueraRango(); }
 	| FUERA_RANGO 		{ escribirError("Constante fuera de rango"); }
 	;
@@ -140,7 +140,7 @@ valor	: asignable
 		;
 
 asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1);	HojaAux = crear_hoja($1);  }
-			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);	tratarEsArreglo($1); HojaAux = crear_nodo("Índice",crear_hoja($1),E); tratarIndiceInvalido($1); }
+			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);	tratarEsArreglo($1); HojaAux = crear_nodo("Índice",crear_hoja($1),getUltimaExpresion()); tratarIndiceInvalido($1); }
 			;
 			
 %%
@@ -156,6 +156,10 @@ private Vector<Token> declaracionesAux = new Vector<Token>();
 private Integer nivelActual = 0;
 private Vector<Integer>  pilaNivel = new Vector<Integer>();
 private Vector<ArbolAbs> pilaCondiciones = new Vector<ArbolAbs>();
+private Vector<ArbolAbs> pilaExpresiones = new Vector<ArbolAbs>();
+private Vector<ArbolAbs> pilaTerminos = new Vector<ArbolAbs>();
+private Vector<ArbolAbs> pilaFactores = new Vector<ArbolAbs>();
+
 private Vector<ArbolAbs> pilaBloques = new Vector<ArbolAbs>();
 private Vector<ArbolAbs> sentencias = new Vector<ArbolAbs>();
 
@@ -174,6 +178,7 @@ private ArbolAbs E2;
 private ArbolAbs Bloque;
 private ArbolAbs Bloque1;
 private ArbolAbs Bloque2;
+private ArbolAbs AuxVec;
 
 private String UltimoComparador = "";
 
@@ -214,15 +219,16 @@ public Parser(Proyecto p){
 	this.proyecto = p;
 }
 
-private void chequearNegativo(){
+private int chequearNegativo(){
 	//Chequear valor del negativo
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
+	String antesDeSerProcesado = t.getLexema();
 	if ( t.getContador() == 1){
 		//Se pisa el token existente
 		Token tnuevo = new Token(Token.TipoToken.ENTERO,"-"+t.getLexema());
 		if (! proyecto.getTablaDeSimbolos().containsToken(tnuevo.getLexema()) ){
 			t.setLexema("-"+t.getLexema());
-			tratarConstante(yylval,"entero");
+			tratarConstante(yylval,"entero"); 
 		}
 		else{
 			proyecto.getTablaDeSimbolos().getToken(tnuevo.getLexema()).aumentarContador();
@@ -244,6 +250,8 @@ private void chequearNegativo(){
 	}
 	//Se actualiza la tabla de simbolos visualmente.
 	actualizarTablaDeSimbolos();
+	
+	return proyecto.getTablaDeSimbolos().getPos("-"+antesDeSerProcesado);
 }
 
 private void chequearRango(){
@@ -434,12 +442,35 @@ public ArbolAbs getSentencias(){
 	
 	return raiz;
 }
+
 private void agregarExpresion(ArbolAbs exp){
-	if (E2 != null)
-		E1 = E2.clone();
-	else
-		E1 = exp;
-	E2 = exp;
+	pilaExpresiones.add(exp);
+}
+
+private ArbolAbs getUltimaExpresion(){
+	ArbolAbs salida = pilaExpresiones.lastElement();
+	pilaExpresiones.remove(pilaExpresiones.size() - 1);
+	return salida;
+}
+
+private void agregarTermino(ArbolAbs exp){
+	pilaTerminos.add(exp);
+}
+
+private ArbolAbs getUltimoTermino(){
+	ArbolAbs salida = pilaTerminos.lastElement();
+	pilaTerminos.remove(pilaTerminos.size() - 1);
+	return salida;
+}
+
+private void agregarFactor(ArbolAbs exp){
+	pilaFactores.add(exp);
+}
+
+private ArbolAbs getUltimoFactor(){
+	ArbolAbs salida = pilaFactores.lastElement();
+	pilaFactores.remove(pilaFactores.size() - 1);
+	return salida;
 }
 
 private void agregarCondicion(ArbolAbs exp){
@@ -507,5 +538,21 @@ private ArbolAbs desapilar(){
 	pilaNivel.add(nivelActual);
 	
 	return salida;
+}
+
+private ArbolAbs tratarAsignacionVectores(ArbolAbs hojaNueva){
+	if (hojaNueva.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO || hojaNueva.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO_LSS){
+		hojaNueva = AuxVec;
+	}
+	return hojaNueva;
+}
+
+
+private void guardarArbolVec(ArbolAbs hojaNueva){
+	if (hojaNueva.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO || hojaNueva.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO_LSS){
+		AuxVec = HojaAux.clone();
+	}else{
+		AuxVec = hojaNueva;
+	}
 }
 
