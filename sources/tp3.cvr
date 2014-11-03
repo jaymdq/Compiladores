@@ -2,6 +2,6 @@
 entero a;
 vec[1..10] vector de entero;
 **Sentencias de Ejecución
-a := 2 + vec[3+1] - 4 * 5 / 4;
+a := 2 - 4 * 5 / 4;
 
 imprimir('Rocha fan matematica');

@@ -27,6 +27,10 @@ public class GeneradorASM {
 		tratarDeclaraciones();
 		for (String s : declaracionesSentencias)
 			codigo += s + "\n";
+		
+		// TODO Testeando
+		System.out.println("Generar Assembler");
+		sentencias.generarAssembler(new CodigoAssembler());
 
 		//Asignamos al final el resultado obtenido
 		codigoGenerado = codigo;
