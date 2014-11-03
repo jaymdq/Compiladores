@@ -169,6 +169,21 @@ public class Arbol implements ArbolAbs {
 			r.setOperando(this);
 			r2.liberar();																		// Liberar segundo registro
 			// Verificar overflow
+		}else if (oper.equals(Operacion.DIV) || oper.equals(Operacion.IDIV)){
+			r = regManager.ocuparRegistro(new Registro("EAX", "AX"), izquierdo, n16bits); 		// Parte baja: operando1
+			Registro r2 = regManager.ocuparRegistro(new Registro("EDX", "DX"), 0, n16bits); 	// Parte alta: 0 (evitar calculo erroneo)
+			
+			if (regDer == null)
+				regDer = regManager.ocuparRegistroLibre(derecho, n16bits);
+
+			op2 = regDer.getName(n16bits);
+			
+			codigo.agregarSentencia(oper, op2);													// Realizar operacion
+			r.setOperando(this);
+			
+			r2.liberar();																		// Liberar segundo registro
+			regDer.liberar();
+
 		}else if (oper.equals(Operacion.ADD) || oper.equals(Operacion.SUB)){
 			if (regIzq == null &&  regDer == null){
 				// Situacion 1:	Operacion entre 2 variables y/o constantes

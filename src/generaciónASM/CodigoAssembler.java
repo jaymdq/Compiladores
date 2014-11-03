@@ -1,5 +1,7 @@
 package generaciónASM;
 
+import generaciónASM.CodigoAssembler.Operacion;
+
 import java.util.HashMap;
 
 public class CodigoAssembler {
@@ -29,6 +31,12 @@ public class CodigoAssembler {
 
 	public RegisterManager getRegManager() {
 		return regManager;
+	}
+
+	public void agregarSentencia(Operacion operacion, String op1) {
+		String sent = operacion + " " + op1;
+		System.out.println("Agregar: " + sent);
+		sentencias.concat(sent + "\n");		
 	}
 	
 }
