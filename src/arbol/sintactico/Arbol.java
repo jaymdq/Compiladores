@@ -134,23 +134,11 @@ public class Arbol implements ArbolAbs {
 		return "intermedio";
 	}
 
+
+
 	@Override
 	public void generarAssembler(CodigoAssembler codigo) {
-		
-		//Iteración .. Se debe incluir la etiqueta antes que nada
-		if (operacion.equals("Iteración")){
-			String label = codigo.apilarEtiqueta();
-			codigo.agregarEtiqueta(label);
-		}
 
-		//Se recorre el arbol
-		if (izquierdo != null)
-			izquierdo.generarAssembler(codigo);
-
-		if (derecho != null)
-			derecho.generarAssembler(codigo);
-
-		
 		// TODO Auto-generated method stub
 		CodigoAssembler.Operacion oper = null;
 		boolean conmutativa = false;
@@ -166,6 +154,83 @@ public class Arbol implements ArbolAbs {
 		String op1, op2;
 		Registro r;
 
+		//IZQUIERDA
+
+		//Iteración .. Se debe incluir la etiqueta antes que nada
+		if (operacion.equals("Iteración")){
+			String label = codigo.apilarEtiqueta();
+			codigo.agregarEtiqueta(label);
+		}
+
+
+		//Se recorre el arbol
+		if (izquierdo != null)
+			izquierdo.generarAssembler(codigo);
+
+		//MEDIO
+		//Selección
+		if (operacion.equals("Selección")){
+			//Se generó ya la comparación !
+			//Se debe poner el salto y apilarlo
+			//Se agrega el salto
+			String comparador = ((Arbol) this.izquierdo).getOperacion().split(" ")[1];
+			String etiqueta = codigo.apilarEtiqueta();
+			if (comparador.equals("\">\"")){
+				//Saltas por Menor Igual
+				oper = (n16bits) ? Operacion.JLE : Operacion.JBE;
+			}
+			if (comparador.equals("\"<\"")){
+				//Saltas por Mayor Igual
+				oper = (n16bits) ? Operacion.JGE : Operacion.JAE;
+			}
+			if (comparador.equals("\">=\"")){
+				//Saltas por Menor
+				oper = (n16bits) ? Operacion.JL : Operacion.JB;
+			}
+			if (comparador.equals("\"<=\"")){
+				//Saltas por Mayor
+				oper = (n16bits) ? Operacion.JG : Operacion.JA;
+			}
+			if (comparador.equals("\"=\"")){
+				//Saltas por Distinto
+				oper = (n16bits) ? Operacion.JNE : Operacion.JNE;	//Esta bien asi.
+			}
+			if (comparador.equals("\"^=\"")){
+				//Saltas por Igual
+				oper = (n16bits) ? Operacion.JE : Operacion.JE;		//Esta bien asi.
+			}
+
+			//Se agrega la sentencia
+			codigo.agregarSentencia(oper, etiqueta);
+
+
+		}
+
+		if (operacion.equals("Cuerpo")){
+			//JMP
+			String etiquetaPrimera = codigo.desapilarEtiqueta();
+
+			if (derecho != null){
+				String etiqueta = codigo.apilarEtiqueta();
+				oper = Operacion.JMP;
+
+				//Se agrega la sentencia
+				codigo.agregarSentencia(oper, etiqueta);
+
+			}
+			//Primer Label
+			codigo.agregarEtiqueta(etiquetaPrimera);
+
+		}
+
+		//Derecha
+		//Se recorre el arbol
+		if (derecho != null)
+			derecho.generarAssembler(codigo);
+
+
+
+		//NODO MISMO-------------------------------------------------------------------------------------------
 
 		//Nodos que no generan problemas
 		if (operacion.equals("Programa")){
@@ -174,59 +239,24 @@ public class Arbol implements ArbolAbs {
 		if (operacion.equals("Sentencia")){
 			return;
 		}
+		if (operacion.equals("Sentencia General")){
+			return;
+		}
 
-		//--------------------------------------------------------------------------------------------------------------
-		//Impresión
-		if (operacion.equals("Impresión")){
-			oper = Operacion.INVOKE;
-			String referencia = GeneradorASM.mapStringsASM.get(izquierdo.getName());
-			codigo.agregarSentencia(oper, "MessageBox, NULL, addr " + referencia + ", addr " + referencia + ", MB_OK");	
+		if (operacion.equals("Cuerpo")){
+			if (derecho!= null){
+				String etiqueta = codigo.desapilarEtiqueta();
+				codigo.agregarEtiqueta(etiqueta);
+			}
+			return;
 		}
 
 
-		//Asignación
-		if (operacion.equals("Asignación")){
-			oper = Operacion.MOV;
-			op1 = izquierdo.getName();
-			n16bits = true;
-			if (derecho.getTipo() == ElementoTS.TIPOS.ENTERO_LSS)
-				n16bits = false;
-			Registro aGuardar = regManager.findRegistro(derecho);
-			if (aGuardar == null){
-				//Moverlo
-				aGuardar = regManager.ocuparRegistroLibre(derecho, n16bits);
-			}
-			codigo.agregarSentencia(oper, op1, aGuardar.getName(n16bits));
-
-			aGuardar.liberar(); //Se libera
-
-			return ;
-		}
-
-		//Comparación
-		if (operacion.startsWith("Comparador")){
-			//Operacion CMP
-
-			oper = Operacion.CMP;
-
-			if (izquierdo.getTipo() == ElementoTS.TIPOS.ENTERO_LSS && izquierdo.getTipo() == ElementoTS.TIPOS.ENTERO_LSS)
-				n16bits=false;
-
-			if (regIzq == null){
-				//Ocupar el izquierdo
-				regIzq = regManager.ocuparRegistroLibre(izquierdo, n16bits);
-			}
-
-			if (regDer == null){
-				//Ocupar el derecho
-				regDer = regManager.ocuparRegistroLibre(derecho, n16bits);
-			}
-			
-			//Se agrega la CMP
-			codigo.agregarSentencia(oper, regIzq.getName(n16bits), regDer.getName(n16bits));
-
+		//Iteración salida poner etiqueta
+		if (operacion.equals("Iteración")){
 			//Se agrega el salto
-			String comparador = operacion.split(" ")[1];
+			String comparador = ((Arbol) this.derecho).getOperacion().split(" ")[1];
+			//String comparador = operacion.split(" ")[1];
 			String etiqueta = codigo.desapilarEtiqueta();
 			if (comparador.equals("\">\"")){
 				//Saltas por Menor Igual
@@ -255,6 +285,63 @@ public class Arbol implements ArbolAbs {
 
 			//Se agrega la sentencia
 			codigo.agregarSentencia(oper, etiqueta);
+		}
+
+
+		//Impresión
+		if (operacion.equals("Impresión")){
+			oper = Operacion.INVOKE;
+			String referencia = GeneradorASM.getMapStringsASM().get(izquierdo.getName());
+			codigo.agregarSentencia(oper, "MessageBox, NULL, addr " + referencia + ", addr " + referencia + ", MB_OK");	
+		}
+
+
+		//Asignación
+		if (operacion.equals("Asignación")){
+			oper = Operacion.MOV;
+			op1 = izquierdo.getName();
+			n16bits = true;
+			if (derecho.getTipo() == ElementoTS.TIPOS.ENTERO_LSS)
+				n16bits = false;
+			Registro aGuardar = regManager.findRegistro(derecho);
+			if (aGuardar == null){
+				//Moverlo
+				aGuardar = regManager.ocuparRegistroLibre(derecho, n16bits);
+			}
+			codigo.agregarSentencia(oper, op1, aGuardar.getName(n16bits));
+
+			aGuardar.liberar(); //Se libera
+
+			return ;
+		}
+
+
+		//Comparación
+		if (operacion.startsWith("Comparador")){
+			//Operacion CMP
+
+			oper = Operacion.CMP;
+
+			if (izquierdo.getTipo() == ElementoTS.TIPOS.ENTERO_LSS && izquierdo.getTipo() == ElementoTS.TIPOS.ENTERO_LSS)
+				n16bits=false;
+
+			if (regIzq == null){
+				//Ocupar el izquierdo
+				regIzq = regManager.ocuparRegistroLibre(izquierdo, n16bits);
+			}
+
+			if (regDer == null){
+				//Ocupar el derecho
+				regDer = regManager.ocuparRegistroLibre(derecho, n16bits);
+			}
+
+			//Se agrega la CMP
+			codigo.agregarSentencia(oper, regIzq.getName(n16bits), regDer.getName(n16bits));
+
+			//Se liberan los registros
+			regIzq.liberar();
+			regDer.liberar();
+
 			return;
 		}
 

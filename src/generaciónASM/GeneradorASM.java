@@ -13,12 +13,13 @@ public class GeneradorASM {
 	private TablaDeSimbolos tablaSimbolos;
 	private String codigoGenerado = "";
 	private Vector<String> declaracionesSentencias;
-	public static HashMap<String,String> mapStringsASM = new HashMap<String,String>();
+	private static HashMap<String,String> mapStringsASM ;
 
 	public GeneradorASM(ArbolAbs sentencias,TablaDeSimbolos tablaSimbolos){
 		this.sentencias = sentencias;
 		this.tablaSimbolos = tablaSimbolos;
 		this.declaracionesSentencias = new Vector<String>();
+		this.setMapStringsASM(new HashMap<String,String>());
 	}
 
 	private String getLibrerias() {
@@ -54,8 +55,8 @@ public class GeneradorASM {
 			codigo += s + "\n";
 
 		tratarCadenas();
-		for (String clave : mapStringsASM.keySet()){
-			codigo +=  mapStringsASM.get(clave) + "\t\t" + "db " + clave + ", 0\n";
+		for (String clave : getMapStringsASM().keySet()){
+			codigo +=  getMapStringsASM().get(clave) + "\t\t" + "db " + clave + ", 0\n";
 		}
 		
 		//----------------------- CÓDIGO ------------------------------------------------------
@@ -153,7 +154,7 @@ public class GeneradorASM {
 			if ( e.getTipo().toString().equals("Cadena Multilinea") && e.getUso().toString().equals("Constante")){
 				String declaracion;
 				declaracion = "_@" + strC;
-				mapStringsASM.put(e.getToken().getLexema(), declaracion);							
+				getMapStringsASM().put(e.getToken().getLexema(), declaracion);							
 				strC++;
 			}
 		}
@@ -166,5 +167,13 @@ public class GeneradorASM {
 			}
 		}
 		return false;
+	}
+
+	public static HashMap<String,String> getMapStringsASM() {
+		return mapStringsASM;
+	}
+
+	public static void setMapStringsASM(HashMap<String,String> mapStringsASM) {
+		GeneradorASM.mapStringsASM = mapStringsASM;
 	}
 }

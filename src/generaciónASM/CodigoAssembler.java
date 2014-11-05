@@ -7,7 +7,7 @@ import java.util.Vector;
 
 public class CodigoAssembler {
 	
-	public enum Operacion { ADD, SUB, MUL, IMUL, DIV, IDIV, MOV, INVOKE, JLE, JBE, CMP, JGE, JAE, JB, JL, JG, JA, JNE, JE};
+	public enum Operacion { ADD, SUB, MUL, IMUL, DIV, IDIV, MOV, INVOKE, JLE, JBE, CMP, JGE, JAE, JB, JL, JG, JA, JNE, JE, JMP};
 
 	private String sentencias = new String();
 	private RegisterManager regManager = new RegisterManager(this);

@@ -539,7 +539,6 @@ private ArbolAbs desapilar(){
 	for ( ArbolAbs arbol : objetivos ){
 		ArbolAbs aux = crear_nodo("Sentencia General",arbol,null);
 		((Arbol) ((Arbol) intermedio).dameMasDerecho()).setDerecho(aux);
-		intermedio = arbol;
 	}
 	
 	//Guardamos el arbol generado

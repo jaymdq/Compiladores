@@ -12,18 +12,20 @@ vec[1..10] vector de entero;
 
 ** := a * 1;
 
-a := 2;
+a := 1;
 
 iterar{
 	imprimir('1');
+
 	iterar{
 		a := a + 2;
-	}hasta a = 3;
-	a := a + 1;
+		imprimir('2');
+	}hasta a <= 10;
+
+	
+	imprimir('3');
+
 } hasta a = 5; 
-
-
-
 
 **a := a + 1 + vec[1];
 
