@@ -93,7 +93,7 @@ impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impr
 					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
 			
-asignacion	: asignable  ASIGNACION { guardarExpresion();} e ';' { indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja($1); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); }
+asignacion	: asignable  ASIGNACION { guardarExpresion();} e ';' { indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja($1); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); asignacionValida(SentenciaAsignacion); }
 			| asignacion_invalida
 			;
 
@@ -107,7 +107,7 @@ bloque		: sentencia
 			| '{' '}'  { escribirError("Bloque de sentencias vacío."); }
 			;
 					
-condicion	: e comparador e { E2 = getUltimaExpresion(); E1 = getUltimaExpresion(); Condicion = crear_nodo(UltimoComparador,E1,E2); agregarCondicion(Condicion); }
+condicion	: e comparador e { E2 = getUltimaExpresion(); expresionValida(E2); E1 = getUltimaExpresion(); expresionValida(E1); Condicion = crear_nodo(UltimoComparador,E1,E2); agregarCondicion(Condicion); }
 			;
 		
 comparador	: '>'				{ UltimoComparador = new String("Comparador \">\""); }
@@ -118,9 +118,9 @@ comparador	: '>'				{ UltimoComparador = new String("Comparador \">\""); }
 			| COMP_DISTINTO		{ UltimoComparador = new String("Comparador \"^=\""); }
 			;
 			
-e	: e '+' t			{ E = crear_nodo("Suma \"+\"",getUltimaExpresion(),getUltimoTermino());  agregarExpresion(E); }
-	| e '-' t			{ E = crear_nodo("Resta \"-\"",getUltimaExpresion(),getUltimoTermino()); agregarExpresion(E); }
-	| t					{ E = getUltimoTermino(); agregarExpresion(E); }
+e	: e '+' t			{ E = crear_nodo("Suma \"+\"",getUltimaExpresion(),getUltimoTermino());  agregarExpresion(E); expresionValida(E);}
+	| e '-' t			{ E = crear_nodo("Resta \"-\"",getUltimaExpresion(),getUltimoTermino()); agregarExpresion(E); expresionValida(E);}
+	| t					{ E = getUltimoTermino(); agregarExpresion(E); expresionValida(E);}
 	;
 	
 t	: t '*' f			{ T = crear_nodo("Multiplicación \"*\"",getUltimoTermino(),getUltimoFactor()); agregarTermino(T);}
@@ -140,7 +140,7 @@ valor	: asignable
 		;
 
 asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1);	HojaAux = crear_hoja($1);  }
-			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);	tratarEsArreglo($1); HojaAux = crear_nodo("Índice",crear_hoja($1),getUltimaExpresion()); tratarIndiceInvalido($1); }
+			| IDENTIFICADOR '[' e ']' { tratarNodeclaraciones($1);	tratarEsArreglo($1); HojaAux = crear_nodo("Índice",crear_hoja($1),getUltimaExpresion()); tratarIndiceInvalido($1); expresionValida(HojaAux); }
 			;
 			
 %%
@@ -414,6 +414,15 @@ private void tratarEsArreglo(ParserVal pos){
 	}
 }
 
+private void expresionValida(ArbolAbs exp){
+	if (exp.getTipo() == null)
+		escribirErrorDeGeneracion("La expresión contiene operaciones entre diferentes tipos de datos.");
+}
+
+private void asignacionValida(ArbolAbs exp){
+	if (exp.getTipo() == null)
+		escribirErrorDeGeneracion("Asignación entre diferentes tipos de datos.");
+}
 
 private ArbolAbs crear_hoja(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);

@@ -1,0 +1,33 @@
+**Sentencias declarativas
+
+entero a,c;
+entero_lss b;
+vec[1..10] vector de entero;
+
+**Sentencias de Ejecución
+
+**a := a + 1 + a + -5  - a;
+
+**b := b +  1000;
+
+** := a * 1;
+
+a := 2;
+
+iterar{
+	imprimir('1');
+	iterar{
+		a := a + 2;
+	}hasta a = 3;
+	a := a + 1;
+} hasta a = 5; 
+
+
+
+
+**a := a + 1 + vec[1];
+
+**b := b + 10;
+
+imprimir('Hola');
+imprimir('Hol2a');

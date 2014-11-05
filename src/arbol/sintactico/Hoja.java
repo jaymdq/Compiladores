@@ -7,11 +7,11 @@ import proyecto.ElementoTS.USOS;
 public class Hoja implements ArbolAbs {
 
 	private ElementoTS contenido;
-	
+
 	public Hoja(ElementoTS contenido){
 		this.contenido = contenido;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "[" + contenido.getToken().getLexema() + "," + contenido.getTipo().toString() +"]";
@@ -22,22 +22,23 @@ public class Hoja implements ArbolAbs {
 	}
 
 	public String getName(){
+		String salida = null;
 		if (contenido.getUso() == USOS.VARIABLE) 
-			return "_" + contenido.getToken().getLexema();
-		
+			salida = "_" + contenido.getToken().getLexema();
+
 		if (contenido.getUso() == USOS.CONSTANTE)
-			return contenido.getToken().getLexema();
-		
+			salida = contenido.getToken().getLexema();
+
 		//if (contenido.getUso() == USOS.
-				
-				return null;
+
+		return salida;
 	}
-	
+
 	@Override
 	public ElementoTS.TIPOS getTipo() {
 		return this.contenido.getTipo();
 	}
-	
+
 	public ArbolAbs clone(){
 		Hoja salida = new Hoja(contenido);
 		return salida;
@@ -51,7 +52,7 @@ public class Hoja implements ArbolAbs {
 	public ArbolAbs getArbolConHijosMasIzq() {
 		return null;
 	}
-
+	
 	@Override
 	public void generarAssembler(CodigoAssembler codigo) {
 		// TODO Auto-generated method stub

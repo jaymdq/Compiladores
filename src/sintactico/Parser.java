@@ -743,6 +743,15 @@ private void tratarEsArreglo(ParserVal pos){
 	}
 }
 
+private void expresionValida(ArbolAbs exp){
+	if (exp.getTipo() == null)
+		escribirErrorDeGeneracion("La expresión contiene operaciones entre diferentes tipos de datos.");
+}
+
+private void asignacionValida(ArbolAbs exp){
+	if (exp.getTipo() == null)
+		escribirErrorDeGeneracion("Asignación entre diferentes tipos de datos.");
+}
 
 private ArbolAbs crear_hoja(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
@@ -882,7 +891,7 @@ private boolean esAsignacionVector(ArbolAbs hojaNueva){
 	return false;
 }
 
-//#line 813 "Parser.java"
+//#line 822 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1190,7 +1199,7 @@ case 56:
 break;
 case 57:
 //#line 96 "gramatica.y"
-{ indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja(val_peek(4)); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); }
+{ indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja(val_peek(4)); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); asignacionValida(SentenciaAsignacion); }
 break;
 case 59:
 //#line 100 "gramatica.y"
@@ -1210,7 +1219,7 @@ case 65:
 break;
 case 66:
 //#line 110 "gramatica.y"
-{ E2 = getUltimaExpresion(); E1 = getUltimaExpresion(); Condicion = crear_nodo(UltimoComparador,E1,E2); agregarCondicion(Condicion); }
+{ E2 = getUltimaExpresion(); expresionValida(E2); E1 = getUltimaExpresion(); expresionValida(E1); Condicion = crear_nodo(UltimoComparador,E1,E2); agregarCondicion(Condicion); }
 break;
 case 67:
 //#line 113 "gramatica.y"
@@ -1238,15 +1247,15 @@ case 72:
 break;
 case 73:
 //#line 121 "gramatica.y"
-{ E = crear_nodo("Suma \"+\"",getUltimaExpresion(),getUltimoTermino());  agregarExpresion(E); }
+{ E = crear_nodo("Suma \"+\"",getUltimaExpresion(),getUltimoTermino());  agregarExpresion(E); expresionValida(E);}
 break;
 case 74:
 //#line 122 "gramatica.y"
-{ E = crear_nodo("Resta \"-\"",getUltimaExpresion(),getUltimoTermino()); agregarExpresion(E); }
+{ E = crear_nodo("Resta \"-\"",getUltimaExpresion(),getUltimoTermino()); agregarExpresion(E); expresionValida(E);}
 break;
 case 75:
 //#line 123 "gramatica.y"
-{ E = getUltimoTermino(); agregarExpresion(E); }
+{ E = getUltimoTermino(); agregarExpresion(E); expresionValida(E);}
 break;
 case 76:
 //#line 126 "gramatica.y"
@@ -1290,9 +1299,9 @@ case 86:
 break;
 case 87:
 //#line 143 "gramatica.y"
-{ tratarNodeclaraciones(val_peek(3));	tratarEsArreglo(val_peek(3)); HojaAux = crear_nodo("Índice",crear_hoja(val_peek(3)),getUltimaExpresion()); tratarIndiceInvalido(val_peek(3)); }
+{ tratarNodeclaraciones(val_peek(3));	tratarEsArreglo(val_peek(3)); HojaAux = crear_nodo("Índice",crear_hoja(val_peek(3)),getUltimaExpresion()); tratarIndiceInvalido(val_peek(3)); expresionValida(HojaAux); }
 break;
-//#line 1218 "Parser.java"
+//#line 1227 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
