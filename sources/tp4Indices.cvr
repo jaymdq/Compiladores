@@ -1,0 +1,7 @@
+**Sentencias declarativas
+entero a;
+vec[1..10] vector de entero;
+
+**Sentencias de Ejecución
+a := vec[ 5 + 2 ];
+

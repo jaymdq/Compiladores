@@ -38,18 +38,16 @@ public class GeneradorASM {
 
 		//Sección de inicialización
 		codigo += ".386\n";
-		
+
 		codigo += ".model flat, stdcall\n";
 		codigo += "option casemap :none\n";
-		
-		
-		if (hayCadenas()){
-			codigo += getLibrerias();
-		}
-		
+
+
+		codigo += getLibrerias();
+
 		//Sección de datos
 		codigo += ".data\n";
-				
+
 		tratarDeclaraciones();
 		for (String s : declaracionesSentencias)
 			codigo += s + "\n";
@@ -59,23 +57,27 @@ public class GeneradorASM {
 			codigo +=  getMapStringsASM().get(clave) + "\t\t" + "db " + clave + ", 0\n";
 		}
 		
+		//Se insertan los errores!
+		codigo += "_@E1 \t\tdb \"Índice del arreglo es menor al límite inferior!!!\", 0\n";
+		codigo += "_@E2 \t\tdb \"Índice del arreglo es mayor al límite superior!!!\", 0\n";
+		
 		//----------------------- CÓDIGO ------------------------------------------------------
 
 		codigo += ".code\n";
 		codigo += "start:\n";
-		
+
 		// TODO Testeando
 		System.out.println("Generar Assembler");
 		CodigoAssembler capturadorASM = new CodigoAssembler();
 		sentencias.generarAssembler(capturadorASM);
 
-		
+
 		codigo += capturadorASM.getSentencias();
-		
-		
+
+
 		//Se finaliza el código
 		codigo += "end start";
-		
+
 		//Asignamos al final el resultado obtenido
 		codigoGenerado = codigo;
 	}

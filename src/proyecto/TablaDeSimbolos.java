@@ -10,7 +10,7 @@ public class TablaDeSimbolos extends Observable {
 
 	//private Vector<Token> tabla;
 	
-	private Vector<ElementoTS> tabla;
+	private static Vector<ElementoTS> tabla;
 	
 	public TablaDeSimbolos(){
 		this.tabla = new Vector<ElementoTS>();
@@ -30,16 +30,16 @@ public class TablaDeSimbolos extends Observable {
 		return null;
 	}
 	
-	public int getPos(String l) {
-		for (int i = 0; i < this.tabla.size(); i++) {
-			if (this.tabla.elementAt(i).getToken().getLexema().equals(l))
+	public static int getPos(String l) {
+		for (int i = 0; i < tabla.size(); i++) {
+			if (tabla.elementAt(i).getToken().getLexema().equals(l))
 				return i;
 		}
 		return -1;
 	}
 	
-	public ElementoTS getElemento(int pos){
-		return this.tabla.elementAt(pos);
+	public static ElementoTS getElemento(int pos){
+		return tabla.elementAt(pos);
 	}
 	
 	
@@ -88,4 +88,9 @@ public class TablaDeSimbolos extends Observable {
 		this.setChanged();
 	}
 
+	public static ElementoTS getElementoParaArreglo(String lexema){
+		Integer pos = getPos(lexema);
+		return getElemento(pos);
+	}
+	
 }

@@ -1,0 +1,20 @@
+**Sentencias declarativas
+
+entero a,c;
+
+**Sentencias de Ejecución
+
+a := 1;
+c := 2;
+si (a = 1) entonces{
+	si (c = 3) entonces
+		imprimir('Exito');
+	iterar{
+		a := a + 1;
+	} hasta a = 5;
+	si (a = 5) entonces
+		imprimir('Chan');
+}sino
+	imprimir('Fracaso');
+
+imprimir('Termine');

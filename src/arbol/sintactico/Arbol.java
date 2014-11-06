@@ -206,6 +206,7 @@ public class Arbol implements ArbolAbs {
 
 		}
 
+		//Cuerpo
 		if (operacion.equals("Cuerpo")){
 			//JMP
 			String etiquetaPrimera = codigo.desapilarEtiqueta();
@@ -243,6 +244,7 @@ public class Arbol implements ArbolAbs {
 			return;
 		}
 
+		//Cuerpo
 		if (operacion.equals("Cuerpo")){
 			if (derecho!= null){
 				String etiqueta = codigo.desapilarEtiqueta();
@@ -346,11 +348,93 @@ public class Arbol implements ArbolAbs {
 		}
 
 
+		if (operacion.equals("Índice")){
+			//Se tiene la expresión calculada.
+			//Se hace el chequeo de límites.
+			n16bits = true;
+			String nombreArreglo = izquierdo.getName();		//Sin '_'
+			ElementoTS elementoTabla = proyecto.TablaDeSimbolos.getElementoParaArreglo(nombreArreglo);
+			Integer limInf = elementoTabla.getLim_inf();
+			Integer limSup = elementoTabla.getLim_sup();
+			ElementoTS elementoInf = proyecto.TablaDeSimbolos.getElementoParaArreglo(limInf.toString());
+			ElementoTS elementoSup = proyecto.TablaDeSimbolos.getElementoParaArreglo(limSup.toString());
+			
+			Registro regIndice = regManager.findRegistro(derecho);
+			
+			//Se chequea el límite INFERIOR.
+			ArbolAbs hojaInf = new Hoja(elementoInf);
+		
+			//Se agrega el limInf en un registro para comparar
+			oper = Operacion.MOV;
+			Registro aComparar = regManager.ocuparRegistroLibre(hojaInf, n16bits);
+			
+			//Se hace la comparación
+			oper = Operacion.CMP;
+			codigo.agregarSentencia(oper, regIndice.getName(n16bits), aComparar.getName(n16bits));
+			aComparar.liberar();
+			
+			String salto = codigo.apilarEtiqueta();
+			oper = Operacion.JGE;
+			codigo.agregarSentencia(oper, salto);
+			
+			oper = Operacion.INVOKE;
+			codigo.agregarSentencia(oper, "MessageBox, NULL, addr _@E1, \"Error!!!\", MB_OK");
+			codigo.agregarSentencia(oper, "ExitProcess, 0");
+			
+			codigo.agregarEtiqueta(salto);
+			codigo.desapilarEtiqueta();
+			
+			//Se chequea el límite SUPERIOR.
+			ArbolAbs hojaDer = new Hoja(elementoSup);
+			
+			//Se agrega el limInf en un registro para comparar
+			oper = Operacion.MOV;
+			aComparar = regManager.ocuparRegistroLibre(hojaDer, n16bits);
+			
+			//Se hace la comparación
+			oper = Operacion.CMP;
+			codigo.agregarSentencia(oper, regIndice.getName(n16bits), aComparar.getName(n16bits));
+			aComparar.liberar();
+			
+			 salto = codigo.apilarEtiqueta();
+			oper = Operacion.JLE;
+			codigo.agregarSentencia(oper, salto);
+			
+			oper = Operacion.INVOKE;
+			codigo.agregarSentencia(oper, "MessageBox, NULL, addr _@E2, \"Error!!!\", MB_OK");
+			codigo.agregarSentencia(oper, "ExitProcess, 0");
+			
+			codigo.agregarEtiqueta(salto);
+			codigo.desapilarEtiqueta();
+			
+			
+			//Faltaría ahora dejar en un registro la posición del elemento.
+			//En regIndice se tiene el indice
+			//Ocupar ese mismo registro con el acceso a memoria determinado
+			
+			//Necesitamos saber a que posición de memoria acceder
+			// (i - limInf) * Tam
+			
+			oper = Operacion.SUB;
+			codigo.agregarSentencia(oper, regIndice.getName(n16bits), limInf.toString());
+			
+			
+			Integer tam = 2;
+			if (izquierdo.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO_LSS)
+				tam = 4;
+			
+			oper = Operacion.MUL;
+			
+			
+			oper = Operacion.MOV;
+			codigo.agregarSentencia(oper, regIndice.getName(n16bits), "[_" + nombreArreglo + " + " + regIndice.getName(n16bits) + " * " + tam  + "]");
+			
+			
+		}
 
 
 		//---------------------------------------------------------------------------------------------------------------
 
-		//if ()
 
 		if (operacion.equals("Suma \"+\"")){
 			System.out.println("[ARBOL] Crear Suma");

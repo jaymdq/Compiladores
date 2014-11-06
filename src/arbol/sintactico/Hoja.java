@@ -29,8 +29,10 @@ public class Hoja implements ArbolAbs {
 		if (contenido.getUso() == USOS.CONSTANTE)
 			salida = contenido.getToken().getLexema();
 
-		//if (contenido.getUso() == USOS.
+		if (contenido.getUso() == USOS.ARREGLO) 
+			salida = contenido.getToken().getLexema();
 
+		
 		return salida;
 	}
 
