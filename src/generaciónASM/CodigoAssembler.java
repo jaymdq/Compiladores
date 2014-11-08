@@ -77,4 +77,8 @@ public class CodigoAssembler {
 		pilaEtiquetas.remove(pilaEtiquetas.size() - 1);
 		return salida;
 	}
+	
+	public void agregarLineaBlanco(){
+		sentencias += "\n";
+	}
 }
