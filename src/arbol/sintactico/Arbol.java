@@ -138,15 +138,16 @@ public class Arbol implements ArbolAbs {
 	@Override
 	public void generarAssembler(CodigoAssembler codigo) {
 
+		//TODO 
+		
 		CodigoAssembler.Operacion oper = null;
 		boolean conmutativa = false;
 		//CAMBIOS A 32
 		boolean n16bits = false;
-		boolean destFijo = false;
-
+		
 		//Declaración de los registros a utilizar
 		RegisterManager regManager = codigo.getRegManager();
-		String op1 = null, op2;
+		String op1 = null, op2 = null;
 		Registro r;
 
 		//IZQUIERDA #################################################################################
@@ -167,14 +168,10 @@ public class Arbol implements ArbolAbs {
 		if (operacion.equals("Selección")){
 			//Se generó ya la comparación !
 			//Se debe poner el salto y apilarlo
-			//Se agrega el salto
 			String comparador = ((Arbol) this.izquierdo).getOperacion().split(" ")[1];
 			String etiqueta = codigo.apilarEtiqueta();
 
-			n16bits = true;
-			if (izquierdo.getTipo() == ElementoTS.TIPOS.ENTERO_LSS)
-				n16bits = false;
-			oper = getNegacionComparador(comparador,n16bits);
+			oper = getNegacionComparador(comparador);
 
 			//Se agrega la sentencia
 			codigo.agregarSentencia(oper, etiqueta);
@@ -238,10 +235,7 @@ public class Arbol implements ArbolAbs {
 			String comparador = ((Arbol) this.derecho).getOperacion().split(" ")[1];
 			String etiqueta = codigo.desapilarEtiqueta();
 
-			n16bits = true;
-			if (derecho.getTipo() == ElementoTS.TIPOS.ENTERO_LSS)
-				n16bits = false;
-			oper = getNegacionComparador(comparador,n16bits);
+			oper = getNegacionComparador(comparador);
 
 			//Se agrega la sentencia
 			codigo.agregarSentencia(oper, etiqueta);
@@ -265,30 +259,29 @@ public class Arbol implements ArbolAbs {
 		//Asignación
 		if (operacion.equals("Asignación")){
 			
-			n16bits = false;
 			oper = Operacion.MOV;
 			op1 = izquierdo.getName();
 			Registro aGuardar = regManager.findRegistro(derecho);
 			if (aGuardar == null){
 				//Moverlo
-				aGuardar = regManager.ocuparRegistroLibre(derecho, n16bits);
+				aGuardar = regManager.ocuparRegistroLibre(derecho);
 			}
+			
 			n16bits = true;
-			if (derecho.getTipo() == ElementoTS.TIPOS.ENTERO_LSS)
+			if (izquierdo.getTipo() == ElementoTS.TIPOS.ENTERO_LSS || izquierdo.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO_LSS)
 				n16bits = false;
 			
+			//Si es un acceso a un vector hay que moverlo primero
 			if (derecho.getName().startsWith("[")){
 				codigo.agregarSentencia(Operacion.MOV, aGuardar.getName(n16bits), derecho.getName());
 			}
 			
 			codigo.agregarSentencia(oper, op1, aGuardar.getName(n16bits));
 
-
-			//Se libre todo!!
+			//Se libera todo!!
 			regManager.liberarTodos();
 
 			codigo.agregarLineaBlanco();
-
 			return ;
 		}
 
@@ -300,16 +293,16 @@ public class Arbol implements ArbolAbs {
 
 			if (regIzq == null){
 				//Ocupar el izquierdo
-				regIzq = regManager.ocuparRegistroLibre(izquierdo, n16bits);
+				regIzq = regManager.ocuparRegistroLibre(izquierdo);
 			}
 
 			if (regDer == null){
 				//Ocupar el derecho
-				regDer = regManager.ocuparRegistroLibre(derecho, n16bits);
+				regDer = regManager.ocuparRegistroLibre(derecho);
 			}
 
 			//Se agrega la CMP
-			codigo.agregarSentencia(oper, regIzq.getName(n16bits), regDer.getName(n16bits));
+			codigo.agregarSentencia(oper, regIzq.getName(false), regDer.getName(false));
 
 			//Se liberan los registros
 			regIzq.liberar();
@@ -322,19 +315,15 @@ public class Arbol implements ArbolAbs {
 		if (operacion.equals("Índice")){
 			//Se tiene la expresión calculada.
 			//Se hace el chequeo de límites.
-			n16bits = false;
 			String nombreArreglo = izquierdo.getName();		//Sin '_'
 			ElementoTS elementoTabla = proyecto.TablaDeSimbolos.getElementoParaArreglo(nombreArreglo);
 			Integer limInf = elementoTabla.getLim_inf();
 			Integer limSup = elementoTabla.getLim_sup();
-			ElementoTS elementoInf = proyecto.TablaDeSimbolos.getElementoParaArreglo(limInf.toString());
-			ElementoTS elementoSup = proyecto.TablaDeSimbolos.getElementoParaArreglo(limSup.toString());
-
+			
 			Registro regIndice = regManager.findRegistro(derecho);
 			if (regIndice == null){
-				regIndice = regManager.ocuparRegistroLibre(derecho, n16bits);
+				regIndice = regManager.ocuparRegistroLibre(derecho);
 			}
-
 
 			//Se chequea el límite INFERIOR.
 
@@ -371,7 +360,6 @@ public class Arbol implements ArbolAbs {
 			codigo.desapilarEtiqueta();
 
 			//Necesitamos saber a que posición de memoria acceder
-			// (i - limInf) * Tam
 
 			//Se resta el limite inferior
 			oper = Operacion.SUB;
@@ -381,82 +369,88 @@ public class Arbol implements ArbolAbs {
 			Registro EAX = new Registro("EAX", "AX");
 			if ( ! regIndice.getName(true).equals("AX") )
 				EAX = regManager.ocuparRegistro(EAX, regIndice, n16bits);
-
+			
+			//Se determina el tam de bytes
 			Integer tam = 2;
 			if (izquierdo.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO_LSS)
 				tam = 4;
 
+			//Se multiplica
 			oper = Operacion.IMUL;
 			codigo.agregarSentencia(oper, EAX.getName(n16bits), tam.toString());
 
-
-			//--
-			if (izquierdo.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO)
-				n16bits = true;
-
-			if (! regIndice.getName(true).equals("AX")){
+			//TODO
+			//if (izquierdo.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO)
+			//	n16bits = true;
+			
+			if (! regIndice.getName(false).equals("EAX")){
 				oper = Operacion.MOV;
-				codigo.agregarSentencia(oper, regIndice.getName(n16bits), EAX.getName(n16bits));
+				codigo.agregarSentencia(oper, regIndice.getName(false), EAX.getName(false));
 				EAX.liberar();
 			}
 
 			//Seteamos el operando así es encontrado
 			regIndice.setOperando(this);
-			this.operacion = "[ _" + nombreArreglo + " + "+ regIndice.getName(n16bits) + " ]";
+			this.operacion = "[ _" + nombreArreglo + " + "+ regIndice.getName(false) + " ]";
 
 			return ;
 		}
 
 
-		//---------------------------------------------------------------------------------------------------------------
+		//Operacion Aritmeticas---------------------------------------------------------------------------------
 
 
 		if (operacion.equals("Suma \"+\"")){
+			
 			System.out.println("[ARBOL] Crear Suma");
 			conmutativa = true;
 			oper = Operacion.ADD;
-			n16bits = (this.getTipo() == ElementoTS.TIPOS.ENTERO) ? true : false;
+			
 		}else if (operacion.equals("Resta \"-\"")){
+			
 			System.out.println("[ARBOL] Crear Resta");
 			conmutativa = false;
 			oper = Operacion.SUB;
-			n16bits = (this.getTipo() == ElementoTS.TIPOS.ENTERO) ? true : false;
+			
 		}else if (operacion.equals("Multiplicación \"*\"")){
+			
 			System.out.println("[ARBOL] Crear Multiplicacion");
 			conmutativa = true;
-			destFijo = true;
-			if (getTipo().equals(TIPOS.ENTERO_LSS)){
+			if (getTipo().equals(TIPOS.ENTERO_LSS))
 				oper = Operacion.MUL;
-				n16bits = false;
-			}else {
+			else 
 				oper = Operacion.IMUL;
-			}
-		}else if (operacion.equals("División \"/\"")){
+			
+			
+		}else if (operacion.equals("División \"/\"")){  
+			
 			System.out.println("[ARBOL] Crear Division");
 			conmutativa = false;
-			destFijo = true;
-			if (getTipo().equals(TIPOS.ENTERO_LSS)){
+			if (getTipo().equals(TIPOS.ENTERO_LSS))
 				oper = Operacion.DIV;
-				n16bits = false;
-			}else {
+			else 
 				oper = Operacion.IDIV;
-			}
-		}else {
+			
+		} else {
 			return;
 		}
 
 		/* ---------------------------------------------------------------------------------- */
 
 		//CAMBIOS a 32
-		n16bits = false;
 
+		//Para ver si el izquierdo es un indice y hay que acceder el arreglo
 		if (izquierdo != null && izquierdo.getName().startsWith("[")){
+			if (izquierdo.getTipo() == ElementoTS.TIPOS.ENTERO || izquierdo.getTipo() == ElementoTS.TIPOS.VECTOR_ENTERO)
+				n16bits = true;
 			op1 = izquierdo.getName();
 			codigo.agregarSentencia(Operacion.MOV, regIzq.getName(n16bits), op1);
 		}
 
 
 		if (oper.equals(Operacion.MUL) || oper.equals(Operacion.IMUL)){
+			//TODO
+			
 			r = regManager.ocuparRegistro(new Registro("EAX", "AX"), izquierdo, n16bits); 		// Parte baja: operando1
 			Registro r2 = regManager.ocuparRegistro(new Registro("EDX", "DX"), 0, n16bits); 	// Parte alta: 0 (evitar perdida de datos)
 			op1 = r.getName(n16bits);
@@ -467,11 +461,14 @@ public class Arbol implements ArbolAbs {
 			r2.liberar();																		// Liberar segundo registro
 			// Verificar overflow
 		}else if (oper.equals(Operacion.DIV) || oper.equals(Operacion.IDIV)){
+			
+			//TODO
+			
 			r = regManager.ocuparRegistro(new Registro("EAX", "AX"), izquierdo, n16bits); 		// Parte baja: operando1
 			Registro r2 = regManager.ocuparRegistro(new Registro("EDX", "DX"), 0, n16bits); 	// Parte alta: 0 (evitar calculo erroneo)
 
 			if (regDer == null)
-				regDer = regManager.ocuparRegistroLibre(derecho, n16bits);
+				regDer = regManager.ocuparRegistroLibre(derecho);
 
 			op2 = regDer.getName(n16bits);
 
@@ -482,22 +479,27 @@ public class Arbol implements ArbolAbs {
 			regDer.liberar();
 
 		}else if (oper.equals(Operacion.ADD) || oper.equals(Operacion.SUB)){
+			
 			if (regIzq == null &&  regDer == null){
+				
 				// Situacion 1:	Operacion entre 2 variables y/o constantes
 				System.out.println("Situacion 1: Operacion entre 2 variables y/o constantes");
 
-				r = regManager.ocuparRegistroLibre(izquierdo, n16bits);							// Obtener registro libre
-				op1 = r.getName(n16bits); 
-				op2 = derecho.getName();								
+				r = regManager.ocuparRegistroLibre(izquierdo);							// Obtener registro libre
+				op1 = r.getName(false); 
+				op2 = derecho.getName();					
+				
 			}else if (regIzq != null && regDer == null){
+				
 				// Situacion 2: Operacion entre un registro y una variable o constante
 				System.out.println("Situacion 2: Operacion entre un registro y una variable o constante");
 
 				r = regIzq;
-				op1 = regIzq.getName(n16bits); 
+				op1 = regIzq.getName(false); 
 				op2 = derecho.getName();
 
 			}else if (regIzq != null && regDer != null){
+				
 				// Situacion 3: Operacion entre dos registros
 				System.out.println("Situacion 3: Operacion entre dos registros");
 
@@ -505,48 +507,47 @@ public class Arbol implements ArbolAbs {
 				if (op1 == null) 
 					op1 = izquierdo.getName();
 				if (op1.startsWith("["))
-					op1 = regIzq.getName(n16bits);
+					op1 = regIzq.getName(false);
 
-				op2 = regDer.getName(n16bits);
-
-
+				op2 = regDer.getName(false);
 				if (derecho != null && derecho.getName().startsWith("[")){
 					op2 = derecho.getName();
 				}
 
 				regDer.liberar();
+				
 			}else if (conmutativa){
+				
 				// Situacion 4.a: Operacion conmutativa entre una variable (o constante) y un registro
 				System.out.println("Situacion 4.a: Operacion conmutativa entre una variable (o constante) y un registro");
 				r = regDer;
-				op1 = regDer.getName(n16bits); 
+				op1 = regDer.getName(false); 
 				op2 = izquierdo.getName();
 
 				if (derecho != null && derecho.getName().startsWith("[")){
 					op1 = derecho.getName();
-					codigo.agregarSentencia(Operacion.MOV, regDer.getName(n16bits), op1);
+					codigo.agregarSentencia(Operacion.MOV, regDer.getName(false), op1);
 				}
 
 				if (op1.startsWith("["))
-					op1 = regDer.getName(n16bits);
-
+					op1 = regDer.getName(false);
 
 			}else{
+				
 				// Situacion 4.b: Operacion no conmutativa entre una variable (o constante) y un registro
 				System.out.println("Situacion 4.b: Operacion no conmutativa entre una variable (o constante) y un registro");
 
-				r = regManager.ocuparRegistroLibre(izquierdo, n16bits);								// Obtener registro libre
-				op1 = r.getName(n16bits); 
+				r = regManager.ocuparRegistroLibre(izquierdo);								// Obtener registro libre
+				op1 = r.getName(false); 
 
-				op2 = regDer.getName(n16bits);		
+				op2 = regDer.getName(false);		
 				if (derecho != null && derecho.getName().startsWith("[")){
 					op2 = derecho.getName();
-					codigo.agregarSentencia(Operacion.MOV, regDer.getName(n16bits), op2);
+					codigo.agregarSentencia(Operacion.MOV, regDer.getName(false), op2);
 				}
 
 				if (op2.startsWith("["))
-					op2 = regDer.getName(n16bits);
-
+					op2 = regDer.getName(false);
 
 				regDer.liberar();
 			}
@@ -555,38 +556,37 @@ public class Arbol implements ArbolAbs {
 
 			codigo.agregarSentencia(oper, op1, op2);								// Realizar operacion
 			r.setOperando(this);													// Actualizar referencia al resultado
-			this.operacion = r.getName(n16bits);
+			this.operacion = r.getName(false);
 
 		}
 	}
 
 
-	private Operacion getNegacionComparador(String comparador,boolean n16bits){
-		Operacion oper = null;
+	private Operacion getNegacionComparador(String comparador){
 		if (comparador.equals("\">\"")){
 			//Saltas por Menor Igual
-			oper = (n16bits) ? Operacion.JLE : Operacion.JBE;
+			return Operacion.JBE;
 		}
 		if (comparador.equals("\"<\"")){
 			//Saltas por Mayor Igual
-			oper = (n16bits) ? Operacion.JGE : Operacion.JAE;
+			return Operacion.JAE;
 		}
 		if (comparador.equals("\">=\"")){
 			//Saltas por Menor
-			oper = (n16bits) ? Operacion.JL : Operacion.JB;
+			return Operacion.JB;
 		}
 		if (comparador.equals("\"<=\"")){
 			//Saltas por Mayor
-			oper = (n16bits) ? Operacion.JG : Operacion.JA;
+			return Operacion.JA;
 		}
 		if (comparador.equals("\"=\"")){
 			//Saltas por Distinto
-			oper = (n16bits) ? Operacion.JNE : Operacion.JNE;	//Esta bien asi.
+			return Operacion.JNE;	
 		}
 		if (comparador.equals("\"^=\"")){
 			//Saltas por Igual
-			oper = (n16bits) ? Operacion.JE : Operacion.JE;		//Esta bien asi.
+			return Operacion.JE;		
 		}
-		return oper;
+		return null;
 	}
 }

@@ -17,4 +17,6 @@ vec[1..10] vector de entero;
 
 **vec[1] := vec[4 + vec[1]] ;
 
-vec[1] := vec[4];
+vec[1] := vec[4] + 2;
+si (vec[1] = 2) entonces
+	imprimir('Bien');

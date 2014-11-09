@@ -35,12 +35,12 @@ public class RegisterManager {
 	}
 
 	// Mover desde memoria a un registro libre. Devuelve el registro
-	public Registro ocuparRegistroLibre(ArbolAbs operando, boolean n16bits){
+	public Registro ocuparRegistroLibre(ArbolAbs operando){
 		for (Registro r : registros){
 			if (r.isLibre()){
 				System.out.println("Registro libre encontrado: agregar MOV R1, Variable");
 				r.setOperando(operando);
-				codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), operando.getName());
+				codigo.agregarSentencia(Operacion.MOV, r.getName(false), operando.getName());
 				return r;
 			}
 		}
