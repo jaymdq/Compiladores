@@ -1,0 +1,15 @@
+**Sentencias declarativas
+
+entero a, c;
+entero_lss b;
+cortos[1..10] vector de entero;
+largos[1..10] vector de entero_lss;
+
+**Sentencias de Ejecución
+a := 5;
+b := 8;
+c := a;
+largos[a] := b;
+cortos[7] := c;
+cortos[c] := 90;
+cortos[c+1] := cortos[c];
