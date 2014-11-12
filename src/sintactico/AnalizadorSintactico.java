@@ -8,8 +8,8 @@ import proyecto.Proyecto;
 
 public class AnalizadorSintactico {
 
-	public static void ejecutar(Proyecto proyecto) {
-
+	public static boolean ejecutar(Proyecto proyecto) {
+		boolean condicion = false;
 		Parser parser = new Parser(proyecto);
 		boolean generarCodigo = false;
 		//Se comienza a parsear
@@ -41,8 +41,10 @@ public class AnalizadorSintactico {
 			GeneradorASM generador = new GeneradorASM(parser.getSentencias(),proyecto.getTablaDeSimbolos());
 			generador.generarCodigo();
 			CodigoASMManager.getInstance().setCodigo(generador.getCodigoGenerado());
-			
+			condicion = true;
 		}
+		
+		return condicion;
 	}
 
 

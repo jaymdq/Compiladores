@@ -614,8 +614,29 @@ public class CompiladorCVR {
 			arbolSintactico.setText("");
 			ConsolaManager.getInstance().borrar();
 			CodigoASMManager.getInstance().clearCodigo();
-			proyecto.compilar();
+			boolean compilo = proyecto.compilar();
+			
+			//Acá generar el archivo asm
+			if (compilo){
+				guardarASM();
+				
+				//Acá se compila con el MASM
+			}
+			
 		}
+	}
+
+	private void guardarASM() {
+		String path = proyecto.getFile().getAbsolutePath();
+		path = path.replaceAll(".cvr", ".asm");
+		FileWriter out;
+		try {
+			out = new FileWriter(path);
+			out.write(codigoASM.getText());
+			out.close();
+			ConsolaManager.getInstance().escribir("Archivo ASM generado en : " + path);
+		} catch (IOException e) {}
+		
 	}
 
 	private void guardar(){

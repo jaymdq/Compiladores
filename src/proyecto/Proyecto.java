@@ -92,10 +92,11 @@ public class Proyecto extends Observable {
 		return (this.posicion >= this.caracteres.length);
 	}
 	
-	public void compilar() {
+	public boolean compilar() {
 		this.reset();
 		AnalizadorLexico.prepare(this);
-		AnalizadorSintactico.ejecutar(this);
+		boolean salida = AnalizadorSintactico.ejecutar(this);
+		return salida;
 	}
 
 	public Token addTokenToTable(Token to) {
