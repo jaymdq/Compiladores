@@ -420,7 +420,8 @@ private void expresionValida(ArbolAbs exp){
 }
 
 private void asignacionValida(ArbolAbs exp){
-	if (exp.getTipo() == null)
+	Arbol arbol = (Arbol) exp;
+	if (arbol.getIzquierdo().getTipo() != arbol.getDerecho().getTipo())
 		escribirErrorDeGeneracion("Asignación entre diferentes tipos de datos.");
 }
 

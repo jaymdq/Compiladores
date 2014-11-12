@@ -749,7 +749,8 @@ private void expresionValida(ArbolAbs exp){
 }
 
 private void asignacionValida(ArbolAbs exp){
-	if (exp.getTipo() == null)
+	Arbol arbol = (Arbol) exp;
+	if (arbol.getIzquierdo().getTipo() != arbol.getDerecho().getTipo())
 		escribirErrorDeGeneracion("Asignación entre diferentes tipos de datos.");
 }
 
@@ -868,7 +869,6 @@ private ArbolAbs desapilar(){
 	for ( ArbolAbs arbol : objetivos ){
 		ArbolAbs aux = crear_nodo("Sentencia General",arbol,null);
 		((Arbol) ((Arbol) intermedio).dameMasDerecho()).setDerecho(aux);
-		//intermedio = arbol;
 	}
 	
 	//Guardamos el arbol generado

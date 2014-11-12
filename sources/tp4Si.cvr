@@ -1,10 +1,16 @@
 **Sentencias declarativas
 
 entero a,c;
+entero_lss b;
+vec1[1..10] vector de entero_lss;
 
 **Sentencias de Ejecución
 
-a := 1;
+**vec1[c] := b;
+
+
+b := b + b + 8;
+
 c := 2;
 si (a = 1) entonces{
 	si (c = 3) entonces
