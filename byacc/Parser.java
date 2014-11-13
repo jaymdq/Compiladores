@@ -479,7 +479,7 @@ final static String yyrule[] = {
 private Proyecto proyecto;
 private int errores = 0;
 private int erroresGenCod = 0;
-
+private boolean todasCTE = true;
 private Vector<Token> declaracionesAux = new Vector<Token>();
 
 private Integer nivelActual = 0;
@@ -749,7 +749,10 @@ private void expresionValida(ArbolAbs exp){
 }
 
 private void asignacionValida(ArbolAbs exp){
+	//TODO
 	Arbol arbol = (Arbol) exp;
+	if (todasCTE)
+		return;
 	if (arbol.getIzquierdo().getTipo() != arbol.getDerecho().getTipo())
 		escribirErrorDeGeneracion("Asignación entre diferentes tipos de datos.");
 }
@@ -891,7 +894,7 @@ private boolean esAsignacionVector(ArbolAbs hojaNueva){
 	return false;
 }
 
-//#line 822 "Parser.java"
+//#line 825 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1199,7 +1202,7 @@ case 56:
 break;
 case 57:
 //#line 96 "gramatica.y"
-{ indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja(val_peek(4)); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); asignacionValida(SentenciaAsignacion); }
+{ indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja(val_peek(4)); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); asignacionValida(SentenciaAsignacion); todasCTE = true; }
 break;
 case 59:
 //#line 100 "gramatica.y"
@@ -1285,9 +1288,13 @@ case 82:
 //#line 134 "gramatica.y"
 { escribirError("Constante fuera de rango"); }
 break;
+case 83:
+//#line 137 "gramatica.y"
+{ todasCTE = false;}
+break;
 case 84:
 //#line 138 "gramatica.y"
-{ chequearRango();					HojaAux = crear_hoja(val_peek(0)); }
+{ chequearRango();					HojaAux = crear_hoja(val_peek(0));  }
 break;
 case 85:
 //#line 139 "gramatica.y"
@@ -1301,7 +1308,7 @@ case 87:
 //#line 143 "gramatica.y"
 { tratarNodeclaraciones(val_peek(3));	tratarEsArreglo(val_peek(3)); HojaAux = crear_nodo("Índice",crear_hoja(val_peek(3)),getUltimaExpresion()); tratarIndiceInvalido(val_peek(3)); expresionValida(HojaAux); }
 break;
-//#line 1227 "Parser.java"
+//#line 1234 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

@@ -93,7 +93,7 @@ impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impr
 					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
 			
-asignacion	: asignable  ASIGNACION { guardarExpresion();} e ';' { indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja($1); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); asignacionValida(SentenciaAsignacion); }
+asignacion	: asignable  ASIGNACION { guardarExpresion();} e ';' { indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja($1); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); asignacionValida(SentenciaAsignacion); todasCTE = true; }
 			| asignacion_invalida
 			;
 
@@ -134,8 +134,8 @@ f	: valor				{ F = HojaAux; agregarFactor(F);}
 	| FUERA_RANGO 		{ escribirError("Constante fuera de rango"); }
 	;
 
-valor	: asignable
-		| ENTERO 		{ chequearRango();					HojaAux = crear_hoja($1); }
+valor	: asignable		{ todasCTE = false;}
+		| ENTERO 		{ chequearRango();					HojaAux = crear_hoja($1);  }
 		| ENTERO_LSS 	{ tratarConstante($1,"entero_lss");	HojaAux = crear_hoja($1);  }
 		;
 
@@ -150,7 +150,7 @@ asignable	: IDENTIFICADOR			  { tratarNodeclaraciones($1);	HojaAux = crear_hoja(
 private Proyecto proyecto;
 private int errores = 0;
 private int erroresGenCod = 0;
-
+private boolean todasCTE = true;
 private Vector<Token> declaracionesAux = new Vector<Token>();
 
 private Integer nivelActual = 0;
@@ -422,6 +422,8 @@ private void expresionValida(ArbolAbs exp){
 private void asignacionValida(ArbolAbs exp){
 	//TODO
 	Arbol arbol = (Arbol) exp;
+	if (todasCTE)
+		return;
 	if (arbol.getIzquierdo().getTipo() != arbol.getDerecho().getTipo())
 		escribirErrorDeGeneracion("Asignación entre diferentes tipos de datos.");
 }
