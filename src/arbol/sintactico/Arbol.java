@@ -265,7 +265,7 @@ public class Arbol implements ArbolAbs {
 		//Asignación
 		if (operacion.equals("Asignación")){
 			boolean widening = izquierdo.getTipo().equals(TIPOS.ENTERO_LSS) && derecho.getTipo().equals(TIPOS.ENTERO);
-						
+
 			op1 = izquierdo.getName();
 			Registro parteDerecha = regManager.findRegistro(derecho);
 			if (parteDerecha == null){
@@ -435,8 +435,6 @@ public class Arbol implements ArbolAbs {
 
 		//Para ver si el izquierdo es un indice y hay que acceder el arreglo
 		if (izquierdo != null && izquierdo.getName().startsWith("[")){
-			//if (izquierdo.getTipo().equals(TIPOS.ENTERO) || izquierdo.getTipo().equals(TIPOS.VECTOR_ENTERO))
-			//	n16bits = true;
 			op1 = izquierdo.getName();
 			codigo.agregarSentencia(Operacion.MOV, regIzq.getName(n16bits, true), op1);
 			regIzq.setEnMemoria(false);
@@ -499,16 +497,10 @@ public class Arbol implements ArbolAbs {
 				System.out.println("Situacion 3: Operacion entre dos registros");
 
 				r = regIzq;
-				if (op1 == null) 
-					op1 = izquierdo.getName();
-				if (op1.startsWith("["))
-					op1 = regIzq.getName(n16bits);
 
+				op1 = regIzq.getName(n16bits);
 				op2 = regDer.getName(n16bits);
-				if (derecho != null && derecho.getName().startsWith("[")){
-					op2 = derecho.getName();
-				}
-
+		
 				regDer.liberar();
 
 			}else if (conmutativa){
@@ -523,7 +515,7 @@ public class Arbol implements ArbolAbs {
 					codigo.agregarSentencia(Operacion.MOV, regDer.getName(false, true), op1); 
 					regDer.setEnMemoria(false);
 					op1 = regDer.getName(n16bits);
-					
+
 				}
 
 			}else{
@@ -535,7 +527,7 @@ public class Arbol implements ArbolAbs {
 				op1 = r.getName(n16bits); 
 
 				op2 = regDer.getName(n16bits);		
-				
+
 				regDer.liberar();
 			}
 

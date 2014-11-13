@@ -77,4 +77,18 @@ MOV DX, [ _cortos + DX ]
 ADD DX, [ _cortos + AX ]
 MOV [ _cortos + CX ], DX
 
+MOV BX, 2
+SUB EBX, 1
+MOV EAX, EBX
+IMUL EAX, 2
+MOV AX, [ _cortos + AX ]
+ADD AX, 1
+MOV BX, 3
+SUB EBX, 1
+MOV ECX, EAX
+MOV EAX, EBX
+IMUL EAX, 2
+ADD CX, [ _cortos + AX ]
+MOV _a, CX
+
 end start
