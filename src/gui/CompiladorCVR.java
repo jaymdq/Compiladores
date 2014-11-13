@@ -634,7 +634,7 @@ public class CompiladorCVR {
 			out = new FileWriter(path);
 			out.write(codigoASM.getText());
 			out.close();
-			ConsolaManager.getInstance().escribir("Archivo ASM generado en : " + path);
+			ConsolaManager.getInstance().escribirInfo("Archivo ASM generado en : " + path);
 		} catch (IOException e) {}
 		
 	}

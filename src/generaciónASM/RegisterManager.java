@@ -40,7 +40,7 @@ public class RegisterManager {
 			if (r.isLibre()){
 				System.out.println("Registro libre encontrado: agregar MOV R1, Variable");
 				r.setOperando(operando);
-				codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), operando.getName());
+				codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits, true), operando.getName());
 				return r;
 			}
 		}
@@ -84,6 +84,9 @@ public class RegisterManager {
 		if (r == null)
 			return null;
 
+		if (r.getOperando() != null && r.getOperando().equals(operando))
+			return r;
+		
 		codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), operando.getName());
 		r.setOperando(operando); // TODO Verificar si es null
 

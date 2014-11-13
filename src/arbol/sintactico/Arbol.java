@@ -431,13 +431,14 @@ public class Arbol implements ArbolAbs {
 
 		/* ---------------------------------------------------------------------------------- */
 
-		//CAMBIOS a 32
-
 		//Para ver si el izquierdo es un indice y hay que acceder el arreglo
 		if (izquierdo != null && izquierdo.getName().startsWith("[")){
 			op1 = izquierdo.getName();
 			codigo.agregarSentencia(Operacion.MOV, regIzq.getName(n16bits, true), op1);
-			regIzq.setEnMemoria(false);
+			regIzq.setOperando(izquierdo, false);
+		//	regIzq.setEnMemoria(false);
+			
+			
 		}
 
 
@@ -452,6 +453,7 @@ public class Arbol implements ArbolAbs {
 			codigo.agregarSentencia(oper, op1, op2);											// Realizar operacion
 			r.setOperando(this);
 			r2.liberar();																		// Liberar segundo registro
+		
 			// Verificar overflow
 		}else if (oper.equals(Operacion.DIV) || oper.equals(Operacion.IDIV)){
 
