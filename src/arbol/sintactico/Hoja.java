@@ -2,6 +2,7 @@ package arbol.sintactico;
 
 import generaciónASM.CodigoAssembler;
 import proyecto.ElementoTS;
+import proyecto.ElementoTS.TIPOS;
 import proyecto.ElementoTS.USOS;
 
 public class Hoja implements ArbolAbs {
@@ -37,8 +38,8 @@ public class Hoja implements ArbolAbs {
 	}
 
 	@Override
-	public ElementoTS.TIPOS getTipo() {
-		return this.contenido.getTipo();
+	public TIPOS getTipo() {
+		return contenido.getTipo();
 	}
 
 	public ArbolAbs clone(){
@@ -58,5 +59,10 @@ public class Hoja implements ArbolAbs {
 	@Override
 	public void generarAssembler(CodigoAssembler codigo) {
 		// TODO Auto-generated method stub
+	}
+	
+	@Override
+	public boolean is16bits() {
+		return (getTipo().equals(TIPOS.ENTERO) || getTipo().equals(TIPOS.VECTOR_ENTERO));
 	}
 }

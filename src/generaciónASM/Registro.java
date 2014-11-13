@@ -7,8 +7,10 @@ public class Registro {
 
 	private String nombre16;
 	private String nombre32;
+	
 	private ArbolAbs operando;
 	private boolean inmediato = false;
+	private boolean enMemoria = false;
 	
 	public Registro(String nombre32, String nombre16) {
 		super();
@@ -17,6 +19,8 @@ public class Registro {
 	}
 	
 	public void setInmediato(){ inmediato = true; }
+	
+	public void setEnMemoria(boolean enMemoria){ this.enMemoria = enMemoria; }
 
 	public boolean isLibre(){
 		return operando == null && !inmediato;
@@ -25,10 +29,16 @@ public class Registro {
 	public void liberar(){
 		operando = null;
 		inmediato = false;
+		enMemoria = false;
 	}
 	
 	public void setOperando(ArbolAbs operando) {
 		this.operando = operando;
+	}
+	
+	public void setOperando(ArbolAbs operando, boolean enMemoria) {
+		this.operando = operando;
+		this.enMemoria = enMemoria;
 	}
 
 	public ArbolAbs getOperando(){
@@ -36,6 +46,17 @@ public class Registro {
 	}
 	
 	public String getName(boolean n16bits) {
+		if (enMemoria)
+			return operando.getName();
+		
+		if (n16bits){
+			return nombre16;
+		}
+		
+		return nombre32;
+	}
+	
+	public String getName(boolean n16bits, boolean onlyString) {		
 		if (n16bits){
 			return nombre16;
 		}

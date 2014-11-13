@@ -1,7 +1,5 @@
 package generaciónASM;
 
-import generaciónASM.CodigoAssembler.Operacion;
-
 import java.util.HashMap;
 import java.util.Vector;
 

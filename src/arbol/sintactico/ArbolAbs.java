@@ -15,4 +15,5 @@ public interface ArbolAbs {
 	
 	public void generarAssembler(CodigoAssembler codigo);
 
+	public boolean is16bits();
 }

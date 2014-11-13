@@ -19,12 +19,12 @@ public class RegisterManager {
 		this.codigo = codigo;
 	}
 
-	public Registro getRegistro(Registro registro){
+	public Registro getRegistro(Registro registro, ArbolAbs operando){
 		for (Registro r : registros){
 			// Encontrar registro
 			if (r.equals(registro)){
 				// Si no esta vacio, mover valor COMPLETO a otro registro
-				if (!r.isLibre()){
+				if (!r.isLibre() && !r.getOperando().equals(operando)){
 					ocuparRegistroLibre(r);
 				}
 				return r;
@@ -35,12 +35,12 @@ public class RegisterManager {
 	}
 
 	// Mover desde memoria a un registro libre. Devuelve el registro
-	public Registro ocuparRegistroLibre(ArbolAbs operando){
+	public Registro ocuparRegistroLibre(ArbolAbs operando, boolean n16bits){
 		for (Registro r : registros){
 			if (r.isLibre()){
 				System.out.println("Registro libre encontrado: agregar MOV R1, Variable");
 				r.setOperando(operando);
-				codigo.agregarSentencia(Operacion.MOV, r.getName(false), operando.getName());
+				codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), operando.getName());
 				return r;
 			}
 		}
@@ -79,7 +79,7 @@ public class RegisterManager {
 
 	// Almacenar en un registro determinado una variable
 	public Registro ocuparRegistro(Registro registro, ArbolAbs operando, boolean n16bits) {
-		Registro r = getRegistro(registro);
+		Registro r = getRegistro(registro, operando);
 
 		if (r == null)
 			return null;
@@ -92,7 +92,7 @@ public class RegisterManager {
 
 	// Almacenar en un registro determinado un valor inmediato
 	public Registro ocuparRegistro(Registro registro, int inmediato, boolean n16bits){
-		Registro r = getRegistro(registro);
+		Registro r = getRegistro(registro, null);
 
 		if (r == null)
 			return null;
@@ -105,7 +105,10 @@ public class RegisterManager {
 
 	// Mover un valor de un registro a otro
 	public Registro ocuparRegistro(Registro registro, Registro reg, boolean n16bits) {
-		Registro r = getRegistro(registro);
+		if (registro.equals(reg))
+			return reg;
+		
+		Registro r = getRegistro(registro, null);
 
 		if (r == null)
 			return null;
@@ -117,7 +120,7 @@ public class RegisterManager {
 
 	// Mover un valor de un registro a otro
 	public Registro ocuparRegistroBien(Registro registro,ArbolAbs operando, boolean n16bits) {
-		Registro r = getRegistro(registro);
+		Registro r = getRegistro(registro, operando);
 
 		if (r == null)
 			return null;
