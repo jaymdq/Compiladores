@@ -344,7 +344,7 @@ public class Arbol implements ArbolAbs {
 			}
 
 			// Widening (16 a 32 bits)
-			/*codigo.agregarSentencia(Operacion.MOVSX, regIndice.getName(false), regIndice.getName(true));
+			codigo.agregarSentencia(Operacion.MOVSX, regIndice.getName(false), regIndice.getName(true));
 			
 			// CHEQUEO DE LIMITE
 			
@@ -370,27 +370,24 @@ public class Arbol implements ArbolAbs {
 			codigo.agregarSentencia(Operacion.INVOKE, "ExitProcess, 0");
 
 			codigo.agregarEtiqueta(salto);
-			codigo.desapilarEtiqueta();*/
+			codigo.desapilarEtiqueta();
 
 			// CALCULAR POSICION DE MEMORIA
 
-			//Se resta el limite inferior
+			//  - Se resta el limite inferior
 			codigo.agregarSentencia(Operacion.SUB, regIndice.getName(false), limInf.toString());
 
-			//Se mueve a EAX
-			Registro EAX = regManager.ocuparRegistro(new Registro("EAX", "AX"), regIndice, n16bits);
+			//  - Se mueve a EAX
+			Registro EAX = regManager.ocuparRegistro(new Registro("EAX", "AX"), regIndice, false);
 			regIndice.liberar();
 
-			//Se determina el tam de bytes
+			//  - Se determina el tam de Bytes
 			Integer tam = 2;
-			if (izquierdo.getTipo() == TIPOS.VECTOR_ENTERO_LSS)
+			if (izquierdo.getTipo().equals(TIPOS.VECTOR_ENTERO_LSS))
 				tam = 4;
 
-			//Se multiplica
-			codigo.agregarSentencia(Operacion.IMUL, EAX.getName(n16bits), tam.toString());
-
-			//Seteamos el operando así es encontrado
-			//regIndice.setOperando(this);
+			//  - Se multiplica
+			codigo.agregarSentencia(Operacion.IMUL, EAX.getName(false), tam.toString());
 			EAX.setOperando(this, true);
 			chanchada = true;
 
