@@ -482,9 +482,9 @@ public class Arbol implements ArbolAbs {
 			}
 			
 			codigo.agregarSentencia(oper, op2);													// Realizar operacion
-			r.setOperando(this);																// Actualizar operando parte baja
 			r2.liberar();																		// Liberar parte alta
 			regDer.liberar();																	// Liberar segundo operando
+			r.setOperando(this);																// Actualizar operando parte baja
 			this.operacion = r.getName(n16bits);
 			
 			System.out.println("Multiplicacion/Division finalizada");
