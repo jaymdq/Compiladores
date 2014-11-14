@@ -1,11 +1,11 @@
 .386
 .model flat, stdcall
 option casemap :none
-include \masm32\include\windows.inc
-include \masm32\include\kernel32.inc
-include \masm32\include\user32.inc
-includelib \masm32\lib\kernel32.lib
-includelib \masm32\lib\user32.lib
+include C:\Users\Ariel\workspace\Compiladores\masm32\include\windows.inc
+include C:\Users\Ariel\workspace\Compiladores\masm32\include\kernel32.inc
+include C:\Users\Ariel\workspace\Compiladores\masm32\include\user32.inc
+includelib C:\Users\Ariel\workspace\Compiladores\masm32\lib\kernel32.lib
+includelib C:\Users\Ariel\workspace\Compiladores\masm32\lib\user32.lib
 .data
 _a		DW ?
 _c		DW ?
@@ -56,4 +56,6 @@ MOV BX, _c
 ADD BX, 0
 MOV [ _cortos + AX ], BX
 
+
+INVOKE ExitProcess, 0
 end start

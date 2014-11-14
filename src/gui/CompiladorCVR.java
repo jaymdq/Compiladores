@@ -642,6 +642,7 @@ public class CompiladorCVR {
 		path = path.split(".cvr")[0];
 		try {
 			Runtime.getRuntime().exec("cmd /c start masm32\\build.bat " + path);
+			ConsolaManager.getInstance().escribirInfo("Archivo exe generado en : " + path + ".exe");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -664,17 +665,21 @@ public class CompiladorCVR {
 	private void ejecutarExe() {
 
 		if (proyecto!= null && proyecto.getFile() != null){
-			String path = proyecto.getFile().getAbsolutePath();
-			path = path.replaceAll(".cvr", ".exe");
-			try {
-				Runtime.getRuntime().exec(path);
-			} catch (IOException e) {
-				e.printStackTrace();
+			String pathaux = proyecto.getFile().getAbsolutePath().replaceAll(".cvr", ".exe");
+			if (new File(pathaux).isFile()){
+				String path = proyecto.getFile().getAbsolutePath();
+				path = path.replaceAll(".cvr", ".exe");
+				try {
+					Runtime.getRuntime().exec(path);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return ;
 			}
-		}else{
-			//Mostrar un mensaje advirtiendo que no se ejecutar un exe que no existe
-			WebOptionPane.showConfirmDialog(null, "No ha abierto y compilado un proyecto","No es posible ejecutar el programa",WebOptionPane.PLAIN_MESSAGE);
 		}
+
+		//Mostrar un mensaje advirtiendo que no se ejecutar un exe que no existe
+		WebOptionPane.showConfirmDialog(null, "No ha abierto y compilado un proyecto","No es posible ejecutar el programa",WebOptionPane.PLAIN_MESSAGE);
 
 
 	}
