@@ -472,6 +472,10 @@ public class Arbol implements ArbolAbs {
 				op2 = regDer.getName(n16bits);
 			}
 			
+			
+			if (oper.equals(Operacion.IDIV))
+				codigo.agregarSentencia(Operacion.CWD);											// Realizar extension de signo
+			
 			codigo.agregarSentencia(oper, op2);													// Realizar operacion
 			r.setOperando(this);																// Actualizar operando parte baja
 			r2.liberar();																		// Liberar parte alta

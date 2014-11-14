@@ -5,7 +5,7 @@ import java.util.Vector;
 
 public class CodigoAssembler {
 	
-	public enum Operacion { ADD, SUB, MUL, IMUL, DIV, IDIV, MOV, INVOKE, JLE, JBE, CMP, JGE, JAE, JB, JL, JG, JA, JNE, JE, JMP, MOVSX};
+	public enum Operacion { ADD, SUB, MUL, IMUL, DIV, IDIV, MOV, INVOKE, JLE, JBE, CMP, JGE, JAE, JB, JL, JG, JA, JNE, JE, JMP, MOVSX, CWD};
 
 	private String sentencias = new String();
 	private RegisterManager regManager = new RegisterManager(this);
@@ -35,6 +35,12 @@ public class CodigoAssembler {
 		return regManager;
 	}
 
+	public void agregarSentencia(Operacion operacion) {
+		String sent = operacion.toString();
+		System.out.println("Agregar: " + sent);
+		sentencias += sent + "\n";	
+	}
+	
 	public void agregarSentencia(Operacion operacion, String op1) {
 		String sent = operacion + " " + op1;
 		System.out.println("Agregar: " + sent);
