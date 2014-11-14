@@ -258,6 +258,16 @@ public class CompiladorCVR {
 		botonEjecutar.setToolTipText("Ejecutar");
 		toolBar.add(botonEjecutar);
 
+		JButton botonExe = new JButton("");
+		botonExe.setIcon(new ImageIcon(CompiladorCVR.class.getResource("/images/exe.png")));
+		botonExe.setToolTipText("Ejecutar EXE");
+		botonExe.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ejecutarExe();
+			}
+		});
+		toolBar.add(botonExe);
+
 		//Consola
 		Consola = new JTextPane();
 		Consola.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -587,11 +597,11 @@ public class CompiladorCVR {
 
 	}
 
-	protected void agregarSentencia(String sentencia) {
+	private void agregarSentencia(String sentencia) {
 		editorSintactico.setText(editorSintactico.getText() + sentencia + "\n");
 	}
 
-	protected void agregarToken(Token t) {
+	private void agregarToken(Token t) {
 		editorLexico.setText(editorLexico.getText() + "[" + t.getLexema() + "]\n");
 	}
 
@@ -615,27 +625,27 @@ public class CompiladorCVR {
 			ConsolaManager.getInstance().borrar();
 			CodigoASMManager.getInstance().clearCodigo();
 			boolean compilo = proyecto.compilar();
-			
+
 			//Acá generar el archivo asm
 			if (compilo){
 				guardarASM();
-				
+
 				//Acá se compila con el MASM
 				compilarMASM();
 			}
-			
+
 		}
 	}
 
 	private void compilarMASM() {
 		String path = proyecto.getFile().getAbsolutePath();
-		path = path.replaceAll(".cvr", ".asm");
+		path = path.split(".cvr")[0];
 		try {
-			Runtime.getRuntime().exec("masm\\build.bat " + path);
+			Runtime.getRuntime().exec("cmd /c start masm\\build.bat " + path);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void guardarASM() {
@@ -648,7 +658,25 @@ public class CompiladorCVR {
 			out.close();
 			ConsolaManager.getInstance().escribirInfo("Archivo ASM generado en : " + path);
 		} catch (IOException e) {}
-		
+
+	}
+
+	private void ejecutarExe() {
+
+		if (proyecto!= null && proyecto.getFile() != null){
+			String path = proyecto.getFile().getAbsolutePath();
+			path = path.replaceAll(".cvr", ".exe");
+			try {
+				Runtime.getRuntime().exec(path);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
+			//Mostrar un mensaje advirtiendo que no se ejecutar un exe que no existe
+			WebOptionPane.showConfirmDialog(null, "No ha abierto y compilado un proyecto","No es posible ejecutar el programa",WebOptionPane.PLAIN_MESSAGE);
+		}
+
+
 	}
 
 	private void guardar(){

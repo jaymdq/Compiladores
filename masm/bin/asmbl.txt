@@ -1,0 +1,10 @@
+ Assembling: C:\Users\Ariel\Desktop\primero.asm
+ Volume in drive C is TI105444W0C
+ Volume Serial Number is 709C-DE9D
+
+ Directory of C:\Users\Ariel\Desktop
+
+04/11/2014  05:09 p.m.               386 primero.asm
+04/11/2014  05:09 p.m.               602 primero.obj
+               2 File(s)            988 bytes
+               0 Dir(s)  146.999.001.088 bytes free
