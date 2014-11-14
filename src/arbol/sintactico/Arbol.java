@@ -343,46 +343,39 @@ public class Arbol implements ArbolAbs {
 				regIndice = regManager.ocuparRegistroLibre(derecho, derecho.is16bits());
 			}
 
-			//Se chequea el límite INFERIOR.
-
-			//Se hace la comparación
-			n16bits = false;
-
-			/*oper = Operacion.CMP;
-			codigo.agregarSentencia(oper, regIndice.getName(n16bits), limInf.toString());
+			// Widening (16 a 32 bits)
+			/*codigo.agregarSentencia(Operacion.MOVSX, regIndice.getName(false), regIndice.getName(true));
+			
+			// CHEQUEO DE LIMITE
+			
+			//   - Se chequea el limite INFERIOR
+			codigo.agregarSentencia(Operacion.CMP, regIndice.getName(false), limInf.toString());
 
 			String salto = codigo.apilarEtiqueta();
-			oper = Operacion.JGE;
-			codigo.agregarSentencia(oper, salto);
+			codigo.agregarSentencia(Operacion.JGE, salto);
 
-			oper = Operacion.INVOKE;
-			codigo.agregarSentencia(oper, "MessageBox, NULL, addr _@E1, addr _@E1, MB_OK");
-			codigo.agregarSentencia(oper, "ExitProcess, 0");
+			codigo.agregarSentencia(Operacion.INVOKE, "MessageBox, NULL, addr _@E1, addr _@E1, MB_OK");
+			codigo.agregarSentencia(Operacion.INVOKE, "ExitProcess, 0");
 
 			codigo.agregarEtiqueta(salto);
 			codigo.desapilarEtiqueta();
 
-			//Se chequea el límite SUPERIOR.
-
-			//Se hace la comparación
-			oper = Operacion.CMP;
-			codigo.agregarSentencia(oper, regIndice.getName(n16bits), limSup.toString());
+			//   - Se chequea el limite SUPERIOR
+			codigo.agregarSentencia(Operacion.CMP, regIndice.getName(false), limSup.toString());
 
 			salto = codigo.apilarEtiqueta();
-			oper = Operacion.JLE;
-			codigo.agregarSentencia(oper, salto);
+			codigo.agregarSentencia(Operacion.JLE, salto);
 
-			oper = Operacion.INVOKE;
-			codigo.agregarSentencia(oper, "MessageBox, NULL, addr _@E2, addr _@E2, MB_OK");
-			codigo.agregarSentencia(oper, "ExitProcess, 0");
+			codigo.agregarSentencia(Operacion.INVOKE, "MessageBox, NULL, addr _@E2, addr _@E2, MB_OK");
+			codigo.agregarSentencia(Operacion.INVOKE, "ExitProcess, 0");
 
 			codigo.agregarEtiqueta(salto);
 			codigo.desapilarEtiqueta();*/
 
-			//Necesitamos saber a que posición de memoria acceder
+			// CALCULAR POSICION DE MEMORIA
 
 			//Se resta el limite inferior
-			codigo.agregarSentencia(Operacion.SUB, regIndice.getName(n16bits), limInf.toString());
+			codigo.agregarSentencia(Operacion.SUB, regIndice.getName(false), limInf.toString());
 
 			//Se mueve a EAX
 			Registro EAX = regManager.ocuparRegistro(new Registro("EAX", "AX"), regIndice, n16bits);
@@ -468,8 +461,8 @@ public class Arbol implements ArbolAbs {
 			// Parte alta: 0 (evitar perdida de datos por si el registro estaba ocupado)
 			Registro r2 = regManager.ocuparRegistro(new Registro("EDX", "DX"), 0, n16bits); 	
 			
-			// Asegurarse que el segundo operando este en un registro
-			regDer = regManager.findRegistro(derecho);
+			// Asegurarse que el segundo operando este en un registro (y que no se haya movido anteriormente)
+			//regDer = regManager.findRegistro(derecho);
 			if (regDer == null){
 				regDer = regManager.ocuparRegistroLibre(derecho, n16bits);
 				op2 = regDer.getName(n16bits);
@@ -485,7 +478,11 @@ public class Arbol implements ArbolAbs {
 			codigo.agregarSentencia(oper, op2);													// Realizar operacion
 			r.setOperando(this);																// Actualizar operando parte baja
 			r2.liberar();																		// Liberar parte alta
+			if (regDer.equals(r))
+				regDer = regManager.findRegistro(derecho);
+			
 			regDer.liberar();																	// Liberar segundo operando
+
 			this.operacion = r.getName(n16bits);
 			
 			System.out.println("Multiplicacion/Division finalizada");
