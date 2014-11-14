@@ -473,7 +473,7 @@ public class Arbol implements ArbolAbs {
 			}
 			
 			
-			if (oper.equals(Operacion.IDIV))
+			if (oper.equals(Operacion.IDIV) || oper.equals(Operacion.IMUL))
 				codigo.agregarSentencia(Operacion.CWD);											// Realizar extension de signo
 			
 			codigo.agregarSentencia(oper, op2);													// Realizar operacion
