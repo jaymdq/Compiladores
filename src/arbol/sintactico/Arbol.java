@@ -469,6 +469,7 @@ public class Arbol implements ArbolAbs {
 			Registro r2 = regManager.ocuparRegistro(new Registro("EDX", "DX"), 0, n16bits); 	
 			
 			// Asegurarse que el segundo operando este en un registro
+			regDer = regManager.findRegistro(derecho);
 			if (regDer == null){
 				regDer = regManager.ocuparRegistroLibre(derecho, n16bits);
 				op2 = regDer.getName(n16bits);
@@ -482,9 +483,9 @@ public class Arbol implements ArbolAbs {
 			}
 			
 			codigo.agregarSentencia(oper, op2);													// Realizar operacion
+			r.setOperando(this);																// Actualizar operando parte baja
 			r2.liberar();																		// Liberar parte alta
 			regDer.liberar();																	// Liberar segundo operando
-			r.setOperando(this);																// Actualizar operando parte baja
 			this.operacion = r.getName(n16bits);
 			
 			System.out.println("Multiplicacion/Division finalizada");
