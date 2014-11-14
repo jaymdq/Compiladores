@@ -7,7 +7,7 @@ entero_lss h,i,j,k;
 
 ** Tipo Vector
 vec[1..10] vector de entero;
-vec[1..20] vector de entero_lss;
+vec1[1..20] vector de entero_lss;
 
 **Sentencias de ejecución
 ** Se debe especificar una sentencia de ejecución sino el programa no será correcto.

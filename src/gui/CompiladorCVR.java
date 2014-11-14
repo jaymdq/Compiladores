@@ -641,7 +641,7 @@ public class CompiladorCVR {
 		String path = proyecto.getFile().getAbsolutePath();
 		path = path.split(".cvr")[0];
 		try {
-			Runtime.getRuntime().exec("cmd /c start masm32\\build.bat " + path);
+			Runtime.getRuntime().exec("cmd /c start masm32\\build.bat \"" + path+"\"");
 			ConsolaManager.getInstance().escribirInfo("Archivo exe generado en : " + path + ".exe");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -657,7 +657,7 @@ public class CompiladorCVR {
 			out = new FileWriter(path);
 			out.write(codigoASM.getText());
 			out.close();
-			ConsolaManager.getInstance().escribirInfo("Archivo ASM generado en : " + path);
+			ConsolaManager.getInstance().escribirInfo("Archivo ASM generado en : \"" + path + "\"");
 		} catch (IOException e) {}
 
 	}

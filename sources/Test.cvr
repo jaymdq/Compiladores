@@ -23,7 +23,7 @@ suc[1] := 1;
 suc[2] := 2;
 
 iterar {
-  suc[indice] := suc[indice-2] + suc[indice-1] * suc[indice-2] * -1;
+  **suc[indice] := suc[indice-2] + suc[indice-1] * suc[indice-2] * -1;
   fibo[indice] := fibo[indice-2] + fibo[indice-1];
   indice := indice + 1;
 } hasta indice = 11;
