@@ -1,5 +1,6 @@
 package generaciónASM;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -23,12 +24,16 @@ public class GeneradorASM {
 	}
 
 	private String getLibrerias() {
+		String path = "";
+		try {
+			path = new java.io.File(".").getCanonicalPath();
+		} catch (IOException e) {}
 		String salida = "";
-		salida += "include \\masm32\\include\\windows.inc\n";
-		salida += "include \\masm32\\include\\kernel32.inc\n";
-		salida += "include \\masm32\\include\\user32.inc\n";
-		salida += "includelib \\masm32\\lib\\kernel32.lib\n";
-		salida += "includelib \\masm32\\lib\\user32.lib\n";
+		salida += "include "+ path +"\\masm32\\include\\windows.inc\n";
+		salida += "include "+ path +"\\masm32\\include\\kernel32.inc\n";
+		salida += "include "+ path +"\\masm32\\include\\user32.inc\n";
+		salida += "includelib "+ path +"\\masm32\\lib\\kernel32.lib\n";
+		salida += "includelib "+ path +"\\masm32\\lib\\user32.lib\n";
 		return salida;
 	}
 
