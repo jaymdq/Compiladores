@@ -107,7 +107,7 @@ bloque		: sentencia
 			| '{' '}'  { escribirError("Bloque de sentencias vacío."); }
 			;
 					
-condicion	: e comparador e { E2 = getUltimaExpresion(); expresionValida(E2); E1 = getUltimaExpresion(); expresionValida(E1); Condicion = crear_nodo(UltimoComparador,E1,E2); agregarCondicion(Condicion); }
+condicion	: e comparador { apilarTodasCTE();} e { apilarTodasCTE(); E2 = getUltimaExpresion(); expresionValida(E2); E1 = getUltimaExpresion(); expresionValida(E1); Condicion = crear_nodo(UltimoComparador,E1,E2); condicionValida(Condicion); agregarCondicion(Condicion); }
 			;
 		
 comparador	: '>'				{ UltimoComparador = new String("Comparador \">\""); }
@@ -159,9 +159,9 @@ private Vector<ArbolAbs> pilaCondiciones = new Vector<ArbolAbs>();
 private Vector<ArbolAbs> pilaExpresiones = new Vector<ArbolAbs>();
 private Vector<ArbolAbs> pilaTerminos = new Vector<ArbolAbs>();
 private Vector<ArbolAbs> pilaFactores = new Vector<ArbolAbs>();
-
 private Vector<ArbolAbs> pilaBloques = new Vector<ArbolAbs>();
 private Vector<ArbolAbs> sentencias = new Vector<ArbolAbs>();
+private Vector<Boolean> pilaCTES = new Vector<Boolean>();
 
 private ArbolAbs SentenciaAsignacion;
 private ArbolAbs SentenciaImpresion;
@@ -420,12 +420,34 @@ private void expresionValida(ArbolAbs exp){
 }
 
 private void asignacionValida(ArbolAbs exp){
-	//TODO
 	Arbol arbol = (Arbol) exp;
 	if (todasCTE)
 		return;
 	if (arbol.getIzquierdo().getTipo() != arbol.getDerecho().getTipo())
 		escribirErrorDeGeneracion("Asignación entre diferentes tipos de datos.");
+}
+
+private void condicionValida(ArbolAbs exp){
+	Arbol arbol = (Arbol) exp;
+	boolean aux1 = desapilarCTES();
+	boolean aux2 = desapilarCTES();
+	if (arbol.getIzquierdo().getTipo().equals(ElementoTS.TIPOS.ENTERO_LSS) && aux1)
+		return;
+	if (arbol.getDerecho().getTipo().equals(ElementoTS.TIPOS.ENTERO_LSS) && aux2)
+		return;
+	if (arbol.getIzquierdo().getTipo() != arbol.getDerecho().getTipo())
+		escribirErrorDeGeneracion("Comparación entre diferentes tipos de datos.");
+}
+
+private void apilarTodasCTE(){
+	pilaCTES.add(todasCTE);
+	todasCTE = true;
+}
+
+private boolean desapilarCTES(){
+	boolean salida = pilaCTES.lastElement();
+	pilaCTES.remove(pilaCTES.size() - 1);
+	return salida;
 }
 
 private ArbolAbs crear_hoja(ParserVal pos){

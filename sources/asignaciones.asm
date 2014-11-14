@@ -91,4 +91,6 @@ IMUL EAX, 2
 ADD CX, [ _cortos + AX ]
 MOV _a, CX
 
+
+INVOKE ExitProcess, 0
 end start

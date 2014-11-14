@@ -19,7 +19,7 @@ public class GeneradorASM {
 		this.sentencias = sentencias;
 		this.tablaSimbolos = tablaSimbolos;
 		this.declaracionesSentencias = new Vector<String>();
-		this.setMapStringsASM(new HashMap<String,String>());
+		GeneradorASM.setMapStringsASM(new HashMap<String,String>());
 	}
 
 	private String getLibrerias() {
@@ -76,6 +76,7 @@ public class GeneradorASM {
 
 
 		//Se finaliza el código
+		codigo += "INVOKE ExitProcess, 0\n";
 		codigo += "end start";
 
 		//Asignamos al final el resultado obtenido

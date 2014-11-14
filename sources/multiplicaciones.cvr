@@ -1,0 +1,25 @@
+**Sentencias declarativas
+entero a, c;
+entero_lss b;
+cortos[1..10] vector de entero;
+cortitos[1..10] vector de entero;
+largos[1..10] vector de entero_lss;
+
+**Sentencias de Ejecución
+
+**a := 5 * -60;
+
+**a := 5 * cortos[2];
+
+a := cortos[2] * 5;
+
+**a := cortos[2] * cortos[3];
+
+**Este caso lo hace el rocha!
+**cortos[3] := cortos[2] * cortos[1] * cortos[4];
+
+
+**b := b + b + 8;
+**largos[a+a] := b + 5;
+**cortos[7] := -2 + c;
+**cortos[cortitos[a + 1] + 4] := c + 0;

@@ -621,9 +621,21 @@ public class CompiladorCVR {
 				guardarASM();
 				
 				//Acá se compila con el MASM
+				compilarMASM();
 			}
 			
 		}
+	}
+
+	private void compilarMASM() {
+		String path = proyecto.getFile().getAbsolutePath();
+		path = path.replaceAll(".cvr", ".asm");
+		try {
+			Runtime.getRuntime().exec("masm\\build.bat " + path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void guardarASM() {

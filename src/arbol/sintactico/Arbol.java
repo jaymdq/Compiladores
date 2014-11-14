@@ -216,12 +216,16 @@ public class Arbol implements ArbolAbs {
 
 		//Nodos que no generan problemas
 		if (operacion.equals("Programa")){
+			codigo.agregarLineaBlanco();
 			return;
 		}
 		if (operacion.equals("Sentencia")){
 			return;
 		}
 		if (operacion.equals("Sentencia General")){
+			return;
+		}
+		if (operacion.equals("Selección")){
 			return;
 		}
 
@@ -231,7 +235,7 @@ public class Arbol implements ArbolAbs {
 				String etiqueta = codigo.desapilarEtiqueta();
 				codigo.agregarEtiqueta(etiqueta);
 			}
-			codigo.agregarLineaBlanco();
+			//codigo.agregarLineaBlanco();
 			return;
 		}
 
@@ -257,7 +261,7 @@ public class Arbol implements ArbolAbs {
 			String referencia = GeneradorASM.getMapStringsASM().get(izquierdo.getName());
 			codigo.agregarSentencia(Operacion.INVOKE, "MessageBox, NULL, addr " + referencia + ", addr " + referencia + ", MB_OK");	
 
-			codigo.agregarLineaBlanco();
+			//codigo.agregarLineaBlanco();
 			return;
 		}
 
@@ -289,30 +293,41 @@ public class Arbol implements ArbolAbs {
 		}
 
 
-		//Comparación TODO
-		/*if (operacion.startsWith("Comparador")){
+		//Comparación 
+		if (operacion.startsWith("Comparador")){
 			//Operacion CMP
 			oper = Operacion.CMP;
 
+			if (izquierdo.getTipo().equals(TIPOS.ENTERO) && derecho.getTipo().equals(TIPOS.ENTERO))
+				n16bits = true;
+
+			//Siempre se llena el registro izquierdo (el de la derecha puede ser inmediado)
 			if (regIzq == null){
 				//Ocupar el izquierdo
-				regIzq = regManager.ocuparRegistroLibre(izquierdo);
+				regIzq = regManager.ocuparRegistroLibre(izquierdo,n16bits);
+			}
+
+			if (izquierdo.getName().startsWith("[")){
+				op1 = izquierdo.getName();
+				codigo.agregarSentencia(Operacion.MOV, regIzq.getName(n16bits, true), op1);
+				regIzq.setOperando(izquierdo, false);
 			}
 
 			if (regDer == null){
-				//Ocupar el derecho
-				regDer = regManager.ocuparRegistroLibre(derecho);
+				//Derecho constantes
+				codigo.agregarSentencia(oper, regIzq.getName(n16bits), derecho.getName());
+			}else{
+				//Derecho registro
+				codigo.agregarSentencia(oper, regIzq.getName(n16bits), regDer.getName(n16bits));
 			}
-
-			//Se agrega la CMP
-			codigo.agregarSentencia(oper, regIzq.getName(false), regDer.getName(false));
 
 			//Se liberan los registros
 			regIzq.liberar();
-			regDer.liberar();
+			if (regDer != null)
+				regDer.liberar();
 
 			return;
-		}*/
+		}
 
 
 		if (operacion.equals("Índice")){
@@ -436,9 +451,9 @@ public class Arbol implements ArbolAbs {
 			op1 = izquierdo.getName();
 			codigo.agregarSentencia(Operacion.MOV, regIzq.getName(n16bits, true), op1);
 			regIzq.setOperando(izquierdo, false);
-		//	regIzq.setEnMemoria(false);
-			
-			
+			//	regIzq.setEnMemoria(false);
+
+
 		}
 
 
@@ -453,7 +468,7 @@ public class Arbol implements ArbolAbs {
 			codigo.agregarSentencia(oper, op1, op2);											// Realizar operacion
 			r.setOperando(this);
 			r2.liberar();																		// Liberar segundo registro
-		
+
 			// Verificar overflow
 		}else if (oper.equals(Operacion.DIV) || oper.equals(Operacion.IDIV)){
 
@@ -502,7 +517,7 @@ public class Arbol implements ArbolAbs {
 
 				op1 = regIzq.getName(n16bits);
 				op2 = regDer.getName(n16bits);
-		
+
 				regDer.liberar();
 
 			}else if (conmutativa){

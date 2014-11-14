@@ -106,34 +106,36 @@
   64  bloque : '{' declaracion $$14 sent_declarativa sent_ejecutable '}'
   65         | '{' '}'
 
-  66  condicion : e comparador e
+  66  $$15 :
 
-  67  comparador : '>'
-  68             | COMP_MAYOR_IGUAL
-  69             | '<'
-  70             | COMP_MENOR_IGUAL
-  71             | '='
-  72             | COMP_DISTINTO
+  67  condicion : e comparador $$15 e
 
-  73  e : e '+' t
-  74    | e '-' t
-  75    | t
+  68  comparador : '>'
+  69             | COMP_MAYOR_IGUAL
+  70             | '<'
+  71             | COMP_MENOR_IGUAL
+  72             | '='
+  73             | COMP_DISTINTO
 
-  76  t : t '*' f
-  77    | t '/' f
-  78    | f
+  74  e : e '+' t
+  75    | e '-' t
+  76    | t
 
-  79  f : valor
-  80    | '-' ENTERO
-  81    | '-' ENTERO_LSS
-  82    | FUERA_RANGO
+  77  t : t '*' f
+  78    | t '/' f
+  79    | f
 
-  83  valor : asignable
-  84        | ENTERO
-  85        | ENTERO_LSS
+  80  f : valor
+  81    | '-' ENTERO
+  82    | '-' ENTERO_LSS
+  83    | FUERA_RANGO
 
-  86  asignable : IDENTIFICADOR
-  87            | IDENTIFICADOR '[' e ']'
+  84  valor : asignable
+  85        | ENTERO
+  86        | ENTERO_LSS
+
+  87  asignable : IDENTIFICADOR
+  88            | IDENTIFICADOR '[' e ']'
 
 state 0
 	$accept : . programa $end  (0)
@@ -192,11 +194,11 @@ state 4
 	declaracion : IDENTIFICADOR . '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';'  (5)
 	declaracion_invalida : IDENTIFICADOR . '[' error ']' $$1 PR_VECTOR PR_DE tipo_dato ';'  (9)
 	declaracion_invalida : IDENTIFICADOR . '[' ENTERO PUNTO_PUNTO ENTERO ']' error ';'  (10)
-	asignable : IDENTIFICADOR .  (86)
-	asignable : IDENTIFICADOR . '[' e ']'  (87)
+	asignable : IDENTIFICADOR .  (87)
+	asignable : IDENTIFICADOR . '[' e ']'  (88)
 
 	'['  shift 21
-	ASIGNACION  reduce 86
+	ASIGNACION  reduce 87
 
 
 state 5
@@ -369,7 +371,7 @@ state 21
 	declaracion : IDENTIFICADOR '[' . ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';'  (5)
 	declaracion_invalida : IDENTIFICADOR '[' . error ']' $$1 PR_VECTOR PR_DE tipo_dato ';'  (9)
 	declaracion_invalida : IDENTIFICADOR '[' . ENTERO PUNTO_PUNTO ENTERO ']' error ';'  (10)
-	asignable : IDENTIFICADOR '[' . e ']'  (87)
+	asignable : IDENTIFICADOR '[' . e ']'  (88)
 
 	error  shift 42
 	IDENTIFICADOR  shift 43
@@ -610,54 +612,54 @@ state 42
 
 
 state 43
-	asignable : IDENTIFICADOR .  (86)
-	asignable : IDENTIFICADOR . '[' e ']'  (87)
+	asignable : IDENTIFICADOR .  (87)
+	asignable : IDENTIFICADOR . '[' e ']'  (88)
 
 	'['  shift 71
-	PR_ENTONCES  reduce 86
-	COMP_MAYOR_IGUAL  reduce 86
-	COMP_MENOR_IGUAL  reduce 86
-	COMP_DISTINTO  reduce 86
-	';'  reduce 86
-	']'  reduce 86
-	')'  reduce 86
-	'>'  reduce 86
-	'<'  reduce 86
-	'='  reduce 86
-	'+'  reduce 86
-	'-'  reduce 86
-	'*'  reduce 86
-	'/'  reduce 86
+	PR_ENTONCES  reduce 87
+	COMP_MAYOR_IGUAL  reduce 87
+	COMP_MENOR_IGUAL  reduce 87
+	COMP_DISTINTO  reduce 87
+	';'  reduce 87
+	']'  reduce 87
+	')'  reduce 87
+	'>'  reduce 87
+	'<'  reduce 87
+	'='  reduce 87
+	'+'  reduce 87
+	'-'  reduce 87
+	'*'  reduce 87
+	'/'  reduce 87
 
 
 state 44
 	declaracion : IDENTIFICADOR '[' ENTERO . PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';'  (5)
 	declaracion_invalida : IDENTIFICADOR '[' ENTERO . PUNTO_PUNTO ENTERO ']' error ';'  (10)
-	valor : ENTERO .  (84)
+	valor : ENTERO .  (85)
 
 	PUNTO_PUNTO  shift 72
-	']'  reduce 84
-	'+'  reduce 84
-	'-'  reduce 84
-	'*'  reduce 84
-	'/'  reduce 84
+	']'  reduce 85
+	'+'  reduce 85
+	'-'  reduce 85
+	'*'  reduce 85
+	'/'  reduce 85
 
 
 state 45
-	valor : ENTERO_LSS .  (85)
+	valor : ENTERO_LSS .  (86)
 
-	.  reduce 85
+	.  reduce 86
 
 
 state 46
-	f : FUERA_RANGO .  (82)
+	f : FUERA_RANGO .  (83)
 
-	.  reduce 82
+	.  reduce 83
 
 
 state 47
-	f : '-' . ENTERO  (80)
-	f : '-' . ENTERO_LSS  (81)
+	f : '-' . ENTERO  (81)
+	f : '-' . ENTERO_LSS  (82)
 
 	ENTERO  shift 73
 	ENTERO_LSS  shift 74
@@ -665,15 +667,15 @@ state 47
 
 
 state 48
-	valor : asignable .  (83)
+	valor : asignable .  (84)
 
-	.  reduce 83
+	.  reduce 84
 
 
 state 49
-	e : e . '+' t  (73)
-	e : e . '-' t  (74)
-	asignable : IDENTIFICADOR '[' e . ']'  (87)
+	e : e . '+' t  (74)
+	e : e . '-' t  (75)
+	asignable : IDENTIFICADOR '[' e . ']'  (88)
 
 	']'  shift 75
 	'+'  shift 76
@@ -682,36 +684,36 @@ state 49
 
 
 state 50
-	e : t .  (75)
-	t : t . '*' f  (76)
-	t : t . '/' f  (77)
+	e : t .  (76)
+	t : t . '*' f  (77)
+	t : t . '/' f  (78)
 
 	'*'  shift 78
 	'/'  shift 79
-	PR_ENTONCES  reduce 75
-	COMP_MAYOR_IGUAL  reduce 75
-	COMP_MENOR_IGUAL  reduce 75
-	COMP_DISTINTO  reduce 75
-	';'  reduce 75
-	']'  reduce 75
-	')'  reduce 75
-	'>'  reduce 75
-	'<'  reduce 75
-	'='  reduce 75
-	'+'  reduce 75
-	'-'  reduce 75
+	PR_ENTONCES  reduce 76
+	COMP_MAYOR_IGUAL  reduce 76
+	COMP_MENOR_IGUAL  reduce 76
+	COMP_DISTINTO  reduce 76
+	';'  reduce 76
+	']'  reduce 76
+	')'  reduce 76
+	'>'  reduce 76
+	'<'  reduce 76
+	'='  reduce 76
+	'+'  reduce 76
+	'-'  reduce 76
 
 
 state 51
-	t : f .  (78)
+	t : f .  (79)
 
-	.  reduce 78
+	.  reduce 79
 
 
 state 52
-	f : valor .  (79)
+	f : valor .  (80)
 
-	.  reduce 79
+	.  reduce 80
 
 
 state 53
@@ -944,7 +946,7 @@ state 70
 
 
 state 71
-	asignable : IDENTIFICADOR '[' . e ']'  (87)
+	asignable : IDENTIFICADOR '[' . e ']'  (88)
 
 	IDENTIFICADOR  shift 43
 	ENTERO  shift 85
@@ -969,25 +971,25 @@ state 72
 
 
 state 73
-	f : '-' ENTERO .  (80)
-
-	.  reduce 80
-
-
-state 74
-	f : '-' ENTERO_LSS .  (81)
+	f : '-' ENTERO .  (81)
 
 	.  reduce 81
 
 
-state 75
-	asignable : IDENTIFICADOR '[' e ']' .  (87)
+state 74
+	f : '-' ENTERO_LSS .  (82)
 
-	.  reduce 87
+	.  reduce 82
+
+
+state 75
+	asignable : IDENTIFICADOR '[' e ']' .  (88)
+
+	.  reduce 88
 
 
 state 76
-	e : e '+' . t  (73)
+	e : e '+' . t  (74)
 
 	IDENTIFICADOR  shift 43
 	ENTERO  shift 85
@@ -1003,7 +1005,7 @@ state 76
 
 
 state 77
-	e : e '-' . t  (74)
+	e : e '-' . t  (75)
 
 	IDENTIFICADOR  shift 43
 	ENTERO  shift 85
@@ -1019,7 +1021,7 @@ state 77
 
 
 state 78
-	t : t '*' . f  (76)
+	t : t '*' . f  (77)
 
 	IDENTIFICADOR  shift 43
 	ENTERO  shift 85
@@ -1034,7 +1036,7 @@ state 78
 
 
 state 79
-	t : t '/' . f  (77)
+	t : t '/' . f  (78)
 
 	IDENTIFICADOR  shift 43
 	ENTERO  shift 85
@@ -1083,9 +1085,9 @@ state 84
 
 
 state 85
-	valor : ENTERO .  (84)
+	valor : ENTERO .  (85)
 
-	.  reduce 84
+	.  reduce 85
 
 
 state 86
@@ -1102,9 +1104,9 @@ state 86
 
 
 state 87
-	condicion : e . comparador e  (66)
-	e : e . '+' t  (73)
-	e : e . '-' t  (74)
+	condicion : e . comparador $$15 e  (67)
+	e : e . '+' t  (74)
+	e : e . '-' t  (75)
 
 	COMP_MAYOR_IGUAL  shift 108
 	COMP_MENOR_IGUAL  shift 109
@@ -1213,8 +1215,8 @@ state 96
 
 state 97
 	asignacion : asignable ASIGNACION $$13 e . ';'  (57)
-	e : e . '+' t  (73)
-	e : e . '-' t  (74)
+	e : e . '+' t  (74)
+	e : e . '-' t  (75)
 
 	';'  shift 125
 	'+'  shift 76
@@ -1238,30 +1240,9 @@ state 99
 
 
 state 100
-	e : e '+' t .  (73)
-	t : t . '*' f  (76)
-	t : t . '/' f  (77)
-
-	'*'  shift 78
-	'/'  shift 79
-	PR_ENTONCES  reduce 73
-	COMP_MAYOR_IGUAL  reduce 73
-	COMP_MENOR_IGUAL  reduce 73
-	COMP_DISTINTO  reduce 73
-	';'  reduce 73
-	']'  reduce 73
-	')'  reduce 73
-	'>'  reduce 73
-	'<'  reduce 73
-	'='  reduce 73
-	'+'  reduce 73
-	'-'  reduce 73
-
-
-state 101
-	e : e '-' t .  (74)
-	t : t . '*' f  (76)
-	t : t . '/' f  (77)
+	e : e '+' t .  (74)
+	t : t . '*' f  (77)
+	t : t . '/' f  (78)
 
 	'*'  shift 78
 	'/'  shift 79
@@ -1279,16 +1260,37 @@ state 101
 	'-'  reduce 74
 
 
-state 102
-	t : t '*' f .  (76)
+state 101
+	e : e '-' t .  (75)
+	t : t . '*' f  (77)
+	t : t . '/' f  (78)
 
-	.  reduce 76
+	'*'  shift 78
+	'/'  shift 79
+	PR_ENTONCES  reduce 75
+	COMP_MAYOR_IGUAL  reduce 75
+	COMP_MENOR_IGUAL  reduce 75
+	COMP_DISTINTO  reduce 75
+	';'  reduce 75
+	']'  reduce 75
+	')'  reduce 75
+	'>'  reduce 75
+	'<'  reduce 75
+	'='  reduce 75
+	'+'  reduce 75
+	'-'  reduce 75
+
+
+state 102
+	t : t '*' f .  (77)
+
+	.  reduce 77
 
 
 state 103
-	t : t '/' f .  (77)
+	t : t '/' f .  (78)
 
-	.  reduce 77
+	.  reduce 78
 
 
 state 104
@@ -1348,56 +1350,48 @@ state 107
 
 
 state 108
-	comparador : COMP_MAYOR_IGUAL .  (68)
-
-	.  reduce 68
-
-
-state 109
-	comparador : COMP_MENOR_IGUAL .  (70)
-
-	.  reduce 70
-
-
-state 110
-	comparador : COMP_DISTINTO .  (72)
-
-	.  reduce 72
-
-
-state 111
-	comparador : '>' .  (67)
-
-	.  reduce 67
-
-
-state 112
-	comparador : '<' .  (69)
+	comparador : COMP_MAYOR_IGUAL .  (69)
 
 	.  reduce 69
 
 
-state 113
-	comparador : '=' .  (71)
+state 109
+	comparador : COMP_MENOR_IGUAL .  (71)
 
 	.  reduce 71
 
 
+state 110
+	comparador : COMP_DISTINTO .  (73)
+
+	.  reduce 73
+
+
+state 111
+	comparador : '>' .  (68)
+
+	.  reduce 68
+
+
+state 112
+	comparador : '<' .  (70)
+
+	.  reduce 70
+
+
+state 113
+	comparador : '=' .  (72)
+
+	.  reduce 72
+
+
 state 114
-	condicion : e comparador . e  (66)
+	condicion : e comparador . $$15 e  (67)
+	$$15 : .  (66)
 
-	IDENTIFICADOR  shift 43
-	ENTERO  shift 85
-	ENTERO_LSS  shift 45
-	FUERA_RANGO  shift 46
-	'-'  shift 47
-	.  error
+	.  reduce 66
 
-	asignable  goto 48
-	e  goto 133
-	t  goto 50
-	f  goto 51
-	valor  goto 52
+	$$15  goto 133
 
 
 state 115
@@ -1624,15 +1618,20 @@ state 132
 
 
 state 133
-	condicion : e comparador e .  (66)
-	e : e . '+' t  (73)
-	e : e . '-' t  (74)
+	condicion : e comparador $$15 . e  (67)
 
-	'+'  shift 76
-	'-'  shift 77
-	PR_ENTONCES  reduce 66
-	';'  reduce 66
-	')'  reduce 66
+	IDENTIFICADOR  shift 43
+	ENTERO  shift 85
+	ENTERO_LSS  shift 45
+	FUERA_RANGO  shift 46
+	'-'  shift 47
+	.  error
+
+	asignable  goto 48
+	e  goto 151
+	t  goto 50
+	f  goto 51
+	valor  goto 52
 
 
 state 134
@@ -1661,7 +1660,7 @@ state 134
 	$$3  goto 15
 	$$4  goto 16
 	asignacion  goto 17
-	bloque  goto 151
+	bloque  goto 152
 	asignable  goto 18
 	asignacion_invalida  goto 19
 
@@ -1721,20 +1720,20 @@ state 143
 	PR_ENTERO_LSS  shift 7
 	.  error
 
-	tipo_dato  goto 152
+	tipo_dato  goto 153
 
 
 state 144
 	declaracion_invalida : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' error . ';'  (10)
 
-	';'  shift 153
+	';'  shift 154
 	.  error
 
 
 state 145
 	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR . PR_DE tipo_dato ';'  (5)
 
-	PR_DE  shift 154
+	PR_DE  shift 155
 	.  error
 
 
@@ -1770,7 +1769,7 @@ state 147
 	$$3  goto 15
 	$$4  goto 16
 	asignacion  goto 17
-	bloque  goto 155
+	bloque  goto 156
 	asignable  goto 18
 	asignacion_invalida  goto 19
 
@@ -1785,7 +1784,7 @@ state 149
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES bloque .  (28)
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES bloque . PR_SINO $$5 bloque  (30)
 
-	PR_SINO  shift 156
+	PR_SINO  shift 157
 	$end  reduce 28
 	error  reduce 28
 	IDENTIFICADOR  reduce 28
@@ -1810,63 +1809,75 @@ state 150
 
 
 state 151
+	condicion : e comparador $$15 e .  (67)
+	e : e . '+' t  (74)
+	e : e . '-' t  (75)
+
+	'+'  shift 76
+	'-'  shift 77
+	PR_ENTONCES  reduce 67
+	';'  reduce 67
+	')'  reduce 67
+
+
+state 152
 	seleccion_invalida : PR_SI $$6 condicion ')' PR_ENTONCES bloque .  (33)
 
 	.  reduce 33
 
 
-state 152
+state 153
 	declaracion_invalida : IDENTIFICADOR '[' error ']' $$1 PR_VECTOR PR_DE tipo_dato . ';'  (9)
 
-	';'  shift 157
+	';'  shift 158
 	.  error
 
 
-state 153
+state 154
 	declaracion_invalida : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' error ';' .  (10)
 
 	.  reduce 10
 
 
-state 154
+state 155
 	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE . tipo_dato ';'  (5)
 
 	PR_ENTERO  shift 6
 	PR_ENTERO_LSS  shift 7
 	.  error
 
-	tipo_dato  goto 158
+	tipo_dato  goto 159
 
 
-state 155
+state 156
 	seleccion_invalida : PR_SI '(' error ')' $$8 PR_ENTONCES bloque .  (37)
 
 	.  reduce 37
 
 
-state 156
+state 157
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO . $$5 bloque  (30)
 	$$5 : .  (29)
 
 	.  reduce 29
 
-	$$5  goto 159
+	$$5  goto 160
 
 
-state 157
+state 158
 	declaracion_invalida : IDENTIFICADOR '[' error ']' $$1 PR_VECTOR PR_DE tipo_dato ';' .  (9)
 
 	.  reduce 9
 
 
-state 158
+state 159
 	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato . ';'  (5)
 
-	';'  shift 160
+	';'  shift 161
 	.  error
 
 
-state 159
+state 160
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO $$5 . bloque  (30)
 	$$2 : .  (17)
 	$$3 : .  (19)
@@ -1892,22 +1903,22 @@ state 159
 	$$3  goto 15
 	$$4  goto 16
 	asignacion  goto 17
-	bloque  goto 161
+	bloque  goto 162
 	asignable  goto 18
 	asignacion_invalida  goto 19
 
 
-state 160
+state 161
 	declaracion : IDENTIFICADOR '[' ENTERO PUNTO_PUNTO ENTERO ']' PR_VECTOR PR_DE tipo_dato ';' .  (5)
 
 	.  reduce 5
 
 
-state 161
+state 162
 	seleccion : PR_SI '(' condicion ')' PR_ENTONCES bloque PR_SINO $$5 bloque .  (30)
 
 	.  reduce 30
 
 
-38 terminals, 40 nonterminals
-88 grammar rules, 162 states
+38 terminals, 41 nonterminals
+89 grammar rules, 163 states

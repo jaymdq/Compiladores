@@ -1,0 +1,20 @@
+**Sentencias declarativas
+
+entero a, c;
+entero_lss b;
+cortos[1..10] vector de entero;
+largos[1..10] vector de entero_lss;
+
+**Sentencias de Ejecución
+a := 8 / 3;
+**b := 8; 
+**largos[3] := 1;
+**largos[4] := 3 * 2;
+**largos[1] := largos[3] + largos[4] * 2;
+
+
+
+si (2 = a) entonces
+	imprimir('Bien');
+sino
+	imprimir('Mal che');
