@@ -12,6 +12,11 @@ largos[1..10] vector de entero_lss;
 **a := 5 * cortos[2];
 
 a := cortos[2] * 5;
+a := 8 * cortos[9];
+a := a * cortos[4];
+a := cortos[11] * cortos[12];
+
+**a := a + 6 + 7 * cortos[1];
 
 **a := cortos[2] * cortos[3];
 

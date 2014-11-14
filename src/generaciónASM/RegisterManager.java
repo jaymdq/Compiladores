@@ -108,6 +108,7 @@ public class RegisterManager {
 
 	// Mover un valor de un registro a otro
 	public Registro ocuparRegistro(Registro registro, Registro reg, boolean n16bits) {
+		// Ya esta en el registro solicitado
 		if (registro.equals(reg))
 			return reg;
 		
@@ -117,6 +118,7 @@ public class RegisterManager {
 			return null;
 
 		codigo.agregarSentencia(Operacion.MOV, r.getName(n16bits), reg.getName(n16bits));
+		reg.liberar();
 
 		return r;
 	}

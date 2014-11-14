@@ -449,26 +449,44 @@ public class Arbol implements ArbolAbs {
 		//Para ver si el izquierdo es un indice y hay que acceder el arreglo
 		if (izquierdo != null && izquierdo.getName().startsWith("[")){
 			op1 = izquierdo.getName();
+			System.out.println("[Arbol] Acceder a memoria (operando izquierdo)");
 			codigo.agregarSentencia(Operacion.MOV, regIzq.getName(n16bits, true), op1);
 			regIzq.setOperando(izquierdo, false);
-			//	regIzq.setEnMemoria(false);
-
-
 		}
 
 
 		if (oper.equals(Operacion.MUL) || oper.equals(Operacion.IMUL)){
 			//TODO
+			
+			// Parte baja: Operando 1
+			if (regIzq != null){
+				r = regManager.ocuparRegistro(new Registro("EAX", "AX"), regIzq, n16bits);		// Mover de registro a registro
+			}else{
+				r = regManager.ocuparRegistro(new Registro("EAX", "AX"), izquierdo, n16bits); 	// Mover de memoria a registro
+			}
+			
+			// Parte alta: 0 (evitar perdida de datos por si el registro estaba ocupado)
+			Registro r2 = regManager.ocuparRegistro(new Registro("EDX", "DX"), 0, n16bits); 	
+			
+			// Asegurarse que el segundo operando este en un registro
+			if (regDer == null){
+				regDer = regManager.ocuparRegistroLibre(derecho, n16bits);
+				op2 = regDer.getName(n16bits);
+			}else if (derecho != null && derecho.getName().startsWith("[")){
+				op2 = derecho.getName();
+				//System.out.println("[Arbol] Acceder a memoria (operando derecho)");
+				//codigo.agregarSentencia(Operacion.MOV, regIzq.getName(n16bits, true), op1);
+				//regIzq.setOperando(izquierdo, false);
+			}else{
+				op2 = regDer.getName(n16bits);
+			}
+			
+			codigo.agregarSentencia(oper, op2);													// Realizar operacion
+			r.setOperando(this);																// Actualizar operando parte baja
+			r2.liberar();																		// Liberar parte alta
+			regDer.liberar();																	// Liberar segundo operando
 
-			r = regManager.ocuparRegistro(new Registro("EAX", "AX"), izquierdo, n16bits); 		// Parte baja: operando1
-			Registro r2 = regManager.ocuparRegistro(new Registro("EDX", "DX"), 0, n16bits); 	// Parte alta: 0 (evitar perdida de datos)
-			op1 = r.getName(n16bits);
-			op2 = derecho.getName();
-
-			codigo.agregarSentencia(oper, op1, op2);											// Realizar operacion
-			r.setOperando(this);
-			r2.liberar();																		// Liberar segundo registro
-
+			System.out.println("Multiplicacion finalizada");
 			// Verificar overflow
 		}else if (oper.equals(Operacion.DIV) || oper.equals(Operacion.IDIV)){
 
@@ -478,7 +496,7 @@ public class Arbol implements ArbolAbs {
 			Registro r2 = regManager.ocuparRegistro(new Registro("EDX", "DX"), 0, n16bits); 	// Parte alta: 0 (evitar calculo erroneo)
 
 			if (regDer == null)
-				regDer = regManager.ocuparRegistroLibre(derecho, n16bits); // TODO
+				regDer = regManager.ocuparRegistroLibre(derecho, n16bits);						// TODO
 
 			op2 = regDer.getName(n16bits);
 
