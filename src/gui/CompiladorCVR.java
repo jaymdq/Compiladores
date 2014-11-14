@@ -641,7 +641,7 @@ public class CompiladorCVR {
 		String path = proyecto.getFile().getAbsolutePath();
 		path = path.split(".cvr")[0];
 		try {
-			Runtime.getRuntime().exec("cmd /c start masm\\build.bat " + path);
+			Runtime.getRuntime().exec("cmd /c start masm32\\build.bat " + path);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
