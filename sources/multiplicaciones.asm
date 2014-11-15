@@ -13,11 +13,15 @@ _b		DD ?
 _cortos		DW 10 DUP ( 0 )
 _cortitos	DW 10 DUP ( 0 )
 _largos		DD 10 DUP ( 0 )
+_@0		db "Terminar", 0
 _@E1 		db "Índice del arreglo es menor al límite inferior!!!", 0
 _@E2 		db "Índice del arreglo es mayor al límite superior!!!", 0
+_@E3 		db "Overflow en producto (Fuera de Rango)!!!", 0
+
 .code
 start:
-MOV BX, 2
+
+MOV BX, 1
 MOVSX EBX, BX
 CMP EBX, 1
 JGE label0
@@ -31,15 +35,11 @@ INVOKE ExitProcess, 0
 label1:
 SUB EBX, 1
 MOV EAX, EBX
-IMUL EAX, 2
-MOV AX, [ _cortos + AX ]
-MOV DX, 0
-MOV BX, 5
-CWD
-IMUL BX
-MOV _a, AX
+IMUL EAX, 4
+MOV EBX, 3200
+MOV [ _largos + EAX ], EBX
 
-MOV BX, 9
+MOV BX, 1
 MOVSX EBX, BX
 CMP EBX, 1
 JGE label2
@@ -53,75 +53,48 @@ INVOKE ExitProcess, 0
 label3:
 SUB EBX, 1
 MOV EAX, EBX
-IMUL EAX, 2
-MOV EBX, EAX
-MOV AX, 8
-MOV DX, 0
-CWD
-IMUL [ _cortos + BX ]
-MOV _a, AX
-
-MOV BX, 4
-MOVSX EBX, BX
-CMP EBX, 1
-JGE label4
-INVOKE MessageBox, NULL, addr _@E1, addr _@E1, MB_OK
+IMUL EAX, 4
+MOV EAX, [ _largos + EAX ]
+MOV EDX, 0
+MOV EBX, 32000
+MUL EBX
+JNO label4
+INVOKE MessageBox, NULL, addr _@E3, addr _@E3, MB_OK
 INVOKE ExitProcess, 0
 label4:
-CMP EBX, 10
-JLE label5
-INVOKE MessageBox, NULL, addr _@E2, addr _@E2, MB_OK
+MOV _b, EAX
+
+MOV EAX, 1
+MOV EDX, 0
+MOV EBX, 1
+MUL EBX
+JNO label5
+INVOKE MessageBox, NULL, addr _@E3, addr _@E3, MB_OK
 INVOKE ExitProcess, 0
 label5:
-SUB EBX, 1
-MOV EAX, EBX
-IMUL EAX, 2
-MOV EBX, EAX
-MOV AX, _a
-MOV DX, 0
-CWD
-IMUL [ _cortos + BX ]
-MOV _a, AX
+MOV _b, EAX
 
-MOV BX, 11
-MOVSX EBX, BX
-CMP EBX, 1
-JGE label6
-INVOKE MessageBox, NULL, addr _@E1, addr _@E1, MB_OK
+MOV EAX, 1
+MOV EDX, 0
+MOV EBX, -1
+MUL EBX
+JNO label6
+INVOKE MessageBox, NULL, addr _@E3, addr _@E3, MB_OK
 INVOKE ExitProcess, 0
 label6:
-CMP EBX, 10
-JLE label7
-INVOKE MessageBox, NULL, addr _@E2, addr _@E2, MB_OK
+MOV _b, EAX
+
+MOV EAX, -1
+MOV EDX, 0
+MOV EBX, -1
+MUL EBX
+JNO label7
+INVOKE MessageBox, NULL, addr _@E3, addr _@E3, MB_OK
 INVOKE ExitProcess, 0
 label7:
-SUB EBX, 1
-MOV EAX, EBX
-IMUL EAX, 2
-MOV BX, 12
-MOVSX EBX, BX
-CMP EBX, 1
-JGE label8
-INVOKE MessageBox, NULL, addr _@E1, addr _@E1, MB_OK
-INVOKE ExitProcess, 0
-label8:
-CMP EBX, 10
-JLE label9
-INVOKE MessageBox, NULL, addr _@E2, addr _@E2, MB_OK
-INVOKE ExitProcess, 0
-label9:
-SUB EBX, 1
-MOV ECX, EAX
-MOV EAX, EBX
-IMUL EAX, 2
-MOV CX, [ _cortos + CX ]
-MOV EBX, EAX
-MOV AX, CX
-MOV DX, 0
-CWD
-IMUL [ _cortos + BX ]
-MOV _a, AX
+MOV _b, EAX
 
+INVOKE MessageBox, NULL, addr _@0, addr _@0, MB_OK
 
 INVOKE ExitProcess, 0
 end start

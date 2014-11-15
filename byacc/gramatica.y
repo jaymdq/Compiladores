@@ -421,8 +421,11 @@ private void expresionValida(ArbolAbs exp){
 
 private void asignacionValida(ArbolAbs exp){
 	Arbol arbol = (Arbol) exp;
-	if (todasCTE)
+	if (todasCTE && arbol.getIzquierdo().getTipo().equals(ElementoTS.TIPOS.ENTERO_LSS)){
+		//Convertir parte derecha a entero..
+		arbol.getDerecho().convertirATipo(ElementoTS.TIPOS.ENTERO_LSS);
 		return;
+	}
 	if (arbol.getIzquierdo().getTipo() != arbol.getDerecho().getTipo())
 		escribirErrorDeGeneracion("Asignación entre diferentes tipos de datos.");
 }

@@ -488,6 +488,18 @@ public class Arbol implements ArbolAbs {
 			
 			System.out.println("Multiplicacion/Division finalizada");
 			// TODO Verificar overflow
+			
+			oper = Operacion.JNO;
+			String etiqueta = codigo.apilarEtiqueta();
+			
+			codigo.agregarSentencia(oper, etiqueta);
+			
+			codigo.agregarSentencia(Operacion.INVOKE, "MessageBox, NULL, addr _@E3, addr _@E3, MB_OK");
+			codigo.agregarSentencia(Operacion.INVOKE, "ExitProcess, 0");
+			
+			codigo.agregarEtiqueta(codigo.desapilarEtiqueta());
+			
+			
 		}else if (oper.equals(Operacion.ADD) || oper.equals(Operacion.SUB)){
 
 			if (regIzq == null &&  regDer == null){
@@ -588,5 +600,13 @@ public class Arbol implements ArbolAbs {
 
 	public boolean is16bits(){
 		return getTipo().equals(TIPOS.ENTERO);
+	}
+	
+	public void convertirATipo(ElementoTS.TIPOS tipo){
+		if(izquierdo != null)
+			izquierdo.convertirATipo(tipo);
+		if (derecho != null)
+			derecho.convertirATipo(tipo);		
+		
 	}
 }

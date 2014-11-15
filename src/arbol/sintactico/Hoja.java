@@ -8,7 +8,9 @@ import proyecto.ElementoTS.USOS;
 public class Hoja implements ArbolAbs {
 
 	private ElementoTS contenido;
-
+	private ElementoTS.TIPOS tipoAlternativo = null;
+	
+	
 	public Hoja(ElementoTS contenido){
 		this.contenido = contenido;
 	}
@@ -39,7 +41,10 @@ public class Hoja implements ArbolAbs {
 
 	@Override
 	public TIPOS getTipo() {
-		return contenido.getTipo();
+		if (tipoAlternativo == null)
+			return contenido.getTipo();
+		else
+			return tipoAlternativo;
 	}
 
 	public ArbolAbs clone(){
@@ -58,11 +63,16 @@ public class Hoja implements ArbolAbs {
 	
 	@Override
 	public void generarAssembler(CodigoAssembler codigo) {
-		// TODO Auto-generated method stub
+		
 	}
 	
 	@Override
 	public boolean is16bits() {
 		return (getTipo().equals(TIPOS.ENTERO) || getTipo().equals(TIPOS.VECTOR_ENTERO));
+	}
+
+	@Override
+	public void convertirATipo(ElementoTS.TIPOS tipo) {
+		tipoAlternativo = tipo;		
 	}
 }

@@ -65,6 +65,7 @@ public class GeneradorASM {
 		//Se insertan los errores!
 		codigo += "_@E1 \t\tdb \"Índice del arreglo es menor al límite inferior!!!\", 0\n";
 		codigo += "_@E2 \t\tdb \"Índice del arreglo es mayor al límite superior!!!\", 0\n";
+		codigo += "_@E3 \t\tdb \"Overflow en producto (Fuera de Rango)!!!\", 0\n";
 		
 		
 		
