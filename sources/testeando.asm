@@ -18,6 +18,11 @@ _@E3 		db "Overflow en producto (Fuera de Rango)!!!", 0
 .code
 start:
 
+MOV EAX, 0 ; Inicialización 
+MOV EBX, 0 ; Inicialización 
+MOV ECX, 0 ; Inicialización 
+MOV EDX, 0 ; Inicialización 
+
 MOV BX, 1
 SUB EBX, 1
 MOV EAX, EBX

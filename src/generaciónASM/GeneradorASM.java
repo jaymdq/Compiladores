@@ -80,7 +80,11 @@ public class GeneradorASM {
 		
 		codigo += "\n.code\n";
 		codigo += "start:\n\n";
-
+		codigo += "MOV EAX, 0 ; Inicialización \n";
+		codigo += "MOV EBX, 0 ; Inicialización \n";
+		codigo += "MOV ECX, 0 ; Inicialización \n";
+		codigo += "MOV EDX, 0 ; Inicialización \n\n";
+		
 		codigo += capturadorASM.getSentencias();
 
 		//Se finaliza el código
