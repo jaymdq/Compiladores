@@ -681,7 +681,6 @@ public class CompiladorCVR {
 		//Mostrar un mensaje advirtiendo que no se ejecutar un exe que no existe
 		WebOptionPane.showConfirmDialog(null, "No ha abierto y compilado un proyecto","No es posible ejecutar el programa",WebOptionPane.PLAIN_MESSAGE);
 
-
 	}
 
 	private void guardar(){

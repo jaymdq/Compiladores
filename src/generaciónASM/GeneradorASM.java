@@ -66,19 +66,21 @@ public class GeneradorASM {
 		codigo += "_@E1 \t\tdb \"Índice del arreglo es menor al límite inferior!!!\", 0\n";
 		codigo += "_@E2 \t\tdb \"Índice del arreglo es mayor al límite superior!!!\", 0\n";
 		
+		
+		
 		//----------------------- CÓDIGO ------------------------------------------------------
 
-		codigo += ".code\n";
-		codigo += "start:\n";
-
-		// TODO Testeando
 		System.out.println("Generar Assembler");
 		CodigoAssembler capturadorASM = new CodigoAssembler();
 		sentencias.generarAssembler(capturadorASM);
 
+		//Caso particular de si hay sentencias auxiliares
+		codigo += capturadorASM.getDeclaracionesExtras();
+		
+		codigo += "\n.code\n";
+		codigo += "start:\n\n";
 
 		codigo += capturadorASM.getSentencias();
-
 
 		//Se finaliza el código
 		codigo += "INVOKE ExitProcess, 0\n";
