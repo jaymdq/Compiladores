@@ -31,7 +31,7 @@ cortos[1] := 2;
 cortos[4] := 4;
 cortos[3] := cortos[2] * cortos[1] * cortos[4] + cortos[2] * cortos[1] + cortos[4] * cortos[1];
 
-si (cortos[3] = 16) entonces
+si (cortos[3] = 28) entonces
 	imprimir('GENIO CAPO');
 
 

@@ -93,10 +93,10 @@ public class GeneradorASM {
 		
 		codigo += capturadorASM.getSentencias();
 
-		codigo += "PUSH EDX ; Se restaura el contexto \n";
-		codigo += "PUSH ECX ; Se restaura el contexto \n";
-		codigo += "PUSH EBX ; Se restaura el contexto \n";
-		codigo += "PUSH EAX ; Se restaura el contexto \n";
+		codigo += "POP EDX ; Se restaura el contexto \n";
+		codigo += "POP ECX ; Se restaura el contexto \n";
+		codigo += "POP EBX ; Se restaura el contexto \n";
+		codigo += "POP EAX ; Se restaura el contexto \n";
 		
 		//Se finaliza el código
 		codigo += "INVOKE ExitProcess, 0\n";
