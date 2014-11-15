@@ -11,16 +11,25 @@ public class Registro {
 	private ArbolAbs operando;
 	private boolean inmediato = false;
 	private boolean enMemoria = false;
+	private RegisterManager regManager;
 	
-	public Registro(String nombre32, String nombre16) {
+	public Registro(String nombre32, String nombre16, RegisterManager regManager) {
 		super();
 		this.nombre32 = nombre32;
 		this.nombre16 = nombre16;
+		this.regManager = regManager;
 	}
 	
-	public void setInmediato(){ inmediato = true; }
+	public Registro(String nombre32, String nombre16) {
+		this(nombre32, nombre16, null);
+	}
 	
-	public void setEnMemoria(boolean enMemoria){ this.enMemoria = enMemoria; }
+	public void setInmediato(){ inmediato = true; regManager.encolar(this); }
+	
+	public void setEnMemoria(boolean enMemoria){ 
+		this.enMemoria = enMemoria; 
+		regManager.encolar(this); // TODO No se si va aca
+	}
 
 	public boolean isLibre(){
 		return operando == null && !inmediato;
@@ -30,15 +39,18 @@ public class Registro {
 		operando = null;
 		inmediato = false;
 		enMemoria = false;
+		regManager.desencolar(this);
 	}
 	
 	public void setOperando(ArbolAbs operando) {
 		this.operando = operando;
+		regManager.encolar(this);
 	}
 	
 	public void setOperando(ArbolAbs operando, boolean enMemoria) {
 		this.operando = operando;
 		this.enMemoria = enMemoria;
+		regManager.encolar(this);
 	}
 
 	public ArbolAbs getOperando(){

@@ -1,5 +1,8 @@
 package generaciónASM;
 
+import java.util.HashMap;
+import java.util.Vector;
+
 import generaciónASM.CodigoAssembler.Operacion;
 import arbol.sintactico.ArbolAbs;
 
@@ -7,14 +10,17 @@ public class RegisterManager {
 
 	CodigoAssembler codigo;
 	Registro registros[] = new Registro[4];
+	
+	Vector<Registro> cola = new Vector<Registro>();
+	HashMap<ArbolAbs, String> hash = new HashMap<ArbolAbs, String>();
 
 	public RegisterManager(CodigoAssembler codigo){
 		// Se ordenan EBX y ECX primero para postergar el uso de registros específicos
 		// (Sirven para mas operaciones)
-		registros[0] = new Registro("EBX", "BX");
-		registros[1] = new Registro("ECX", "CX");
-		registros[2] = new Registro("EAX", "AX");
-		registros[3] = new Registro("EDX", "DX");
+		registros[0] = new Registro("EBX", "BX", this);
+		registros[1] = new Registro("ECX", "CX", this);
+		registros[2] = new Registro("EAX", "AX", this);
+		registros[3] = new Registro("EDX", "DX", this);
 
 		this.codigo = codigo;
 	}
@@ -47,7 +53,16 @@ public class RegisterManager {
 
 		// TODO
 		System.out.println("ERROR: Todos los registros usados");
-		return null;
+		Registro masViejo = cola.firstElement();
+		String variableTemporal = codigo.getDeclaracionesExtras();
+		codigo.agregarSentencia(Operacion.MOV, masViejo.getName(false), variableTemporal);
+		hash.put(masViejo.getOperando(), variableTemporal);
+		masViejo.liberar();
+		
+		masViejo.setOperando(operando);
+		codigo.agregarSentencia(Operacion.MOV, masViejo.getName(false), operando.getName());
+		
+		return masViejo;
 	}
 
 	// Mover de un registro a otro. Devuelve el registro
@@ -64,7 +79,17 @@ public class RegisterManager {
 
 		// TODO
 		System.out.println("ERROR: Todos los registros usados");
-		return null;
+		Registro masViejo = cola.firstElement();
+		String variableTemporal = codigo.getDeclaracionesExtras();
+		codigo.agregarSentencia(Operacion.MOV, masViejo.getName(false), variableTemporal);
+		hash.put(masViejo.getOperando(), variableTemporal);
+		masViejo.liberar();
+		
+		masViejo.setOperando(registro.getOperando());
+		registro.liberar();
+		codigo.agregarSentencia(Operacion.MOV, masViejo.getName(false), registro.getName(false));
+		
+		return masViejo;
 	}
 
 	public Registro findRegistro(ArbolAbs operando){
@@ -74,6 +99,16 @@ public class RegisterManager {
 			}
 		}
 
+		// TODO Verificar que no este almacenado
+		if (hash.containsKey(operando)){
+			String variableTemporal = hash.get(operando);
+			Registro victima = cola.lastElement(); // Por teoria de usos se elige la ultima (?)
+			victima.liberar();
+			codigo.agregarSentencia(Operacion.MOV, victima.getName(false), variableTemporal);
+			victima.setOperando(operando);
+			return victima;
+		}
+		
 		return null;
 	}
 
@@ -122,23 +157,20 @@ public class RegisterManager {
 
 		return r;
 	}
-
-	// Mover un valor de un registro a otro
-	public Registro ocuparRegistroBien(Registro registro,ArbolAbs operando, boolean n16bits) {
-		Registro r = getRegistro(registro, operando);
-
-		if (r == null)
-			return null;
-
-		r.setOperando(operando);
-
-		return r;
-	}
 	
 	public void liberarTodos(){
 		for (Registro r : registros){
 			r.liberar();
 		}
+	}
+
+	public void desencolar(Registro registro) {
+		cola.remove(registro);		
+	}
+
+	public void encolar(Registro registro) {
+		cola.remove(registro);
+		cola.add(registro); // Agregar al final
 	}
 
 }

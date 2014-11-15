@@ -44,7 +44,7 @@ public class Test {
 
 		// Modificacion: Debug
 		//System.out.println(maximo);
-		//System.out.println(suc[10]);
+		System.out.println(suc[10]);
 		//System.out.println(fibo[10]);
 		
 		if(maximo == 4294967295l)
@@ -52,7 +52,8 @@ public class Test {
 				System.out.println("Sucesion incorrecta");
 			else
 				if (fibo[10] == 55)
-					System.out.println("Sucesion correcta");
+					if (suc[10] == 1162720)
+						System.out.println("Sucesiones correctas");
 		
 	}
 
