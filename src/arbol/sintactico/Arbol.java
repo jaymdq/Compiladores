@@ -342,7 +342,7 @@ public class Arbol implements ArbolAbs {
 			if (regIndice == null){
 				regIndice = regManager.ocuparRegistroLibre(derecho, derecho.is16bits());
 			}
-
+/*
 			// Widening (16 a 32 bits)
 			codigo.agregarSentencia(Operacion.MOVSX, regIndice.getName(false), regIndice.getName(true));
 			
@@ -371,7 +371,7 @@ public class Arbol implements ArbolAbs {
 
 			codigo.agregarEtiqueta(salto);
 			codigo.desapilarEtiqueta();
-
+*/
 			// CALCULAR POSICION DE MEMORIA
 
 			//  - Se resta el limite inferior
@@ -487,8 +487,9 @@ public class Arbol implements ArbolAbs {
 			this.operacion = r.getName(n16bits);
 			
 			System.out.println("Multiplicacion/Division finalizada");
-			// TODO Verificar overflow
 			
+			// TODO Verificar overflow
+		/*	
 			oper = Operacion.JNO;
 			String etiqueta = codigo.apilarEtiqueta();
 			
@@ -499,7 +500,7 @@ public class Arbol implements ArbolAbs {
 			
 			codigo.agregarEtiqueta(codigo.desapilarEtiqueta());
 			
-			
+			*/
 		}else if (oper.equals(Operacion.ADD) || oper.equals(Operacion.SUB)){
 
 			if (regIzq == null &&  regDer == null){

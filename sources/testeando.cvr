@@ -1,0 +1,13 @@
+**Sentencias declarativas
+cortos[1..10] vector de entero;
+
+cortos[1] := 1;
+cortos[2] := 1;
+cortos[4] := 1;
+
+cortos[3] := cortos[2] * cortos[1] * cortos[4] + cortos[2] * cortos[1] + cortos[4] * cortos[1];
+
+si (cortos[3] = 3) entonces
+	imprimir('bien pibe, bien');
+sino
+	imprimir('mal rocha, mal');

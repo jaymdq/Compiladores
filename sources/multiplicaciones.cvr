@@ -6,13 +6,13 @@ cortitos[1..10] vector de entero;
 largos[1..10] vector de entero_lss;
 
 **Sentencias de Ejecución
-largos[1] := 3200;
-b :=  largos[1] * 32000;
+**largos[1] := 3200;
+**b :=  largos[1] * 32000;
 
-b := 1 * 1;
-b := 1 * -1;
-b := -1 * -1;
-imprimir('Terminar');
+**b := 1 * 1;
+**b := 1 * -1;
+**b := -1 * -1;
+**imprimir('Terminar');
 
 **a := 5 * cortos[2];
 
@@ -26,7 +26,13 @@ imprimir('Terminar');
 **a := cortos[2] * cortos[3];
 
 **Este caso lo hace el rocha!
-**cortos[3] := cortos[2] * cortos[1] * cortos[4];
+cortos[2] := 2;
+cortos[1] := 2;
+cortos[4] := 4;
+cortos[3] := cortos[2] * cortos[1] * cortos[4] + cortos[2] * cortos[1] + cortos[4] * cortos[1];
+
+si (cortos[3] = 16) entonces
+	imprimir('GENIO CAPO');
 
 
 **b := b + b + 8;

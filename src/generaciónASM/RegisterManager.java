@@ -54,13 +54,13 @@ public class RegisterManager {
 		// TODO
 		System.out.println("ERROR: Todos los registros usados");
 		Registro masViejo = cola.firstElement();
-		String variableTemporal = codigo.getDeclaracionesExtras();
-		codigo.agregarSentencia(Operacion.MOV, masViejo.getName(false), variableTemporal);
+		String variableTemporal = codigo.declararTemporal();
+		codigo.agregarSentencia(Operacion.MOV, variableTemporal, masViejo.getName(n16bits));
 		hash.put(masViejo.getOperando(), variableTemporal);
 		masViejo.liberar();
 		
 		masViejo.setOperando(operando);
-		codigo.agregarSentencia(Operacion.MOV, masViejo.getName(false), operando.getName());
+		codigo.agregarSentencia(Operacion.MOV, masViejo.getName(n16bits), operando.getName());
 		
 		return masViejo;
 	}
@@ -80,8 +80,8 @@ public class RegisterManager {
 		// TODO
 		System.out.println("ERROR: Todos los registros usados");
 		Registro masViejo = cola.firstElement();
-		String variableTemporal = codigo.getDeclaracionesExtras();
-		codigo.agregarSentencia(Operacion.MOV, masViejo.getName(false), variableTemporal);
+		String variableTemporal = codigo.declararTemporal();
+		codigo.agregarSentencia(Operacion.MOV, variableTemporal, masViejo.getName(false));
 		hash.put(masViejo.getOperando(), variableTemporal);
 		masViejo.liberar();
 		
@@ -98,14 +98,24 @@ public class RegisterManager {
 				return r;
 			}
 		}
-
 		// TODO Verificar que no este almacenado
 		if (hash.containsKey(operando)){
 			String variableTemporal = hash.get(operando);
-			Registro victima = cola.lastElement(); // Por teoria de usos se elige la ultima (?)
-			victima.liberar();
+			Registro victima = null;
+			int i = 0;
+			while (victima == null && i < 4) {
+				if (registros[i].isLibre())
+					victima = registros[i];
+				else
+					i++;
+			}
+			if (victima == null)
+				victima = cola.firstElement(); // Por teoria de usos se elige la ultima
 			codigo.agregarSentencia(Operacion.MOV, victima.getName(false), variableTemporal);
+			victima.liberar();
+				
 			victima.setOperando(operando);
+			hash.remove(operando);
 			return victima;
 		}
 		
