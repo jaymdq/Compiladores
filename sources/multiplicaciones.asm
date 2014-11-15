@@ -1,11 +1,11 @@
 .386
 .model flat, stdcall
 option casemap :none
-include D:\Proyectos\Compiladores\masm32\include\windows.inc
-include D:\Proyectos\Compiladores\masm32\include\kernel32.inc
-include D:\Proyectos\Compiladores\masm32\include\user32.inc
-includelib D:\Proyectos\Compiladores\masm32\lib\kernel32.lib
-includelib D:\Proyectos\Compiladores\masm32\lib\user32.lib
+include C:\Users\Ariel\workspace\Compiladores\masm32\include\windows.inc
+include C:\Users\Ariel\workspace\Compiladores\masm32\include\kernel32.inc
+include C:\Users\Ariel\workspace\Compiladores\masm32\include\user32.inc
+includelib C:\Users\Ariel\workspace\Compiladores\masm32\lib\kernel32.lib
+includelib C:\Users\Ariel\workspace\Compiladores\masm32\lib\user32.lib
 .data
 _a		DW ?
 _c		DW ?
@@ -13,8 +13,8 @@ _b		DD ?
 _cortos		DW 10 DUP ( 0 )
 _cortitos	DW 10 DUP ( 0 )
 _largos		DD 10 DUP ( 0 )
-_@1		db "Excelente", 0
 _@0		db "GENIO CAPO", 0
+_@1		db "Excelente", 0
 _@E1 		db "Índice del arreglo es menor al límite inferior!!!", 0
 _@E2 		db "Índice del arreglo es mayor al límite superior!!!", 0
 _@E3 		db "Overflow en producto (Fuera de Rango)!!!", 0
@@ -22,6 +22,11 @@ _@E3 		db "Overflow en producto (Fuera de Rango)!!!", 0
 
 .code
 start:
+
+MOV EAX, 0 ; Inicialización 
+MOV EBX, 0 ; Inicialización 
+MOV ECX, 0 ; Inicialización 
+MOV EDX, 0 ; Inicialización 
 
 MOV BX, 2
 SUB EBX, 1
@@ -109,6 +114,7 @@ MOV DX, 0
 CWD
 IMUL [ _cortos + BX ]
 ADD CX, AX
+MOV EBX, @aux0
 MOV [ _cortos + BX ], CX
 
 MOV BX, 3
@@ -116,7 +122,7 @@ SUB EBX, 1
 MOV EAX, EBX
 IMUL EAX, 2
 MOV AX, [ _cortos + AX ]
-CMP AX, 16
+CMP AX, 28
 JNE label0
 INVOKE MessageBox, NULL, addr _@0, addr _@0, MB_OK
 label0:

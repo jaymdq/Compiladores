@@ -1,15 +1,15 @@
 .386
 .model flat, stdcall
 option casemap :none
-include D:\Proyectos\Compiladores\masm32\include\windows.inc
-include D:\Proyectos\Compiladores\masm32\include\kernel32.inc
-include D:\Proyectos\Compiladores\masm32\include\user32.inc
-includelib D:\Proyectos\Compiladores\masm32\lib\kernel32.lib
-includelib D:\Proyectos\Compiladores\masm32\lib\user32.lib
+include C:\Users\Ariel\workspace\Compiladores\masm32\include\windows.inc
+include C:\Users\Ariel\workspace\Compiladores\masm32\include\kernel32.inc
+include C:\Users\Ariel\workspace\Compiladores\masm32\include\user32.inc
+includelib C:\Users\Ariel\workspace\Compiladores\masm32\lib\kernel32.lib
+includelib C:\Users\Ariel\workspace\Compiladores\masm32\lib\user32.lib
 .data
 _cortos		DW 10 DUP ( 0 )
-_@0		db "bien pibe, bien", 0
 _@1		db "mal rocha, mal", 0
+_@0		db "bien pibe, bien", 0
 _@E1 		db "Índice del arreglo es menor al límite inferior!!!", 0
 _@E2 		db "Índice del arreglo es mayor al límite superior!!!", 0
 _@E3 		db "Overflow en producto (Fuera de Rango)!!!", 0

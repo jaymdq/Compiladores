@@ -80,6 +80,12 @@ public class GeneradorASM {
 		
 		codigo += "\n.code\n";
 		codigo += "start:\n\n";
+		
+		codigo += "PUSH EAX ; Se guarda el contexto \n";
+		codigo += "PUSH EBX ; Se guarda el contexto \n";
+		codigo += "PUSH ECX ; Se guarda el contexto \n";
+		codigo += "PUSH EDX ; Se guarda el contexto \n";
+			
 		codigo += "MOV EAX, 0 ; Inicialización \n";
 		codigo += "MOV EBX, 0 ; Inicialización \n";
 		codigo += "MOV ECX, 0 ; Inicialización \n";
@@ -87,6 +93,11 @@ public class GeneradorASM {
 		
 		codigo += capturadorASM.getSentencias();
 
+		codigo += "PUSH EDX ; Se restaura el contexto \n";
+		codigo += "PUSH ECX ; Se restaura el contexto \n";
+		codigo += "PUSH EBX ; Se restaura el contexto \n";
+		codigo += "PUSH EAX ; Se restaura el contexto \n";
+		
 		//Se finaliza el código
 		codigo += "INVOKE ExitProcess, 0\n";
 		codigo += "end start";
