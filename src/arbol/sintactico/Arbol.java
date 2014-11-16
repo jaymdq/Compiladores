@@ -144,8 +144,7 @@ public class Arbol implements ArbolAbs {
 
 	@Override
 	public void generarAssembler(CodigoAssembler codigo) {
-
-		//TODO 
+ 
 
 		Operacion oper = null;
 		boolean conmutativa = false;
@@ -542,7 +541,7 @@ public class Arbol implements ArbolAbs {
 				op2 = izquierdo.getName();
 
 				if (derecho != null && derecho.getName().startsWith("[")){
-					codigo.agregarSentencia(Operacion.MOV, regDer.getName(false, true), op1); 
+					codigo.agregarSentencia(Operacion.MOV, regDer.getName(n16bits, true), op1); 
 					regDer.setEnMemoria(false);
 					op1 = regDer.getName(n16bits);
 

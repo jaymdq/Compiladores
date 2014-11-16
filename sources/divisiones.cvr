@@ -35,12 +35,19 @@ b := -4 / 2;
 si (b = -2) entonces
 	imprimir('Mal 7');
 
+a := 31053 / 784 / 3 / 2 / 1 / 1 / 1;
+si (a = 6) entonces
+	imprimir('Bien 8');
+
+
 cortos[2] := 16;
 cortos[1] := 2;
 cortos[4] := 4;
-cortos[3] := cortos[2] / cortos[1] / cortos[4] + cortos[2] / cortos[1] ;
-**cortos[3] := cortos[2] / cortos[1] / cortos[4] + cortos[2] / cortos[1] + cortos[4] / cortos[1];
+**cortos[3] := cortos[2] / cortos[1] / cortos[4] + cortos[2] / cortos[1] ; **FUNCIONA ESTE CASO
+cortos[3] := cortos[2] / cortos[1] / cortos[4] + cortos[2] / cortos[1] + cortos[4] / cortos[1];
 
-si (cortos[3] = 2) entonces
-	imprimir('Bien 8');
+si (cortos[3] = 12) entonces
+	imprimir('Bien 9');
 
+
+imprimir('Termine');

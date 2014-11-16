@@ -55,7 +55,8 @@ public class RegisterManager {
 		System.out.println("ERROR: Todos los registros usados");
 		Registro masViejo = cola.firstElement();
 		String variableTemporal = codigo.declararTemporal();
-		codigo.agregarSentencia(Operacion.MOV, variableTemporal, masViejo.getName(n16bits));
+		
+		codigo.agregarSentencia(Operacion.MOV, variableTemporal, masViejo.getName(false));
 		hash.put(masViejo.getOperando(), variableTemporal);
 		masViejo.liberar();
 		
