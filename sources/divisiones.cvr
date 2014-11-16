@@ -1,0 +1,46 @@
+**Sentencias declarativas
+entero a, c;
+entero_lss b;
+cortos[1..10] vector de entero;
+cortitos[1..10] vector de entero;
+largos[1..10] vector de entero_lss;
+
+**Sentencias de Ejecución
+
+a := 4 / 2;
+si (a = 2) entonces
+	imprimir('Bien 1');
+
+a := -4 / 2;
+si (a = -2) entonces
+	imprimir('Bien 2');
+
+a := 4 / -2;
+si (a = -2) entonces
+	imprimir('Bien 3');
+
+a := -4 / -2;
+si (a = 2) entonces
+	imprimir('Bien 4');
+
+a := a / a;
+si (a = 1) entonces
+	imprimir('Bien 5');
+
+a := a * 4 / a * 2;
+si (a = 8) entonces
+	imprimir('Bien 6');
+
+b := -4 / 2;
+si (b = -2) entonces
+	imprimir('Mal 7');
+
+cortos[2] := 16;
+cortos[1] := 2;
+cortos[4] := 4;
+cortos[3] := cortos[2] / cortos[1] / cortos[4] + cortos[2] / cortos[1] ;
+**cortos[3] := cortos[2] / cortos[1] / cortos[4] + cortos[2] / cortos[1] + cortos[4] / cortos[1];
+
+si (cortos[3] = 2) entonces
+	imprimir('Bien 8');
+

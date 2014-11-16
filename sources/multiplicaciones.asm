@@ -1,11 +1,11 @@
 .386
 .model flat, stdcall
 option casemap :none
-include C:\Users\Ariel\workspace\Compiladores\masm32\include\windows.inc
-include C:\Users\Ariel\workspace\Compiladores\masm32\include\kernel32.inc
-include C:\Users\Ariel\workspace\Compiladores\masm32\include\user32.inc
-includelib C:\Users\Ariel\workspace\Compiladores\masm32\lib\kernel32.lib
-includelib C:\Users\Ariel\workspace\Compiladores\masm32\lib\user32.lib
+include C:\Users\Ariel\Desktop\Export\masm32\include\windows.inc
+include C:\Users\Ariel\Desktop\Export\masm32\include\kernel32.inc
+include C:\Users\Ariel\Desktop\Export\masm32\include\user32.inc
+includelib C:\Users\Ariel\Desktop\Export\masm32\lib\kernel32.lib
+includelib C:\Users\Ariel\Desktop\Export\masm32\lib\user32.lib
 .data
 _a		DW ?
 _c		DW ?
@@ -13,20 +13,24 @@ _b		DD ?
 _cortos		DW 10 DUP ( 0 )
 _cortitos	DW 10 DUP ( 0 )
 _largos		DD 10 DUP ( 0 )
-_@0		db "GENIO CAPO", 0
 _@1		db "Excelente", 0
-_@E1 		db "脥ndice del arreglo es menor al l铆mite inferior!!!", 0
-_@E2 		db "脥ndice del arreglo es mayor al l铆mite superior!!!", 0
+_@0		db "GENIO CAPO", 0
+_@E1 		db "蚽dice del arreglo es menor al l韒ite inferior!!!", 0
+_@E2 		db "蚽dice del arreglo es mayor al l韒ite superior!!!", 0
 _@E3 		db "Overflow en producto (Fuera de Rango)!!!", 0
 @aux0		DD 0
 
 .code
 start:
 
-MOV EAX, 0 ; Inicializaci贸n 
-MOV EBX, 0 ; Inicializaci贸n 
-MOV ECX, 0 ; Inicializaci贸n 
-MOV EDX, 0 ; Inicializaci贸n 
+PUSH EAX ; Se guarda el contexto 
+PUSH EBX ; Se guarda el contexto 
+PUSH ECX ; Se guarda el contexto 
+PUSH EDX ; Se guarda el contexto 
+MOV EAX, 0 ; Inicializaci髇 
+MOV EBX, 0 ; Inicializaci髇 
+MOV ECX, 0 ; Inicializaci髇 
+MOV EDX, 0 ; Inicializaci髇 
 
 MOV BX, 2
 SUB EBX, 1
@@ -176,5 +180,9 @@ JNE label1
 INVOKE MessageBox, NULL, addr _@1, addr _@1, MB_OK
 label1:
 
+POP EDX ; Se restaura el contexto 
+POP ECX ; Se restaura el contexto 
+POP EBX ; Se restaura el contexto 
+POP EAX ; Se restaura el contexto 
 INVOKE ExitProcess, 0
 end start

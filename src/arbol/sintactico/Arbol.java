@@ -342,12 +342,12 @@ public class Arbol implements ArbolAbs {
 			if (regIndice == null){
 				regIndice = regManager.ocuparRegistroLibre(derecho, derecho.is16bits());
 			}
-/*
+
 			// Widening (16 a 32 bits)
 			codigo.agregarSentencia(Operacion.MOVSX, regIndice.getName(false), regIndice.getName(true));
-			
+
 			// CHEQUEO DE LIMITE
-			
+
 			//   - Se chequea el limite INFERIOR
 			codigo.agregarSentencia(Operacion.CMP, regIndice.getName(false), limInf.toString());
 
@@ -371,7 +371,7 @@ public class Arbol implements ArbolAbs {
 
 			codigo.agregarEtiqueta(salto);
 			codigo.desapilarEtiqueta();
-*/
+
 			// CALCULAR POSICION DE MEMORIA
 
 			//  - Se resta el limite inferior
@@ -447,17 +447,17 @@ public class Arbol implements ArbolAbs {
 
 		if (oper.equals(Operacion.MUL) || oper.equals(Operacion.IMUL) || oper.equals(Operacion.DIV) || oper.equals(Operacion.IDIV)){
 			//TODO
-			
+
 			// Parte baja: Operando 1
 			if (regIzq != null){
 				r = regManager.ocuparRegistro(new Registro("EAX", "AX"), regIzq, n16bits);		// Mover de registro a registro
 			}else{
 				r = regManager.ocuparRegistro(new Registro("EAX", "AX"), izquierdo, n16bits); 	// Mover de memoria a registro
 			}
-			
+
 			// Parte alta: 0 (evitar perdida de datos por si el registro estaba ocupado)
 			Registro r2 = regManager.ocuparRegistro(new Registro("EDX", "DX"), 0, n16bits); 	
-			
+
 			// Asegurarse que el segundo operando este en un registro (y que no se haya movido anteriormente)
 			//regDer = regManager.findRegistro(derecho);
 			if (regDer == null){
@@ -471,36 +471,36 @@ public class Arbol implements ArbolAbs {
 			}else{
 				op2 = regDer.getName(n16bits);
 			}
-			
-			
+
+
 			if (oper.equals(Operacion.IDIV) || oper.equals(Operacion.IMUL))
 				codigo.agregarSentencia(Operacion.CWD);											// Realizar extension de signo
-			
+
 			codigo.agregarSentencia(oper, op2);													// Realizar operacion
 			r.setOperando(this);																// Actualizar operando parte baja
 			r2.liberar();																		// Liberar parte alta
 			if (regDer.equals(r))
 				regDer = regManager.findRegistro(derecho);
-			
+
 			regDer.liberar();																	// Liberar segundo operando
 
 			this.operacion = r.getName(n16bits);
-			
+
 			System.out.println("Multiplicacion/Division finalizada");
-			
-			// TODO Verificar overflow
-		/*	
-			oper = Operacion.JNO;
-			String etiqueta = codigo.apilarEtiqueta();
-			
-			codigo.agregarSentencia(oper, etiqueta);
-			
-			codigo.agregarSentencia(Operacion.INVOKE, "MessageBox, NULL, addr _@E3, addr _@E3, MB_OK");
-			codigo.agregarSentencia(Operacion.INVOKE, "ExitProcess, 0");
-			
-			codigo.agregarEtiqueta(codigo.desapilarEtiqueta());
-			
-			*/
+
+			// Verificar overflow
+			if (oper.equals(Operacion.MUL) || oper.equals(Operacion.IMUL)){
+				oper = Operacion.JNO;
+				String etiqueta = codigo.apilarEtiqueta();
+
+				codigo.agregarSentencia(oper, etiqueta);
+
+				codigo.agregarSentencia(Operacion.INVOKE, "MessageBox, NULL, addr _@E3, addr _@E3, MB_OK");
+				codigo.agregarSentencia(Operacion.INVOKE, "ExitProcess, 0");
+
+				codigo.agregarEtiqueta(codigo.desapilarEtiqueta());
+
+			}
 		}else if (oper.equals(Operacion.ADD) || oper.equals(Operacion.SUB)){
 
 			if (regIzq == null &&  regDer == null){
@@ -602,12 +602,12 @@ public class Arbol implements ArbolAbs {
 	public boolean is16bits(){
 		return getTipo().equals(TIPOS.ENTERO);
 	}
-	
+
 	public void convertirATipo(ElementoTS.TIPOS tipo){
 		if(izquierdo != null)
 			izquierdo.convertirATipo(tipo);
 		if (derecho != null)
 			derecho.convertirATipo(tipo);		
-		
+
 	}
 }
