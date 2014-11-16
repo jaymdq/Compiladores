@@ -1,4 +1,8 @@
 package gui;
+import filtro.FiltroCvr;
+import generaciónASM.CodigoASMManager;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -9,36 +13,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-
-import javax.swing.JFrame;
-
-import arbol.sintactico.ArbolAbs;
-
-import com.alee.laf.WebLookAndFeel;
-import com.alee.laf.filechooser.WebFileChooser;
-import com.alee.laf.optionpane.WebOptionPane;
-import com.alee.managers.language.LanguageConstants;
-import com.alee.managers.language.LanguageManager;
-
-import filtro.FiltroCvr;
-import generaciónASM.CodigoASMManager;
-
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JToolBar;
-
-import java.awt.BorderLayout;
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.JScrollPane;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -49,23 +23,42 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Vector;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextPane;
+import javax.swing.JToolBar;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.JTabbedPane;
-import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 
 import proyecto.ElementoTS;
 import proyecto.Proyecto;
 import proyecto.Token;
+import arbol.sintactico.ArbolAbs;
+
+import com.alee.laf.WebLookAndFeel;
+import com.alee.laf.filechooser.WebFileChooser;
+import com.alee.laf.optionpane.WebOptionPane;
+import com.alee.managers.language.LanguageConstants;
+import com.alee.managers.language.LanguageManager;
 
 public class CompiladorCVR {
 	private JFrame frame;
@@ -570,7 +563,6 @@ public class CompiladorCVR {
 
 		//Obervador del árbol
 		Observer obsArbol = new Observer(){
-			@SuppressWarnings("unchecked")
 			@Override
 			public void update(Observable arg0, Object arg1) {
 				if (arg1 instanceof ArbolAbs){

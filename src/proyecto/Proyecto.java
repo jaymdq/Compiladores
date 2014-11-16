@@ -22,7 +22,6 @@ public class Proyecto extends Observable {
 	private List<String> listaSentencias;
 	private int posicion;
 	private int lineaActual;
-	private String codigoGenerado = "";
 	
 	public Proyecto(File archivo) {
 		this.archivo = archivo;

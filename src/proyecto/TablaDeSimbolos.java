@@ -12,10 +12,12 @@ public class TablaDeSimbolos extends Observable {
 	
 	private static Vector<ElementoTS> tabla;
 	
+	@SuppressWarnings("static-access")
 	public TablaDeSimbolos(){
 		this.tabla = new Vector<ElementoTS>();
 	}
 
+	@SuppressWarnings("static-access")
 	public Token getToken(String l) {
 		for (ElementoTS t : this.tabla) {
 			if (t.getToken().getLexema().equals(l))
@@ -24,6 +26,7 @@ public class TablaDeSimbolos extends Observable {
 		return null;
 	}
 	
+	@SuppressWarnings("static-access")
 	public Token getToken(int p) {
 		if (p < this.tabla.size() )
 			return this.tabla.elementAt(p).getToken();
@@ -47,6 +50,7 @@ public class TablaDeSimbolos extends Observable {
 		return getToken(l) != null;
 	}
 	
+	@SuppressWarnings("static-access")
 	public Token add(Token to) {
 		if (this.containsToken(to.getLexema())){
 			AnalizadorLexico.yylval = new ParserVal(this.getPos(to.getLexema()));
@@ -74,6 +78,7 @@ public class TablaDeSimbolos extends Observable {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void clear() {
 		this.tabla.clear();
 		this.setChanged();

@@ -186,15 +186,6 @@ public class GeneradorASM {
 		}
 	}
 
-	private boolean hayCadenas(){
-		for (ElementoTS e : tablaSimbolos.getLista()){
-			if ( e.getTipo().toString().equals("Cadena Multilinea") && e.getUso().toString().equals("Constante")){
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public static HashMap<String,String> getMapStringsASM() {
 		return mapStringsASM;
 	}

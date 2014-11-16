@@ -445,7 +445,6 @@ public class Arbol implements ArbolAbs {
 
 
 		if (oper.equals(Operacion.MUL) || oper.equals(Operacion.IMUL) || oper.equals(Operacion.DIV) || oper.equals(Operacion.IDIV)){
-			//TODO
 
 			// Parte baja: Operando 1
 			if (regIzq != null){
