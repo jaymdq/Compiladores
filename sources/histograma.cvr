@@ -1,6 +1,6 @@
 imagen[0..19] vector de entero;     ** Arreglo que representa una imagen de 5x4 pixels (2 bits de profundidad)
 histograma[0..3] vector de entero;  ** Almacena la cantidad de pixels con una determinada intensidad
-entero indice;
+entero indice,aux;
 
 ** Inicializar imagen
  imagen[0] := 3;  imagen[1] := 2;  imagen[2] := 1;  imagen[3] := 2;  imagen[4] := 3;
@@ -15,12 +15,19 @@ iterar {
   indice := indice + 1;
 } hasta indice = 4;
 
+imprimir('Hasta Aca');
+
 ** Calcular histograma
 indice := 0;
 iterar {
+  **aux := imagen[indice];
+  **histograma[aux] := histograma[aux] + 1;
   histograma[imagen[indice]] := histograma[imagen[indice]] + 1;
+  imprimir('OH');
   indice := indice + 1;
 } hasta indice = 20;
+
+imprimir('Despues del calculo');
 
 ** Verificar resultado
 **si (histograma[3] = 5) entonces

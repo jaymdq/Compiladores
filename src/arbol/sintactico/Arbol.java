@@ -144,7 +144,7 @@ public class Arbol implements ArbolAbs {
 
 	@Override
 	public void generarAssembler(CodigoAssembler codigo) {
- 
+
 
 		Operacion oper = null;
 		boolean conmutativa = false;
@@ -338,20 +338,26 @@ public class Arbol implements ArbolAbs {
 			Integer limSup = elementoTabla.getLim_sup();
 
 			Registro regIndice = regManager.findRegistro(derecho);
-			if (regIndice == null){
+			if (regIndice == null ){
 				regIndice = regManager.ocuparRegistroLibre(derecho, derecho.is16bits());
 			}
 
 			// Widening (16 a 32 bits)
-			codigo.agregarSentencia(Operacion.MOVSX, regIndice.getName(false, true), regIndice.getName(true, true));
-
+			if (derecho.getName().startsWith("[")){
+				codigo.agregarSentencia(Operacion.MOVSX, regIndice.getName(false, true), derecho.getName());
+			}
+			else{
+				codigo.agregarSentencia(Operacion.MOVSX, regIndice.getName(false, true), regIndice.getName(true, true));
+			}
+			
 			// CHEQUEO DE LIMITE
 
 			//   - Se chequea el limite INFERIOR
-			codigo.agregarSentencia(Operacion.CMP, regIndice.getName(false), limInf.toString());
+
+			codigo.agregarSentencia(Operacion.CMP, regIndice.getName(false, true), limInf.toString());
 
 			String salto = codigo.apilarEtiqueta();
-			codigo.agregarSentencia(Operacion.JGE, salto);
+			codigo.agregarSentencia(Operacion.JAE, salto);
 
 			codigo.agregarSentencia(Operacion.INVOKE, "MessageBox, NULL, addr _@E1, addr _@E1, MB_OK");
 			codigo.agregarSentencia(Operacion.INVOKE, "ExitProcess, 0");
@@ -360,10 +366,11 @@ public class Arbol implements ArbolAbs {
 			codigo.desapilarEtiqueta();
 
 			//   - Se chequea el limite SUPERIOR
-			codigo.agregarSentencia(Operacion.CMP, regIndice.getName(false), limSup.toString());
+
+			codigo.agregarSentencia(Operacion.CMP, regIndice.getName(false, true), limSup.toString());
 
 			salto = codigo.apilarEtiqueta();
-			codigo.agregarSentencia(Operacion.JLE, salto);
+			codigo.agregarSentencia(Operacion.JBE, salto);
 
 			codigo.agregarSentencia(Operacion.INVOKE, "MessageBox, NULL, addr _@E2, addr _@E2, MB_OK");
 			codigo.agregarSentencia(Operacion.INVOKE, "ExitProcess, 0");
@@ -374,7 +381,8 @@ public class Arbol implements ArbolAbs {
 			// CALCULAR POSICION DE MEMORIA
 
 			//  - Se resta el limite inferior
-			codigo.agregarSentencia(Operacion.SUB, regIndice.getName(false), limInf.toString());
+
+			codigo.agregarSentencia(Operacion.SUB, regIndice.getName(false,true), limInf.toString());
 
 			//  - Se mueve a EAX
 			Registro EAX = regManager.ocuparRegistro(new Registro("EAX", "AX"), regIndice, false);
