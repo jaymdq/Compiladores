@@ -343,7 +343,7 @@ public class Arbol implements ArbolAbs {
 			}
 
 			// Widening (16 a 32 bits)
-			codigo.agregarSentencia(Operacion.MOVSX, regIndice.getName(false), regIndice.getName(true));
+			codigo.agregarSentencia(Operacion.MOVSX, regIndice.getName(false, true), regIndice.getName(true, true));
 
 			// CHEQUEO DE LIMITE
 
