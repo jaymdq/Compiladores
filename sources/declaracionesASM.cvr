@@ -3,7 +3,10 @@ entero a1234567,b12345678,c1456,d123456789101;
 vec[1..10] vector de entero;
 vec1[0..0] vector de entero_lss;
 vec2[1..32760] vector de entero;
+va[4..9] vector de entero;
+vb[1..9] vector de entero_lss;
 
-**Sentencias de Ejecución
-
-imprimir('Rocha fan matematica');
+va[5] := 1;
+vb[va[5]]:= 12;
+si (vb[va[5]] = 12) entonces
+	imprimir('Campeon');

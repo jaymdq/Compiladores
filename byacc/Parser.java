@@ -1224,7 +1224,7 @@ case 55:
 break;
 case 56:
 //#line 96 "gramatica.y"
-{ guardarExpresion();}
+{ guardarExpresion(); todasCTE = true; }
 break;
 case 57:
 //#line 96 "gramatica.y"

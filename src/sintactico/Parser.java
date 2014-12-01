@@ -25,9 +25,7 @@ import lexico.AnalizadorLexico;
 import proyecto.Proyecto;
 import proyecto.Token;
 import proyecto.ElementoTS;
-
 import java.util.Vector;
-
 import arbol.sintactico.*;
 
 //#line 28 "Parser.java"
@@ -551,7 +549,6 @@ public Parser(Proyecto p){
 	this.proyecto = p;
 }
 
-@SuppressWarnings("static-access")
 private int chequearNegativo(){
 	//Chequear valor del negativo
 	Token t = proyecto.getTablaDeSimbolos().getToken(yylval.ival);
@@ -636,7 +633,6 @@ private void agregar(String tipo){
 	declaracionesAux.add(t);
 }
 
-@SuppressWarnings("static-access")
 private void generarDeclaracionTipoBasico(){
 ElementoTS.TIPOS tipo;
 if (declaracionesAux.elementAt(0).getLexema().equals("entero"))
@@ -655,7 +651,6 @@ else
 	declaracionesAux.clear();
 }
 
-@SuppressWarnings("static-access")
 private void generarDeclaracionTipoVector(ParserVal iden, ParserVal limInf, ParserVal limSup){
 ElementoTS.TIPOS tipo;
 if (declaracionesAux.elementAt(0).getLexema().equals("entero"))
@@ -692,7 +687,6 @@ else
 	declaracionesAux.clear();
 }
 
-@SuppressWarnings("static-access")
 private void tratarConstante(ParserVal pos,String tipoDado){
 	ElementoTS.TIPOS tipo;
 	if (tipoDado.equals("entero"))
@@ -710,7 +704,6 @@ private void tratarConstante(ParserVal pos,String tipoDado){
 	declaracionesAux.clear();
 }
 
-@SuppressWarnings("static-access")
 private void tratarCadenaMultilinea(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	
@@ -722,21 +715,18 @@ private void tratarCadenaMultilinea(ParserVal pos){
 	declaracionesAux.clear();
 }
 
-@SuppressWarnings("static-access")
 private void tratarRedeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getToken().getContador() > 1)
 		escribirErrorDeGeneracion("Duplicación de identificador \"" + elemento.getToken().getLexema() + "\".");
 }
 
-@SuppressWarnings("static-access")
 private void tratarNodeclaraciones(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getTipo() == null)
 		escribirErrorDeGeneracion("Identificador \"" + elemento.getToken().getLexema() + "\" no declarado.");
 }
 
-@SuppressWarnings("static-access")
 private void tratarIndiceInvalido(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (E.getTipo() == null){
@@ -747,7 +737,6 @@ private void tratarIndiceInvalido(ParserVal pos){
 	}
 }
 
-@SuppressWarnings("static-access")
 private void tratarEsArreglo(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	if (elemento.getUso() != ElementoTS.USOS.ARREGLO){
@@ -794,7 +783,6 @@ private boolean desapilarCTES(){
 	return salida;
 }
 
-@SuppressWarnings("static-access")
 private ArbolAbs crear_hoja(ParserVal pos){
 	ElementoTS elemento = proyecto.getTablaDeSimbolos().getElemento(pos.ival);
 	ArbolAbs salida = new Hoja(elemento);
@@ -1236,7 +1224,7 @@ case 55:
 break;
 case 56:
 //#line 96 "gramatica.y"
-{ guardarExpresion();}
+{ guardarExpresion(); todasCTE = true; }
 break;
 case 57:
 //#line 96 "gramatica.y"

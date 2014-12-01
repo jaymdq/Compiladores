@@ -93,7 +93,7 @@ impresion_invalida 	: PR_IMPRIMIR {escribirError("Falta '(' en sentencia de impr
 					| PR_IMPRIMIR ';' {escribirError("Falta \"('Cadena_Multilinea')\" .");}
 					;
 			
-asignacion	: asignable  ASIGNACION { guardarExpresion();} e ';' { indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja($1); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); asignacionValida(SentenciaAsignacion); todasCTE = true; }
+asignacion	: asignable  ASIGNACION { guardarExpresion(); todasCTE = true; } e ';' { indicarSentencia("Asignación"); ArbolAbs hojaNueva = crear_hoja($1); ArbolAbs expAux = getUltimaExpresion(); SentenciaAsignacion = crear_nodo("Asignación",hojaNueva,expAux);  if (esAsignacionVector(hojaNueva))  SentenciaAsignacion = crear_nodo("Asignación",crear_nodo("Índice",hojaNueva,AuxVec),expAux); asignacionValida(SentenciaAsignacion); todasCTE = true; }
 			| asignacion_invalida
 			;
 
