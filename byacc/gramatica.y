@@ -426,6 +426,9 @@ private void asignacionValida(ArbolAbs exp){
 		arbol.getDerecho().convertirATipo(ElementoTS.TIPOS.ENTERO_LSS);
 		return;
 	}
+	if (arbol.getIzquierdo().getTipo() == ElementoTS.TIPOS.NO_DECLARADO || arbol.getDerecho().getTipo() == ElementoTS.TIPOS.NO_DECLARADO){
+		return;
+	}
 	if (arbol.getIzquierdo().getTipo() != arbol.getDerecho().getTipo())
 		escribirErrorDeGeneracion("Asignación entre diferentes tipos de datos.");
 }

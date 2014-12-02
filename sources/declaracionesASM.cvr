@@ -5,8 +5,13 @@ vec1[0..0] vector de entero_lss;
 vec2[1..32760] vector de entero;
 va[4..9] vector de entero;
 vb[1..9] vector de entero_lss;
+entero b,;
 
-va[5] := 1;
+
+a := 1;
+b := a + 2;
+
+va[a] := 1;
 vb[va[5]]:= 12;
 si (vb[va[5]] = 12) entonces
 	imprimir('Campeon');

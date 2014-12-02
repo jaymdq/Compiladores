@@ -756,6 +756,9 @@ private void asignacionValida(ArbolAbs exp){
 		arbol.getDerecho().convertirATipo(ElementoTS.TIPOS.ENTERO_LSS);
 		return;
 	}
+	if (arbol.getIzquierdo().getTipo() == ElementoTS.TIPOS.NO_DECLARADO || arbol.getDerecho().getTipo() == ElementoTS.TIPOS.NO_DECLARADO){
+		return;
+	}
 	if (arbol.getIzquierdo().getTipo() != arbol.getDerecho().getTipo())
 		escribirErrorDeGeneracion("Asignación entre diferentes tipos de datos.");
 }
@@ -920,7 +923,7 @@ private boolean esAsignacionVector(ArbolAbs hojaNueva){
 	return false;
 }
 
-//#line 851 "Parser.java"
+//#line 854 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1338,7 +1341,7 @@ case 88:
 //#line 143 "gramatica.y"
 { tratarNodeclaraciones(val_peek(3));	tratarEsArreglo(val_peek(3)); HojaAux = crear_nodo("Índice",crear_hoja(val_peek(3)),getUltimaExpresion()); tratarIndiceInvalido(val_peek(3)); expresionValida(HojaAux); }
 break;
-//#line 1264 "Parser.java"
+//#line 1267 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

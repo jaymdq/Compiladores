@@ -41,6 +41,9 @@ public class Hoja implements ArbolAbs {
 
 	@Override
 	public TIPOS getTipo() {
+		if (tipoAlternativo == null && contenido.getTipo() == null)
+			return TIPOS.NO_DECLARADO;
+		
 		if (tipoAlternativo == null)
 			return contenido.getTipo();
 		else

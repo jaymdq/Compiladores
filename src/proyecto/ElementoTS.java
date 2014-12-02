@@ -4,7 +4,7 @@ public class ElementoTS {
 	
 	
 	public enum TIPOS { 
-		ENTERO, ENTERO_LSS, VECTOR_ENTERO, VECTOR_ENTERO_LSS, CADENA_MULTILINEA;
+		ENTERO, ENTERO_LSS, VECTOR_ENTERO, VECTOR_ENTERO_LSS, CADENA_MULTILINEA, NO_DECLARADO;
 		
 		public String toString(){
 			if (this.equals(ENTERO))
@@ -17,6 +17,8 @@ public class ElementoTS {
 				return "Vector de enteros lss";
 			else if (this.equals(CADENA_MULTILINEA))
 				return "Cadena Multilinea";			
+			else if (this.equals(NO_DECLARADO))
+				return "No Declarado";	
 			else
 				return super.toString();
 		}
